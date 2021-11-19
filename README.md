@@ -1,2 +1,2 @@
-# directory
-Vaadin Directory 4
+# Vaadin Directory
+The upcoming open source version of Vaadin Directory
