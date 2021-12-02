@@ -1,1 +1,3 @@
-@import url('./main-layout.css');
+* {
+  box-sizing: border-box;
+}

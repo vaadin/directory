@@ -1,19 +1,15 @@
 import '@vaadin/vaadin-text-field';
 import '@vaadin/vaadin-grid/vaadin-grid';
 import { html } from 'lit';
-import { router } from '../index';
-import { views } from '../routes';
 import { customElement, state } from 'lit/decorators.js';
 import '@vaadin/vaadin-lumo-styles/sizing';
 import '@vaadin/vaadin-lumo-styles/spacing';
-import { Layout } from './view';
+import { View } from './view';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
 import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
-import AddonModel from 'Frontend/generated/org/vaadin/directory/search/AddonModel';
 
 @customElement('addon-view')
-export class AddonView extends Layout {
-
+export class AddonView extends View {
   @state()
   private addon!: Addon;
 
@@ -27,7 +23,7 @@ export class AddonView extends Layout {
   }
 
   async firstUpdated() {
-    const a = await getAddon("url_identifier");
+    const a = await getAddon('url_identifier');
     this.addon = a;
   }
 }

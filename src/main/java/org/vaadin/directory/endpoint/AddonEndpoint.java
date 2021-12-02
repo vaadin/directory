@@ -5,8 +5,6 @@ import com.vaadin.fusion.Endpoint;
 import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.search.Addon;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Endpoint
 @AnonymousAllowed
@@ -18,10 +16,9 @@ public class AddonEndpoint {
         return dummyAddon;
     }
 
-    /* TODO: We need the full details for the view
-    public @Nonnull @Nonnull Addon getAddonDetails(String urlIdentifier) {
-        return addon;
-    }
-    */
+    /*
+     * TODO: We need the full details for the view public @Nonnull @Nonnull Addon
+     * getAddonDetails(String urlIdentifier) { return addon; }
+     */
 
 }
