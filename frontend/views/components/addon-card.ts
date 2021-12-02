@@ -1,10 +1,17 @@
+import {
+  BeforeEnterObserver,
+  PreventAndRedirectCommands,
+  Router,
+  RouterLocation,
+} from '@vaadin/router';
+import { AddonEndpoint } from 'Frontend/generated/endpoints';
 import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { View } from '../view';
 
 @customElement('addon-card')
-export class AddonCard extends View {
+export class AddonCard extends View implements BeforeEnterObserver {
   @property({ attribute: false })
   addon?: Addon;
 
@@ -22,12 +29,18 @@ export class AddonCard extends View {
     );
   }
 
+  async onBeforeEnter(location: RouterLocation) {
+    this.addon = await AddonEndpoint.getAddon(
+      location.params['addon'] as string
+    );
+  }
+
   render() {
     if (!this.addon) {
       return html`skeletor!`;
     }
     return html`
-      <a href="/${this.addon.slug}" class="text-body">
+      <a href="/addon/${this.addon.slug}" class="text-body">
         <div class="flex justify-between">
           <img src="" alt=${this.addon.name} />
           <div class="flex flex-row-reverse gap-xs flex-wrap">

@@ -14,7 +14,12 @@ export const routes: ViewRoute[] = [
     title: 'Search',
   },
   {
-    path: ':addon',
+    path: 'addon/:addon',
+    component: 'addon-view',
+    title: 'Addon',
+  },
+  {
+    path: 'component/:addon',
     component: 'addon-view',
     title: 'Addon',
   },
