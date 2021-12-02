@@ -115,26 +115,14 @@
     "@vaadin/build-status-plugin": "./target/plugins/build-status-plugin",
     "@vaadin/theme-live-reload-plugin": "./target/plugins/theme-live-reload-plugin",
     "@vaadin/theme-loader": "./target/plugins/theme-loader",
-    "chokidar": "^3.5.0",
-    "compression-webpack-plugin": "4.0.1",
-    "css-loader": "4.2.1",
-    "esbuild-loader": "2.15.1",
-    "extra-watch-webpack-plugin": "1.0.3",
-    "extract-loader": "5.1.0",
-    "file-loader": "6.2.0",
-    "fork-ts-checker-webpack-plugin": "6.2.1",
     "glob": "7.1.6",
-    "html-webpack-plugin": "4.5.1",
-    "lit-css-loader": "0.1.0",
-    "loader-utils": "2.0.0",
+    "mkdirp": "1.0.4",
+    "rollup-plugin-brotli": "3.1.0",
     "typescript": "4.4.3",
-    "webpack": "4.46.0",
-    "webpack-cli": "4.9.0",
-    "webpack-dev-server": "4.1.1",
-    "webpack-merge": "4.2.2",
+    "vite": "v2.7.0-beta.8",
+    "vite-plugin-checker": "0.3.4",
     "workbox-core": "6.2.0",
-    "workbox-precaching": "6.2.0",
-    "workbox-webpack-plugin": "6.2.0"
+    "workbox-precaching": "6.2.0"
   },
   "vaadin": {
     "dependencies": {
@@ -244,27 +232,15 @@
       "lit": "2.0.0"
     },
     "devDependencies": {
-      "chokidar": "^3.5.0",
-      "compression-webpack-plugin": "4.0.1",
-      "css-loader": "4.2.1",
-      "esbuild-loader": "2.15.1",
-      "extra-watch-webpack-plugin": "1.0.3",
-      "extract-loader": "5.1.0",
-      "file-loader": "6.2.0",
-      "fork-ts-checker-webpack-plugin": "6.2.1",
       "glob": "7.1.6",
-      "html-webpack-plugin": "4.5.1",
-      "lit-css-loader": "0.1.0",
-      "loader-utils": "2.0.0",
+      "mkdirp": "1.0.4",
+      "rollup-plugin-brotli": "3.1.0",
       "typescript": "4.4.3",
-      "webpack": "4.46.0",
-      "webpack-cli": "4.9.0",
-      "webpack-dev-server": "4.1.1",
-      "webpack-merge": "4.2.2",
+      "vite": "v2.7.0-beta.8",
+      "vite-plugin-checker": "0.3.4",
       "workbox-core": "6.2.0",
-      "workbox-precaching": "6.2.0",
-      "workbox-webpack-plugin": "6.2.0"
+      "workbox-precaching": "6.2.0"
     },
-    "hash": "e75e4ce05b39fefd9e1840ad4c1ecaa62cbf6b763f86b6a09714074091922930"
+    "hash": "192ea006b9a14e2037fe44a4d10870d35bf68fa464fe655f8141414f5844c403"
   }
 }

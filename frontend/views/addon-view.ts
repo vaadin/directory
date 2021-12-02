@@ -11,14 +11,18 @@ import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
 @customElement('addon-view')
 export class AddonView extends View {
   @state()
-  private addon!: Addon;
+  private addon?: Addon;
 
   render() {
+    if (!this.addon) {
+      return html`Loading...`;
+    }
+
     return html`
-        <div>
-            <h1>${this.addon.name}<h1>
-            <p>${this.addon.description}</p>
-        </div>
+      <div>
+        <h1>${this.addon.name}</h1>
+        <p>${this.addon.description}</p>
+      </div>
     `;
   }
 

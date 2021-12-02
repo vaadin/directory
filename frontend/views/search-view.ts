@@ -35,7 +35,7 @@ export class SearchView extends View {
         </div>
 
         <h3>Addons</h3>
-        <vaadin-grid .items="${this.filteredAddons}" theme="row-stripes">
+        <vaadin-grid .items=${this.filteredAddons} theme="row-stripes">
           <vaadin-grid-column path="name"></vaadin-grid-column>
           <vaadin-grid-column path="description"></vaadin-grid-column>
         </vaadin-grid>
@@ -44,11 +44,11 @@ export class SearchView extends View {
   }
 
   async searchAddons() {
-    this.addons = await SearchEndpoint.search(this.searchString);
+    this.addons = this.filteredAddons;
+    // this.addons = await SearchEndpoint.search(this.searchString);
   }
 
   async firstUpdated() {
-    const addons = await SearchEndpoint.getAllAddons();
-    this.addons = addons;
+    this.addons = await SearchEndpoint.getAllAddons();
   }
 }
