@@ -1,6 +1,7 @@
 import '@vaadin/text-field';
 import '@vaadin/grid';
 import '@vaadin/button';
+import './components/addon-card';
 import { html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import '@vaadin/vaadin-lumo-styles/sizing';
@@ -26,19 +27,25 @@ export class SearchView extends View {
 
   render() {
     return html`
-      <div class="flex flex-col p-m w-full">
-        <div class="flex gap-s items-baseline">
-          <vaadin-text-field label="Search"> </vaadin-text-field>
-          <vaadin-button theme="primary" @click=${this.searchAddons}>
-            Search
-          </vaadin-button>
-        </div>
-
-        <h3>Addons</h3>
-        <vaadin-grid .items=${this.filteredAddons} theme="row-stripes">
-          <vaadin-grid-column path="name"></vaadin-grid-column>
-          <vaadin-grid-column path="description"></vaadin-grid-column>
-        </vaadin-grid>
+      <div class="flex flex-col items-center">
+        <h2>Vaadin directory</h2>
+        <h1>Add-on components and integrations</h1>
+        <p>
+          Search official and community add-ons and share your own to help
+          others.
+        </p>
+      </div>
+      <h2>Browse All</h2>
+      <div class="flex justify-between">
+        <vaadin-text-field
+          label="Search"
+          @input=${(e: any) => (this.searchString = e.target.value)}>
+        </vaadin-text-field>
+      </div>
+      <div class="addons-grid">
+        ${this.filteredAddons.map(
+          (addon) => html` <addon-card .addon=${addon}></addon-card> `
+        )}
       </div>
     `;
   }

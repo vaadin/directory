@@ -1,0 +1,12 @@
+search-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumo-space-m);
+  padding: var(--lumo-space-m);
+}
+
+search-view .addons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  gap: var(--lumo-space-l);
+}

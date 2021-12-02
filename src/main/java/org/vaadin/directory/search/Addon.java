@@ -1,5 +1,6 @@
 package org.vaadin.directory.search;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.fusion.Nonnull;
 
@@ -13,9 +14,18 @@ public class Addon {
     @Nonnull
     private String description;
 
+    private @Nonnull List<@Nonnull String> tags;
+
+    private @Nonnull String author;
+
+    private double rating;
+
     public Addon(String name, String description) {
         this.name = name;
         this.description = description;
+        this.author = "Sami";
+        rating = 4.3;
+        this.tags = List.of("UI", "V14");
     }
 
     public String getName() {
@@ -24,6 +34,18 @@ public class Addon {
 
     public String getDescription() {
         return description;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public double getRating() {
+        return rating;
     }
 
 }
