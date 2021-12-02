@@ -3,10 +3,17 @@ search-view {
   flex-direction: column;
   gap: var(--lumo-space-m);
   padding: var(--lumo-space-m);
+  max-width: 1000px;
+  max-width: 0.9wv;
+  margin: 0 auto;
 }
 
 search-view .addons-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
   gap: var(--lumo-space-l);
+}
+
+search-view addon-card:hover {
+  box-shadow: var(--lumo-box-shadow-s);
 }
