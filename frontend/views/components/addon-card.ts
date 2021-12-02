@@ -27,26 +27,28 @@ export class AddonCard extends View {
       return html`skeletor!`;
     }
     return html`
-      <div class="flex justify-between">
-        <img src="" alt=${this.addon.name} />
-        <div class="flex flex-row-reverse gap-xs flex-wrap">
-          ${this.addon.tags.map(
-            (tag) =>
-              html`
-                <div class="border border-contrast-40 p-xs rounded-s">
-                  ${tag}
-                </div>
-              `
-          )}
+      <a href="/${this.addon.slug}" class="text-body">
+        <div class="flex justify-between">
+          <img src="" alt=${this.addon.name} />
+          <div class="flex flex-row-reverse gap-xs flex-wrap">
+            ${this.addon.tags.map(
+              (tag) =>
+                html`
+                  <div class="border border-contrast-40 p-xs rounded-s">
+                    ${tag}
+                  </div>
+                `
+            )}
+          </div>
         </div>
-      </div>
 
-      <h3 class="mb-s">${this.addon.name}</h3>
-      <div class="text-s text-secondary">${this.addon.author}</div>
+        <h3 class="mb-s">${this.addon.name}</h3>
+        <div class="text-s text-secondary">${this.addon.author}</div>
 
-      <div>${this.addon.description}</div>
+        <div>${this.addon.description}</div>
 
-      <div>${'⭐️'.repeat(this.addon.rating)}</div>
+        <div>${'⭐️'.repeat(this.addon.rating)}</div>
+      </a>
     `;
   }
 }

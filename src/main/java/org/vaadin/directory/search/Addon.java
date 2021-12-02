@@ -6,6 +6,7 @@ import com.vaadin.fusion.Nonnull;
 
 public class Addon {
 
+    private @Nonnull String slug;
     @NotBlank
     @Nonnull
     private String name;
@@ -21,6 +22,7 @@ public class Addon {
     private double rating;
 
     public Addon(String name, String description) {
+        this.slug = "addon-name";
         this.name = name;
         this.description = description;
         this.author = "Sami";
@@ -46,6 +48,10 @@ public class Addon {
 
     public double getRating() {
         return rating;
+    }
+
+    public String getSlug() {
+        return slug;
     }
 
 }
