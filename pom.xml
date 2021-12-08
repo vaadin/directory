@@ -100,6 +100,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.vaadin.directory</groupId>
+            <artifactId>directory-backend</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench</artifactId>
             <scope>test</scope>

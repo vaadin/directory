@@ -21,7 +21,7 @@ export class SearchView extends View {
   get filteredAddons() {
     const filter = new RegExp(this.searchString, 'i');
     return this.addons.filter(
-      (addon) => addon.name?.match(filter) || addon.description?.match(filter)
+      (addon) => addon.name?.match(filter) || addon.summary?.match(filter)
     );
   }
 

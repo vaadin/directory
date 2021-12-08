@@ -22,7 +22,7 @@ export class AddonView extends View {
       <div>
         <h1>${this.addon.name}</h1>
         <div>${this.addon.author}</div>
-        <p>${this.addon.description}</p>
+        <p>${this.addon.summary}</p>
       </div>
     `;
   }

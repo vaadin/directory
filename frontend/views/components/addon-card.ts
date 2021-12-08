@@ -40,14 +40,14 @@ export class AddonCard extends View implements BeforeEnterObserver {
       return html`skeletor!`;
     }
     return html`
-      <a href="/addon/${this.addon.slug}" class="text-body">
+      <a href="/addon/${this.addon.urlIdentifier}" class="text-body">
         <div class="flex justify-between">
-          <img src="" alt=${this.addon.name} />
+          <img style="width: 64px; height: 64px" src="https://vaadin.com/static/portrait/initials/a" alt=${this.addon.name} />
           <div class="flex flex-row-reverse gap-xs flex-wrap">
             ${this.addon.tags.map(
               (tag) =>
                 html`
-                  <div class="border border-contrast-40 p-xs rounded-s">
+                  <div class="text-s border border-contrast-40 p-xs rounded-s">
                     ${tag}
                   </div>
                 `
@@ -56,11 +56,11 @@ export class AddonCard extends View implements BeforeEnterObserver {
         </div>
 
         <h3 class="mb-s">${this.addon.name}</h3>
-        <div class="text-s text-secondary">${this.addon.author}</div>
+        <div class="text-s text-secondary">by ${this.addon.author}</div>
 
-        <div>${this.addon.description}</div>
+        <div>${this.addon.summary}</div>
 
-        <div>${'⭐️'.repeat(this.addon.rating)}</div>
+        <div>${'★️'.repeat(this.addon.rating)}</div>
       </a>
     `;
   }

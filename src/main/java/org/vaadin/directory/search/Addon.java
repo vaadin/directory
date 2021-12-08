@@ -1,41 +1,54 @@
 package org.vaadin.directory.search;
 
+import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.fusion.Nonnull;
 
 public class Addon {
 
-    private @Nonnull String slug;
+    private @Nonnull String urlIdentifier;
+
     @NotBlank
     @Nonnull
     private String name;
 
     @NotBlank
     @Nonnull
-    private String description;
+    private String summary;
+
+    @NotBlank
+    @Nonnull
+    private LocalDate lastUpdated;
 
     private @Nonnull List<@Nonnull String> tags;
 
     private @Nonnull String author;
 
-    private double rating;
+    private @Nonnull Double rating;
 
-    public Addon(String name, String description) {
-        this.slug = "addon-name";
+    public Addon(String urlIdentifier,
+                 String name,
+                 String summary,
+                 LocalDate lastUpdated,
+                 Double rating,
+                 String author,
+                 List<String> tags) {
+        this.urlIdentifier = urlIdentifier;
         this.name = name;
-        this.description = description;
-        this.author = "Sami";
-        rating = 4.3;
-        this.tags = List.of("UI", "V14");
+        this.summary = summary;
+        this.lastUpdated = lastUpdated;
+        this.author = "User "+author;
+        this.rating = rating == null? 0 : rating;
+        this.tags = tags;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSummary() {
+        return summary;
     }
 
     public List<String> getTags() {
@@ -50,8 +63,8 @@ public class Addon {
         return rating;
     }
 
-    public String getSlug() {
-        return slug;
+    public String getUrlIdentifier() {
+        return urlIdentifier;
     }
 
 }
