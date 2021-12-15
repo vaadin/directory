@@ -1,11 +1,13 @@
-package org.vaadin.directory.search;
+package org.vaadin.directory.endpoint.search;
 
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.fusion.Nonnull;
+import org.vaadin.directory.Util;
 
-public class Addon {
+public class SearchResult {
 
     private @Nonnull String urlIdentifier;
 
@@ -27,20 +29,16 @@ public class Addon {
 
     private @Nonnull Double rating;
 
-    public Addon(String urlIdentifier,
-                 String name,
-                 String summary,
-                 LocalDate lastUpdated,
-                 Double rating,
-                 String author,
-                 List<String> tags) {
-        this.urlIdentifier = urlIdentifier;
-        this.name = name;
-        this.summary = summary;
-        this.lastUpdated = lastUpdated;
-        this.author = "User "+author;
-        this.rating = rating == null? 0 : rating;
-        this.tags = tags;
+    public SearchResult() {}
+
+    public SearchResult(Component component) {
+        this.urlIdentifier = component.getUrlIdentifier();
+        this.name = component.getDisplayName();
+        this.summary = component.getSummary();
+        this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
+        this.author = "User " + component.getOwner().getId().toString();
+        this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
+        this.tags = Util.tagsToStrings(component.getTagGroups());
     }
 
     public String getName() {

@@ -1,11 +1,4 @@
-import {
-  BeforeEnterObserver,
-  PreventAndRedirectCommands,
-  Router,
-  RouterLocation,
-} from '@vaadin/router';
-import { AddonEndpoint } from 'Frontend/generated/endpoints';
-import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
+import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { View } from '../view';
@@ -14,7 +7,7 @@ import { FilterAddedEvent } from './filter-added-event';
 @customElement('addon-card')
 export class AddonCard extends View {
   @property({ attribute: false })
-  addon?: Addon;
+  addon?: SearchResult;
 
   constructor() {
     super();

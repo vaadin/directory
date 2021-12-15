@@ -1,0 +1,9 @@
+addon-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumo-space-m);
+  padding: var(--lumo-space-m);
+  max-width: 1000px;
+  max-width: 0.9wv;
+  margin: 0 auto;
+}

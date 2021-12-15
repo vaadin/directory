@@ -1,4 +1,4 @@
-package org.vaadin.directory.endpoint;
+package org.vaadin.directory.endpoint.search;
 
 import java.util.List;
 import java.util.Set;
@@ -10,7 +10,6 @@ import com.vaadin.fusion.Endpoint;
 import com.vaadin.fusion.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.vaadin.directory.search.Addon;
 
 @Endpoint
 @AnonymousAllowed
@@ -22,13 +21,15 @@ public class SearchEndpoint {
         this.service = service;
     }
 
-    public @Nonnull List<@Nonnull Addon> getAllAddons(int page, int pageSize) {
+    public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
+            int pageSize) {
         return service.findAllPublishedComponents(PageRequest.of(page, pageSize)).stream()
-                .map(c -> AddonEndpoint.componentToAddon(c))
+                .map(c -> new SearchResult(c))
                 .collect(Collectors.toList());
     }
 
-    public @Nonnull List<@Nonnull Addon> search(String searchString, int page, int pageSize) {
+    public @Nonnull List<@Nonnull SearchResult> search(
+            String searchString, int page, int pageSize) {
         return service
                 .findAllComponentsBySearchCriteria(
                         List.of(),
@@ -40,8 +41,9 @@ public class SearchEndpoint {
                         Set.of(),
                         PageRequest.of(page, pageSize))
                 .stream()
-                .map(c -> AddonEndpoint.componentToAddon(c))
+                .map(c -> new SearchResult(c))
                 .collect(Collectors.toList());
     }
+
 
 }

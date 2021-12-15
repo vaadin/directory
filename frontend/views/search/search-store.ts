@@ -1,12 +1,12 @@
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
-import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
+import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
 import { autorun, makeAutoObservable } from 'mobx';
 import { Filter } from '../components/Filter';
 
 class SearchStore {
   // State
   loading = false;
-  addons: Addon[] = [];
+  addons: SearchResult[] = [];
   query = '';
   private page = 0;
   private pageSize = 10;
@@ -43,7 +43,7 @@ class SearchStore {
     this.loading = loading;
   }
 
-  setAddons(addons: Addon[]) {
+  setAddons(addons: SearchResult[]) {
     this.addons = addons;
   }
 

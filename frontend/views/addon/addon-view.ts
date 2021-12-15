@@ -6,13 +6,8 @@ import '@vaadin/vaadin-lumo-styles/sizing';
 import '@vaadin/vaadin-lumo-styles/spacing';
 import { View } from '../view';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
-import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
-import {
-  BeforeEnterObserver,
-  PreventAndRedirectCommands,
-  Router,
-  RouterLocation,
-} from '@vaadin/router';
+import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
+import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {

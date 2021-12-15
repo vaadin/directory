@@ -1,4 +1,5 @@
 @import url('./search-view.css');
+@import url('./addon-view.css');
 
 * {
   box-sizing: border-box;
