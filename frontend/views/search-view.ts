@@ -31,10 +31,7 @@ export class SearchView extends View {
       </div>
       <h2>Browse All</h2>
       <div class="flex justify-between">
-        <vaadin-text-field
-          placeholder="Search"
-          @input=${(e: any) => (this.searchString = e.target.value)}>
-          <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
+        <vaadin-text-field placeholder="Search" @change=${this.updateSearch}>
         </vaadin-text-field>
       </div>
       <div class="addons-grid">
@@ -68,10 +65,16 @@ export class SearchView extends View {
     this.setupIntersectionObserver();
   }
 
+  updateSearch(e: { target: HTMLInputElement }) {
+    this.searchString = e.target.value;
+    this.page = 0;
+    this.addons = [];
+  }
+
   async loadMore() {
     this.loading = true;
     this.addons = this.addons.concat(
-      await SearchEndpoint.getAllAddons(this.page++, this.pageSize)
+      await SearchEndpoint.search(this.searchString, this.page++, this.pageSize)
     );
     this.loading = false;
   }

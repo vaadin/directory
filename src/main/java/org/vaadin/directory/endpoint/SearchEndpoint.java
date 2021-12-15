@@ -1,7 +1,9 @@
 package org.vaadin.directory.endpoint;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import com.vaadin.directory.backend.SortFilter;
 import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
@@ -26,8 +28,20 @@ public class SearchEndpoint {
                 .collect(Collectors.toList());
     }
 
-    public @Nonnull List<@Nonnull Addon> search(String searchString) {
-        return List.of();
+    public @Nonnull List<@Nonnull Addon> search(String searchString, int page, int pageSize) {
+        return service
+                .findAllComponentsBySearchCriteria(
+                        List.of(),
+                        List.of(searchString),
+                        List.of(),
+                        List.of(),
+                        SortFilter.LAST_UPDATED,
+                        null,
+                        Set.of(),
+                        PageRequest.of(page, pageSize))
+                .stream()
+                .map(c -> AddonEndpoint.componentToAddon(c))
+                .collect(Collectors.toList());
     }
 
 }
