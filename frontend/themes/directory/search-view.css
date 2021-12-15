@@ -13,7 +13,3 @@ search-view .addons-grid {
   grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
   gap: var(--lumo-space-l);
 }
-
-search-view addon-card:hover {
-  box-shadow: var(--lumo-box-shadow-s);
-}

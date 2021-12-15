@@ -67,13 +67,13 @@ class SearchStore {
     const query = params.get('q') || '';
 
     if (query) {
-      this.setQuery(decodeURIComponent(query));
+      this.setQuery(query);
     }
   }
 
   writeQueryToURL() {
     const params = new URLSearchParams(location.search);
-    params.set('q', encodeURIComponent(this.query));
+    params.set('q', this.query);
 
     if (this.query) {
       history.replaceState({}, '', `${location.pathname}?${params}`);
