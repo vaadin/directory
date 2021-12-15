@@ -4,7 +4,7 @@ import { html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import '@vaadin/vaadin-lumo-styles/sizing';
 import '@vaadin/vaadin-lumo-styles/spacing';
-import { View } from './view';
+import { View } from '../view';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
 import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
 import {
@@ -33,11 +33,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     `;
   }
 
-  async onBeforeEnter(
-    location: RouterLocation,
-    _: PreventAndRedirectCommands,
-    __: Router
-  ) {
+  async onBeforeEnter(location: RouterLocation) {
     const urlIdentifier = location.params.addon as string;
     this.addon = await getAddon(urlIdentifier);
   }
