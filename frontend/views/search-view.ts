@@ -12,18 +12,12 @@ import { SearchEndpoint } from 'Frontend/generated/endpoints';
 
 @customElement('search-view')
 export class SearchView extends View {
-  @state()
-  private searchString = '';
+  @state() private searchString = '';
+  @state() private addons: Addon[] = [];
+  @state() loading = false;
 
-  @state()
-  private addons: Addon[] = [];
-
-  get filteredAddons() {
-    const filter = new RegExp(this.searchString, 'i');
-    return this.addons.filter(
-      (addon) => addon.name?.match(filter) || addon.summary?.match(filter)
-    );
-  }
+  private page = 0;
+  private pageSize = 10;
 
   render() {
     return html`
@@ -44,19 +38,45 @@ export class SearchView extends View {
         </vaadin-text-field>
       </div>
       <div class="addons-grid">
-        ${this.filteredAddons.map(
+        ${this.addons.map(
           (addon) => html` <addon-card .addon=${addon}></addon-card> `
         )}
       </div>
+
+      <vaadin-button
+        id="load-more-button"
+        @click=${this.loadMore}
+        ?disabled=${this.loading}>
+        Load more
+      </vaadin-button>
     `;
   }
 
-  async searchAddons() {
-    this.addons = this.filteredAddons;
-    // this.addons = await SearchEndpoint.search(this.searchString);
+  setupIntersectionObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) this.loadMore();
+      });
+    });
+    const button = this.renderRoot.querySelector('#load-more-button');
+    if (button) {
+      observer.observe(button);
+    }
   }
 
-  async firstUpdated() {
-    this.addons = await SearchEndpoint.getAllAddons();
+  firstUpdated() {
+    this.setupIntersectionObserver();
+  }
+
+  async loadMore() {
+    this.loading = true;
+    this.addons = this.addons.concat(
+      await SearchEndpoint.getAllAddons(this.page++, this.pageSize)
+    );
+    this.loading = false;
+  }
+
+  async searchAddons() {
+    // this.addons = await SearchEndpoint.search(this.searchString);
   }
 }
