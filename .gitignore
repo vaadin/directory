@@ -20,3 +20,7 @@ webpack.generated.js
 parseClientRoutes.js
 src/main/resources/ts-recipe-info.json
 frontend/ts-routes.ts
+
+# Local configuration
+config/local/
+settings.json
