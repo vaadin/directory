@@ -1,5 +1,5 @@
 import { Route } from '@vaadin/router';
-import './views/search-view';
+import './views/search/search-view';
 import './views/addon-view';
 
 export type ViewRoute = Route & {
