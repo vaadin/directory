@@ -1,7 +1,7 @@
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
 import { autorun, makeAutoObservable } from 'mobx';
-import { Filter } from '../components/Filter';
+import { Filter } from './Filter';
 
 class SearchStore {
   // State

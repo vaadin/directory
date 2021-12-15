@@ -3,11 +3,11 @@ import '@vaadin/grid';
 import '@vaadin/icon';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import '@vaadin/button';
-import '../components/addon-card';
+import './addon-card';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { View } from '../view';
-import { FilterAddedEvent } from '../components/filter-added-event';
+import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
 
 @customElement('search-view')
