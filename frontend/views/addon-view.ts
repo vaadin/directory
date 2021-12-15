@@ -7,9 +7,15 @@ import '@vaadin/vaadin-lumo-styles/spacing';
 import { View } from './view';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
 import Addon from 'Frontend/generated/org/vaadin/directory/search/Addon';
+import {
+  BeforeEnterObserver,
+  PreventAndRedirectCommands,
+  Router,
+  RouterLocation,
+} from '@vaadin/router';
 
 @customElement('addon-view')
-export class AddonView extends View {
+export class AddonView extends View implements BeforeEnterObserver {
   @state()
   private addon?: Addon;
 
@@ -27,8 +33,12 @@ export class AddonView extends View {
     `;
   }
 
-  async firstUpdated() {
-    const a = await getAddon('url_identifier');
-    this.addon = a;
+  async onBeforeEnter(
+    location: RouterLocation,
+    _: PreventAndRedirectCommands,
+    __: Router
+  ) {
+    const urlIdentifier = location.params.addon as string;
+    this.addon = await getAddon(urlIdentifier);
   }
 }
