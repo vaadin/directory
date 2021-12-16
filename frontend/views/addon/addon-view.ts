@@ -44,7 +44,19 @@ export class AddonView extends View implements BeforeEnterObserver {
     return html`
       <div>
         <h1>${this.addon.name}</h1>
-        <div>${this.addon.author}</div>
+        <div>${this.addon.author} last updated ${this.addon.lastUpdated}</div>
+                  <div class="flex flex-row-reverse gap-xs flex-wrap">
+                    ${this.addon.tags.map(
+                      (tag) =>
+                        html`
+                          <vaadin-button
+                            @click=${() => this.searchByTag(tag)}
+                            theme="small">
+                            ${tag}
+                          </vaadin-button>
+                        `
+                    )}
+                  </div>
         <p>${this.addon.summary}</p>
         ${unsafeHTML(DomPurify.sanitize(marked.parse(this.addon.description)))}
       </div>
@@ -55,4 +67,8 @@ export class AddonView extends View implements BeforeEnterObserver {
     const urlIdentifier = location.params.addon as string;
     this.addon = await getAddon(urlIdentifier);
   }
+
+  searchByTag(tag: string) {
+      window.location.href = "../?q=tag:"+tag;
+    }
 }
