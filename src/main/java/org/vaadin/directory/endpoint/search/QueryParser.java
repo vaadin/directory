@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import com.vaadin.directory.entity.directory.ComponentFramework;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
+import com.vaadin.directory.entity.directory.TagGroup;
 
 /**
  * Parser for search strings.
@@ -22,9 +23,9 @@ public class QueryParser {
     public final static String FRAMEWORK_FROM_VERSION_SEPARATOR = "_";
     public static final String AUTHOR_SELF_TOKEN = "me";
 
-    private Optional<List<String>> tagGroups = Optional.empty();
+    private List<String> tagGroups = List.of();
     private Optional<String> author = Optional.empty();
-    private Optional<List<String>> keywords = Optional.empty();
+    private List<String> keywords = List.of();
     private ComponentFramework framework;
     private Set<ComponentFrameworkVersion> frameworkVersions = Collections.emptySet();
     private boolean isAuthorMe = false;
@@ -34,7 +35,7 @@ public class QueryParser {
         return isAuthorMe;
     }
 
-    public Optional<List<String>> getTagGroups() {
+    public List<String> getTagGroups() {
         return tagGroups;
     }
 
@@ -42,7 +43,7 @@ public class QueryParser {
         return author;
     }
 
-    public Optional<List<String>> getKeywords() {
+    public List<String> getKeywords() {
         return keywords;
     }
 
@@ -65,8 +66,7 @@ public class QueryParser {
         // Collect all non-tokens
         List<String> keywordParams = Arrays.asList(words).stream().filter(s -> !s.contains(":"))
                 .collect(Collectors.toList());
-        keywords = keywordParams != null && keywordParams.size() > 0 ? Optional.of(keywordParams)
-                : Optional.empty();
+        keywords = keywordParams != null && keywordParams.size() > 0 ? keywordParams : List.of();
 
         // Filter all token words
         List<String> tokenWords = Arrays.asList(words).stream().filter(s -> s.contains(":"))
@@ -77,8 +77,7 @@ public class QueryParser {
 
         List<String> tagGroupParams = searchTokens.get(Token.TAG.getToken());
         tagGroups =
-                tagGroupParams != null && tagGroupParams.size() > 0 ? Optional.of(tagGroupParams)
-                        : Optional.empty();
+                tagGroupParams != null && tagGroupParams.size() > 0 ? tagGroupParams : List.of();
 
         List<String> authorParams = searchTokens.get(Token.OWNER.getToken());
         authorParams =
@@ -111,7 +110,7 @@ public class QueryParser {
          */
     }
 
-    private static QueryParser parse(String searchString) {
+    public static QueryParser parse(String searchString) {
         QueryParser qp = new QueryParser();
         qp.updateFromSearch(searchString);
         return qp;
