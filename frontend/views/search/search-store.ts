@@ -8,7 +8,7 @@ class SearchStore {
   loading = false;
   addons: SearchResult[] = [];
   query = '';
-  private page = 0;
+  private page = 1;
   private pageSize = 10;
 
   // Init
