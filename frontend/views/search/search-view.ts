@@ -22,9 +22,9 @@ export class SearchView extends View {
           others.
         </p>
       </div>
-      <h2>Browse All</h2>
+      <h2>Search for add-ons</h2>
       <vaadin-text-field
-        placeholder="Search"
+        placeholder="Try e.g. 'upload' or 'icons'"
         .value=${searchStore.query}
         @change=${this.updateQuery}
         clear-button-visible>
