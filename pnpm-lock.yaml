@@ -104,9 +104,15 @@ dependencies:
   '@vaadin/virtual-list': 22.0.1
   construct-style-sheets-polyfill: 3.0.4
   date-fns: 2.23.0
+  dompurify: 2.3.4
   lit: 2.0.0
+  marked: 4.0.7
   mobx: 6.3.8
+  prismjs: 1.25.0
 devDependencies:
+  '@types/dompurify': 2.3.2
+  '@types/marked': 4.0.1
+  '@types/prismjs': 1.16.6
   '@vaadin/application-theme-plugin': link:target/plugins/application-theme-plugin
   '@vaadin/build-status-plugin': link:target/plugins/build-status-plugin
   '@vaadin/theme-live-reload-plugin': link:target/plugins/theme-live-reload-plugin
@@ -1482,14 +1488,28 @@ packages:
     dev: true
     resolution:
       integrity: sha512-lR8q/9W7hZpMWweNiAKU7NQerBnzQQLvi8qnTDU/fxItPhtZVMbPV3lbCwjhIlNBe9Bbr5V+KHshvWmVSG9cxQ==
+  /@types/dompurify/2.3.2:
+    dependencies:
+      '@types/trusted-types': 2.0.2
+    dev: true
+    resolution:
+      integrity: sha512-iht/O0jie/hDur39Z1NzjfOT/O9Kn2aWY99aqOn7lwsjSttEoMyGWvZIuAzZy0cNvAZdjmqySp7Z4d3GfBEGQw==
   /@types/estree/0.0.39:
     dev: true
     resolution:
       integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
+  /@types/marked/4.0.1:
+    dev: true
+    resolution:
+      integrity: sha512-ZigEmCWdNUU7IjZEuQ/iaimYdDHWHfTe3kg8ORfKjyGYd9RWumPoOJRQXB0bO+XLkNwzCthW3wUIQtANaEZ1ag==
   /@types/node/16.11.12:
     dev: true
     resolution:
       integrity: sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==
+  /@types/prismjs/1.16.6:
+    dev: true
+    resolution:
+      integrity: sha512-dTvnamRITNqNkqhlBd235kZl3KfVJQQoT5jkXeiWSBK7i4/TLKBNLV0S1wOt8gy4E2TY722KLtdmv2xc6+Wevg==
   /@types/resolve/1.17.1:
     dependencies:
       '@types/node': 16.11.12
@@ -2997,6 +3017,10 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-3MqfYKj2lLzdMSf8ZIZE/V+Zuy+BgD6f164e8K2w7dgnpKArBDerGYpM46IYYcjnkdPNMjPk9A6VFB8+3SKlXQ==
+  /dompurify/2.3.4:
+    dev: false
+    resolution:
+      integrity: sha512-6BVcgOAVFXjI0JTjEvZy901Rghm+7fDQOrNIcxB4+gdhj6Kwp6T9VBhBY/AbagKHJocRkDYGd6wvI+p4/10xtQ==
   /ejs/3.1.6:
     dependencies:
       jake: 10.8.2
@@ -3695,6 +3719,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==
+  /marked/4.0.7:
+    dev: false
+    engines:
+      node: '>= 12'
+    hasBin: true
+    resolution:
+      integrity: sha512-mQrRvV2vRk7DHZsWsYJfAjmBo+lSYPhTJPThaaGpkEfmC+4oefeug2txZniQTieDS0CFpokfVhd7JuS5GtnHhA==
   /merge-stream/2.0.0:
     dev: true
     resolution:
@@ -3837,6 +3868,10 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==
+  /prismjs/1.25.0:
+    dev: false
+    resolution:
+      integrity: sha512-WCjJHl1KEWbnkQom1+SzftbtXMKQoezOCYs5rECqMN+jP+apI7ftoflyqigqzopSO3hMhTEb0mFClA8lkolgEg==
   /punycode/2.1.1:
     dev: true
     engines:
@@ -4555,6 +4590,9 @@ specifiers:
   '@polymer/iron-icon': 3.0.1
   '@polymer/iron-list': 3.1.0
   '@polymer/polymer': 3.2.0
+  '@types/dompurify': ^2.3.2
+  '@types/marked': ^4.0.1
+  '@types/prismjs': ^1.16.6
   '@vaadin/accordion': 22.0.1
   '@vaadin/app-layout': 22.0.1
   '@vaadin/application-theme-plugin': ./target/plugins/application-theme-plugin
@@ -4660,10 +4698,13 @@ specifiers:
   '@vaadin/virtual-list': 22.0.1
   construct-style-sheets-polyfill: 3.0.4
   date-fns: 2.23.0
+  dompurify: ^2.3.4
   glob: 7.1.6
   lit: 2.0.0
+  marked: ^4.0.7
   mkdirp: 1.0.4
   mobx: ^6.3.8
+  prismjs: ^1.25.0
   rollup-plugin-brotli: 3.1.0
   typescript: 4.4.3
   vite: v2.7.0

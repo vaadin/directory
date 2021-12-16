@@ -32,9 +32,10 @@ class SearchStore {
     this.setLoading(true);
     this.setAddons(
       this.addons.concat(
-        await SearchEndpoint.search(this.query, this.page++, this.pageSize)
+        await SearchEndpoint.search(this.query, this.page, this.pageSize)
       )
     );
+    this.setPage(this.page + 1);
     this.setLoading(false);
   }
 
@@ -45,6 +46,10 @@ class SearchStore {
 
   setAddons(addons: SearchResult[]) {
     this.addons = addons;
+  }
+
+  setPage(page: number) {
+    this.page = page;
   }
 
   setQuery(query: string) {

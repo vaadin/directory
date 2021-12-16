@@ -18,17 +18,12 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "frontend",
     "paths": {
-      "Frontend/*": [
-        "*"
-      ]
+      "Frontend/*": ["*"]
     }
   },
-  "include": [
-    "frontend/**/*.ts",
-    "frontend/index.js",
-    "types.d.ts"
-  ],
+  "include": ["frontend/**/*.ts", "frontend/index.js", "types.d.ts"],
   "exclude": []
 }

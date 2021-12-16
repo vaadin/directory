@@ -4,3 +4,7 @@
 * {
   box-sizing: border-box;
 }
+
+pre {
+  padding: var(--lumo-space-m);
+}

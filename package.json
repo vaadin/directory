@@ -107,10 +107,16 @@
     "@vaadin/virtual-list": "22.0.1",
     "construct-style-sheets-polyfill": "3.0.4",
     "date-fns": "2.23.0",
+    "dompurify": "^2.3.4",
     "lit": "2.0.0",
-    "mobx": "^6.3.8"
+    "marked": "^4.0.7",
+    "mobx": "^6.3.8",
+    "prismjs": "^1.25.0"
   },
   "devDependencies": {
+    "@types/dompurify": "^2.3.2",
+    "@types/marked": "^4.0.1",
+    "@types/prismjs": "^1.16.6",
     "@vaadin/application-theme-plugin": "./target/plugins/application-theme-plugin",
     "@vaadin/build-status-plugin": "./target/plugins/build-status-plugin",
     "@vaadin/theme-live-reload-plugin": "./target/plugins/theme-live-reload-plugin",
@@ -243,6 +249,6 @@
       "workbox-core": "6.2.0",
       "workbox-precaching": "6.2.0"
     },
-    "hash": "df3a621afb73c55dff4e073a2586474168d7a1d0975e6c30473eb90447308241"
+    "hash": "8b6edd9f12731c5acbdcd3ad04ea586f58cc901e860ad419660bcd64d7e7846e"
   }
 }
