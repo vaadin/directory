@@ -9,9 +9,16 @@ import org.vaadin.directory.Util;
 
 public class Addon {
 
+    public static final String IMAGE_LOCATION_URL = "https://static.vaadin.com/directory/";
+    public static final String DEFAULT_ICON_URL = "https://vaadin.com/images/directory/addon-icon-default.png";
+
     @NotBlank
     @Nonnull
     private String name;
+
+    @NotBlank
+    @Nonnull
+    private String icon;
 
     @NotBlank
     @Nonnull
@@ -35,6 +42,9 @@ public class Addon {
 
     public Addon(Component component) {
         this.name = component.getDisplayName();
+        this.icon = component.getIcon() != null ?
+                Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName() :
+                Addon.DEFAULT_ICON_URL;
         this.summary = component.getSummary();
         this.description = component.getDescription();
         this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
@@ -50,6 +60,10 @@ public class Addon {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getIcon() { return icon; }
+
+    public void setIcon(String icon) { this.icon = icon;}
 
     public String getSummary() {
         return summary;

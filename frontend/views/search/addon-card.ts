@@ -29,7 +29,7 @@ export class AddonCard extends View {
     }
     return html`
         <div class="flex justify-between">
-          <img style="width: 64px; height: 64px" src="https://vaadin.com/static/portrait/initials/a" alt=${
+          <img style="width: 64px; height: 64px" src="${this.addon.icon}" alt=${
             this.addon.name
           } />
           <div class="flex flex-row-reverse gap-xs flex-wrap">
