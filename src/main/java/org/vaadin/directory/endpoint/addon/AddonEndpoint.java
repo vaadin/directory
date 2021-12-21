@@ -6,6 +6,7 @@ import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @Endpoint
 @AnonymousAllowed
@@ -17,6 +18,7 @@ public class AddonEndpoint {
         this.service = service;
     }
 
+    @Transactional(readOnly = true)
     public Addon getAddon(String urlIdentifier) {
         Optional<Component> maybeComponent = service.getComponentByUrl(urlIdentifier);
         return maybeComponent.isPresent() ? new Addon(maybeComponent.get()) : null;
