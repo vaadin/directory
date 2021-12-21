@@ -54,7 +54,7 @@ class SearchStore {
 
   setQuery(query: string) {
     this.query = query;
-    this.page = 0;
+    this.page = 1;
     this.addons = [];
     this.writeQueryToURL();
     this.fetchPage();
