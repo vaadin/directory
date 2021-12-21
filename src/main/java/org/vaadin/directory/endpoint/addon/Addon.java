@@ -2,8 +2,10 @@ package org.vaadin.directory.endpoint.addon;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.directory.entity.directory.Component;
+import com.vaadin.directory.entity.directory.ComponentVersion;
 import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.Util;
 
@@ -30,6 +32,9 @@ public class Addon {
     @Nonnull
     private  List<@Nonnull String> tags;
 
+    @Nonnull
+    private  List<@Nonnull String> versions;
+
     @NotBlank
     @Nonnull
     private LocalDate lastUpdated;
@@ -51,6 +56,10 @@ public class Addon {
         this.author = "User " + component.getOwner().getId().toString();
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
         this.tags = Util.tagsToStrings(component.getTagGroups());
+        this.versions = component.getVersions().stream()
+                .filter(ComponentVersion::getAvailable)
+                .map(ComponentVersion::getName)
+                .collect(Collectors.toList());
     }
 
     public String getName() {
@@ -84,6 +93,10 @@ public class Addon {
     public List<String> getTags() { return tags; }
 
     public void setTags(List<String> tags) { this.tags = tags;}
+
+    public List<String> getVersions() { return versions; }
+
+    public void setVersions(List<String> versions) { this.versions = versions;}
 
     public LocalDate getLastUpdated() {
         return lastUpdated;
