@@ -48,7 +48,9 @@ public class Addon {
     public Addon(Component component) {
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
-                Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName() :
+                (component.getIcon().getLocalFileName().startsWith("http") ?
+                        component.getIcon().getLocalFileName() :
+                        Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName()):
                 Addon.DEFAULT_ICON_URL;
         this.summary = component.getSummary();
         this.description = component.getDescription();
