@@ -3,6 +3,7 @@ import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
+import '@vaadin/vaadin-lumo-styles/badge';
 
 @customElement('addon-card')
 export class AddonCard extends View {
@@ -38,7 +39,7 @@ export class AddonCard extends View {
                 html`
                   <vaadin-button
                     @click=${() => this.addTagFilter(tag)}
-                    theme="small">
+                    theme="badge pill">
                     ${tag}
                   </vaadin-button>
                 `
