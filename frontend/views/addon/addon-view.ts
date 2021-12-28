@@ -98,7 +98,13 @@ export class AddonView extends View implements BeforeEnterObserver {
                             <vaadin-list-box>
                               ${this.addon?.versions.map(
                                 (v) => html`
-                                <vaadin-item value="${v.name}" label="${v.name}">${v.name} (${v.date},  ${v.maturity})</vaadin-item>
+                                <vaadin-item value="${v.name}" label="${v.name}">
+                                <div style="display: flex; align-items: center;">
+                                <span class="font-bold m-xs">${v.name}</span>
+                                <span class="text-xs font-light">${v.date},
+                                <span class="${v.maturity == 'STABLE'? 'bg-success text-success-contrast' : 'bg-base'} text-2xs font-light p-xs rounded-m">${v.maturity}</span>
+                                </div>
+                                </vaadin-item>
                                 `
                               )}
                             </vaadin-list-box>
