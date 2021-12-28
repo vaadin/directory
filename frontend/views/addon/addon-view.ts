@@ -21,6 +21,10 @@ import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-css';
+import '@vaadin/icon';
+import '@vaadin/icons';
+
+const OFFICIAL_TAG = "Sponsored";
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
@@ -63,10 +67,11 @@ export class AddonView extends View implements BeforeEnterObserver {
                 ${this.addon.tags.map(
                   (tag) =>
                     html`
-                      <vaadin-button
+                      <vaadin-button style="cursor:pointer;"
                         @click=${() => this.searchByTag(tag)}
                         theme="badge pill">
                         ${tag}
+                        ${OFFICIAL_TAG === tag ? html`<span class="m-xs"><vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon></span>`:''}
                       </vaadin-button>
                     `
                 )}

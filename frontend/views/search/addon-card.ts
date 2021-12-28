@@ -4,9 +4,15 @@ import { customElement, property } from 'lit/decorators.js';
 import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import '@vaadin/vaadin-lumo-styles/badge';
+import '@vaadin/icon';
+import '@vaadin/icons';
+
+const OFFICIAL_TAG = "Sponsored";
 
 @customElement('addon-card')
 export class AddonCard extends View {
+
+
   @property({ attribute: false })
   addon?: SearchResult;
 
@@ -37,10 +43,11 @@ export class AddonCard extends View {
             ${this.addon.tags.map(
               (tag) =>
                 html`
-                  <vaadin-button
+                  <vaadin-button style="cursor:pointer;"
                     @click=${() => this.addTagFilter(tag)}
                     theme="badge pill">
                     ${tag}
+                    ${OFFICIAL_TAG === tag ? html`<span class="m-xs"><vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon></span>`:''}
                   </vaadin-button>
                 `
             )}
