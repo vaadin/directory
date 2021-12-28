@@ -36,6 +36,9 @@ public class Addon {
     private  List<@Nonnull AddonVersion> versions;
 
     @Nonnull
+    private  List<@Nonnull Link> links;
+
+    @Nonnull
     private LocalDate lastUpdated;
 
     private @Nonnull String author;
@@ -60,6 +63,10 @@ public class Addon {
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
                 .map(cv -> new AddonVersion(cv))
+                .collect(Collectors.toList());
+        //TODO: Generate icons
+        this.links = component.getLinks().stream()
+                .map(l -> new Link(l.getTitle(), l.getUrl(), null))
                 .collect(Collectors.toList());
     }
 
@@ -98,6 +105,10 @@ public class Addon {
     public List<AddonVersion> getVersions() { return versions; }
 
     public void setVersions(List<AddonVersion> versions) { this.versions = versions;}
+
+    public List<Link> getLinks() { return links; }
+
+    public void setLinks(List<Link> links) { this.links = links; }
 
     public LocalDate getLastUpdated() {
         return lastUpdated;

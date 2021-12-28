@@ -82,7 +82,13 @@ export class AddonView extends View implements BeforeEnterObserver {
                 )}
             </div>
             <p>${this.addon.summary}</p>
+            <p>
             ${unsafeHTML(DomPurify.sanitize(marked.parse(this.addon.description)))}
+            </p>
+            <h2>Links</h2>
+            <ul>
+            ${this.addon.links.map((l) => html`<li><a href="${l.href}">${l.name}</a></li> `)}
+            </ul>
           </div>
           <div class="bg-primary-10 shadow-xs row-span-2 m-s p-m">
               <h3>Install</h3>
