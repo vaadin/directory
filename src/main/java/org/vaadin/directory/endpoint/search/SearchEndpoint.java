@@ -44,8 +44,14 @@ public class SearchEndpoint {
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
         if (qp.getAuthor().isPresent()) {
-            // TODO: We need to get the user names somehow. Not in current model.
-            // userService.findByFirstNameAndLastName(qp.getAuthor().get(),"");
+            // TODO: We need to get the user names somehow. Not in current DB model.
+            String user = qp.getAuthor().get();
+            if (qp.isAuthorMe()) {
+                user = "User_16"; // TODO: We should get this from login
+            }
+            long id = user.startsWith("User_") ? Long.parseLong(user.substring(5)) : -1;
+            ComponentDirectoryUser du = userService.findById(id);
+            owners = du != null? List.of(du) : List.of();
         }
 
         // Resolve tag groups
