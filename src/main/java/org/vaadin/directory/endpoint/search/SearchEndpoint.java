@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import com.vaadin.directory.backend.SortFilter;
 import com.vaadin.directory.backend.service.ComponentDirectoryUserService;
 import com.vaadin.directory.backend.service.ComponentService;
+import com.vaadin.directory.backend.service.TagGroupService;
 import com.vaadin.directory.entity.directory.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
 import com.vaadin.fusion.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 @Endpoint
 @AnonymousAllowed
@@ -19,10 +21,13 @@ public class SearchEndpoint {
 
     private ComponentDirectoryUserService userService;
     private ComponentService service;
+    private TagGroupService tagService;
 
     public SearchEndpoint(@Autowired ComponentService service,
+                          @Autowired TagGroupService tagService,
                           @Autowired ComponentDirectoryUserService userService) {
         this.service = service;
+        this.tagService = tagService;
         this.userService = userService;
     }
 
@@ -32,7 +37,7 @@ public class SearchEndpoint {
                 .map(c -> new SearchResult(c))
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull SearchResult> search(
             String searchString, int page, int pageSize) {
         QueryParser qp = QueryParser.parse(searchString);
@@ -42,7 +47,9 @@ public class SearchEndpoint {
             // TODO: We need to get the user names somehow. Not in current model.
             // userService.findByFirstNameAndLastName(qp.getAuthor().get(),"");
         }
-        List<TagGroup> tagGroups = List.of(); // All tags
+
+        // Resolve tag groups
+        List<TagGroup> tagGroups = tagService.getTagGroups(qp.getTagGroups());
         ComponentFramework framework = null;  // All frameworks
         Set<ComponentFrameworkVersion> versions = Set.of();  // All versions
         return service
