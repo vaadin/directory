@@ -33,9 +33,8 @@ public class Addon {
     private  List<@Nonnull String> tags;
 
     @Nonnull
-    private  List<@Nonnull String> versions;
+    private  List<@Nonnull AddonVersion> versions;
 
-    @NotBlank
     @Nonnull
     private LocalDate lastUpdated;
 
@@ -60,7 +59,7 @@ public class Addon {
         this.tags = Util.tagsToStrings(component.getTagGroups());
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
-                .map(ComponentVersion::getName)
+                .map(cv -> new AddonVersion(cv))
                 .collect(Collectors.toList());
     }
 
@@ -96,9 +95,9 @@ public class Addon {
 
     public void setTags(List<String> tags) { this.tags = tags;}
 
-    public List<String> getVersions() { return versions; }
+    public List<AddonVersion> getVersions() { return versions; }
 
-    public void setVersions(List<String> versions) { this.versions = versions;}
+    public void setVersions(List<AddonVersion> versions) { this.versions = versions;}
 
     public LocalDate getLastUpdated() {
         return lastUpdated;
