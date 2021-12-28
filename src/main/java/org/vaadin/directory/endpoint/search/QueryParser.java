@@ -1,12 +1,9 @@
 package org.vaadin.directory.endpoint.search;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.vaadin.directory.entity.directory.ComponentFramework;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
 import com.vaadin.directory.entity.directory.TagGroup;
@@ -35,9 +32,7 @@ public class QueryParser {
         return isAuthorMe;
     }
 
-    public List<String> getTagGroups() {
-        return tagGroups;
-    }
+    public List<String> getTagGroups() { return tagGroups; }
 
     public Optional<String> getAuthor() {
         return author;
@@ -73,7 +68,11 @@ public class QueryParser {
                 .collect(Collectors.toList());
         Map<String, List<String>> searchTokens = tokenWords.stream().collect(Collectors.toMap(
                 s -> s.split(":")[0],
-                s -> Arrays.stream(s.split(":")[1].split(",")).collect(Collectors.toList())));
+                s -> Arrays.stream(s.split(":")[1].split(",")).collect(Collectors.toList()),
+                (tagValues1,tagValues2) -> Stream.of(tagValues1, tagValues2)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
+                ));
 
         List<String> tagGroupParams = searchTokens.get(Token.TAG.getToken());
         tagGroups =
