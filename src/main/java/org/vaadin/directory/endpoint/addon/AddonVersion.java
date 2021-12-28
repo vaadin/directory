@@ -8,6 +8,7 @@ import org.vaadin.directory.Util;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class AddonVersion {
         this.browserCompatibility = cv.getBrowserIndependent() ? List.of("Browser Independent") :
                     cv.getSupportedBrowsers().stream().map(b -> b.getName())
                             .collect(Collectors.toList());
-        this.installs = new HashMap();
+        this.installs = new LinkedHashMap<>();
         if (cv.isMavenDeployed()) {
             this.installs.put("Maven", PomXmlUtil.getDependencyPomSnippet(cv));
         }
