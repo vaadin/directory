@@ -79,7 +79,7 @@ public class QueryParser {
                 authorParams != null ? authorParams : searchTokens.get(Token.USER.getToken());
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.AUTHOR.getToken());
-        author = authorParams != null && authorParams.size() == 1 ? Optional.of(authorParams.get(0))
+        author = authorParams != null && authorParams.size() >= 1 ? Optional.of(authorParams.get(0))
                 : Optional.empty();
         author.ifPresent(authorName -> isAuthorMe = authorName.equalsIgnoreCase(AUTHOR_SELF_TOKEN));
 
