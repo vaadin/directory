@@ -34,13 +34,9 @@ public class QueryParser {
 
     public List<String> getTagGroups() { return tagGroups; }
 
-    public Optional<String> getAuthor() {
-        return author;
-    }
+    public Optional<String> getAuthor() { return author; }
 
-    public List<String> getKeywords() {
-        return keywords;
-    }
+    public List<String> getKeywords() { return keywords; }
 
     /**
      * Parses the search string and updates the search field state.
