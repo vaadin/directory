@@ -1,5 +1,6 @@
 dependencies:
   '@adobe/lit-mobx': 2.0.0_lit@2.0.0+mobx@6.3.8
+  '@fortawesome/fontawesome-free': 5.15.4
   '@polymer/iron-icon': 3.0.1
   '@polymer/iron-list': 3.1.0
   '@polymer/polymer': 3.2.0
@@ -1319,6 +1320,13 @@ packages:
       node: '>=6.9.0'
     resolution:
       integrity: sha512-PJgg/k3SdLsGb3hhisFvtLOw5ts113klrpLuIPtCJIU+BB24fqq6lf8RWqKJEjzqXR9AEH1rIb5XTqwBHB+kQg==
+  /@fortawesome/fontawesome-free/5.15.4:
+    dev: false
+    engines:
+      node: '>=6'
+    requiresBuild: true
+    resolution:
+      integrity: sha512-eYm8vijH/hpzr/6/1CJ/V/Eb1xQFW2nnUKArb3z+yUWv7HTwj6M7SP957oMjfZjAHU6qpoNc2wQvIxBLWYa/Jg==
   /@lit/reactive-element/1.0.2:
     dev: false
     resolution:
@@ -4604,6 +4612,7 @@ packages:
       integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 specifiers:
   '@adobe/lit-mobx': ^2.0.0
+  '@fortawesome/fontawesome-free': ^5.15.4
   '@polymer/iron-icon': 3.0.1
   '@polymer/iron-list': 3.1.0
   '@polymer/polymer': 3.2.0

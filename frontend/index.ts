@@ -2,6 +2,10 @@ import { Router } from '@vaadin/router';
 import { routes } from './routes';
 import { appStore } from './stores/app-store';
 
+import '@fortawesome/fontawesome-free/js/brands.js';
+import '@fortawesome/fontawesome-free/js/solid.js';
+import '@fortawesome/fontawesome-free/js/fontawesome.js';
+
 export const router = new Router(document.querySelector('#outlet'));
 
 router.setRoutes(routes);
