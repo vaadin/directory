@@ -13,8 +13,8 @@ addon-view {
   flex-direction: column;
   gap: var(--lumo-space-2xs);
   padding: var(--lumo-space-m);
+  min-width: 300px;
   max-width: 300px;
-  max-width: 0.9wv;
   margin: var(--lumo-space-m);
   background-color: var(--lumo-primary-color-10pct);
   box-shadow: var(--lumo-box-shadow-s);
