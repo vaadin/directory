@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
+
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentVersion;
+import com.vaadin.directory.entity.directory.HighlightScreenShot;
+import com.vaadin.directory.entity.directory.HighlightVideo;
 import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.Util;
 
@@ -28,6 +31,12 @@ public class Addon {
 
     @Nonnull
     private String description;
+
+    @Nonnull
+    private  List<MediaHighlight> mediaHighlights;
+
+    @Nonnull
+    private Long downloadCount;
 
     @Nonnull
     private  List<@Nonnull String> tags;
@@ -56,6 +65,7 @@ public class Addon {
                 Addon.DEFAULT_ICON_URL;
         this.summary = component.getSummary();
         this.description = component.getDescription();
+        this.downloadCount = component.getDownloadCountAsLong();
         this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
         this.author = "User " + component.getOwner().getId().toString();
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
@@ -67,6 +77,13 @@ public class Addon {
         //TODO: Generate icons
         this.links = component.getLinks().stream()
                 .map(l -> new Link(l.getTitle(), l.getUrl(), null))
+                .collect(Collectors.toList());
+
+        this.mediaHighlights = component.getHighlights().stream()
+                .filter(highlight ->
+                        highlight instanceof HighlightScreenShot
+                                || highlight instanceof HighlightVideo)
+                .map(highlight -> new MediaHighlight(highlight))
                 .collect(Collectors.toList());
     }
 
@@ -94,9 +111,15 @@ public class Addon {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
+
+    public List<MediaHighlight> getMediaHighlights() { return mediaHighlights; }
+
+    public void setMediaHighlights(List<MediaHighlight> mediaHighlights) { this.mediaHighlights = mediaHighlights; }
+
+    public Long getDownloadCount() { return downloadCount; }
+
+    public void setDownloadCount(Long downloadCount) { this.downloadCount = downloadCount; }
 
     public List<String> getTags() { return tags; }
 
