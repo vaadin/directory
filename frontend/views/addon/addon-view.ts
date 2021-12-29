@@ -143,7 +143,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               )}"></vaadin-select>
             <br /><a
               class="text-xs"
-              href="${location.href + this.version?.name}"
+              href="${location.href + '/' + this.version?.name}"
               >Link to this version</a
             >
           </p>
