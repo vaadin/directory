@@ -78,6 +78,7 @@ public class Addon {
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
                 .map(cv -> new AddonVersion(cv))
+                .sorted((v1,v2) -> v1.getDate().compareTo(v2.getDate()))
                 .collect(Collectors.toList());
         //TODO: Generate icons
         this.links = component.getLinks().stream()

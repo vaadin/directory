@@ -31,46 +31,13 @@ public class AddonVersion {
     private String license;
 
     @Nonnull
-    private List<String> compatibility;
+    private List<@Nonnull String> compatibility;
 
     @Nonnull
-    private List<String> browserCompatibility;
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setMaturity(String maturity) {
-        this.maturity = maturity;
-    }
-
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
-    public void setCompatibility(List<String> compatibility) {
-        this.compatibility = compatibility;
-    }
-
-    public void setBrowserCompatibility(List<String> browserCompatibility) {
-        this.browserCompatibility = browserCompatibility;
-    }
-
-    public void setInstalls(Map<String, String> installs) {
-        this.installs = installs;
-    }
-
-    public void setReleaseNotes(String releaseNotes) {
-        this.releaseNotes = releaseNotes;
-    }
+    private List<@Nonnull String> browserCompatibility;
 
     @Nonnull
     private Map<String, String> installs;
-
 
     @NotBlank
     @Nonnull
@@ -84,7 +51,7 @@ public class AddonVersion {
         this.maturity = cv.getMaturity().name();
         // TODO: This needs to be more sophisticated for some addons
         this.license = cv.getLicenses().iterator().next().getName();
-        this.compatibility = cv.getFrameworkVersions().stream()
+        this.compatibility = cv.getFrameworkVersions().stream().sorted()
                 .map(v -> v.getFramework().getName()+" "+v.getVersion())
                 .collect(Collectors.toList());
         this.browserCompatibility = cv.getBrowserIndependent() ? List.of("Browser Independent") :
@@ -118,11 +85,11 @@ public class AddonVersion {
         return license;
     }
 
-    public List<String> getCompatibility() {
+    public List<@Nonnull String> getCompatibility() {
         return compatibility;
     }
 
-    public List<String> getBrowserCompatibility() {
+    public List<@Nonnull String> getBrowserCompatibility() {
         return browserCompatibility;
     }
 
@@ -132,6 +99,36 @@ public class AddonVersion {
 
     public String getReleaseNotes() {
         return releaseNotes;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setMaturity(String maturity) {
+        this.maturity = maturity;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
+    public void setCompatibility(List<String> compatibility) {
+        this.compatibility = compatibility;
+    }
+
+    public void setBrowserCompatibility(List<String> browserCompatibility) { this.browserCompatibility = browserCompatibility; }
+
+    public void setInstalls(Map<String, String> installs) {
+        this.installs = installs;
+    }
+
+    public void setReleaseNotes(String releaseNotes) {
+        this.releaseNotes = releaseNotes;
     }
 
 }
