@@ -23,8 +23,9 @@ public class QueryParser {
     private List<String> tagGroups = List.of();
     private Optional<String> author = Optional.empty();
     private List<String> keywords = List.of();
-    private ComponentFramework framework;
-    private Set<ComponentFrameworkVersion> frameworkVersions = Collections.emptySet();
+    private String framework;
+
+    private Set<String> frameworkVersions = Collections.emptySet();
     private boolean isAuthorMe = false;
 
 
@@ -37,6 +38,10 @@ public class QueryParser {
     public Optional<String> getAuthor() { return author; }
 
     public List<String> getKeywords() { return keywords; }
+
+    public String getFramework() { return framework; }
+
+    public Set<String> getFrameworkVersions() { return frameworkVersions; }
 
     /**
      * Parses the search string and updates the search field state.
@@ -83,13 +88,19 @@ public class QueryParser {
                 : Optional.empty();
         author.ifPresent(authorName -> isAuthorMe = authorName.equalsIgnoreCase(AUTHOR_SELF_TOKEN));
 
+        List<String> frameworkParams =
+          searchTokens.get(Token.FRAMEWORK.getToken());
+        framework = frameworkParams != null && frameworkParams.size() >= 1 ?
+          frameworkParams.get(0) : null;
+
+        List<String> frameworkVersionParams =
+                searchTokens.get(Token.FRAMEWORK_VERSION.getToken());
+        frameworkVersions = frameworkVersionParams != null && frameworkVersionParams.size() >= 1 ?
+                Set.copyOf(frameworkVersionParams) : Set.of();
+
         /**
          * TODO: Disabled framework parsing for now. Re-enable if needed by new search
-         * functionality. List<String> keywordFramework =
-         * searchTokens.get(Token.FRAMEWORK.getToken()); framework = keywordFramework != null &&
-         * keywordFramework.size() == 1 ?
-         * componentFrameworkRepository.findByName(keywordFramework.get(0)) : null;
-         * 
+         * functionality.
          * frameworkVersions = new LinkedHashSet<>(); List<String> frameworkVersionNames =
          * searchTokens.get(Token.FRAMEWORK_VERSION.getToken());
          * 
@@ -115,7 +126,7 @@ public class QueryParser {
      * Enumeration of tokens supported by query parameters
      */
     public enum Token {
-        FRAMEWORK("framework"), FRAMEWORK_VERSION("framework_version"), AUTHOR("author"), USER(
+        FRAMEWORK("fw"), FRAMEWORK_VERSION("v"), AUTHOR("author"), USER(
                 "user"), OWNER("owner"), TAG("tag");
 
         private String token;
