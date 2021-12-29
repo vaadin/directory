@@ -98,7 +98,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           <highlight-carousel .addon=${this.addon}></highlight-carousel>
           <p>
             ${unsafeHTML(
-              DomPurify.sanitize(marked.parse(this.addon.description))
+              DomPurify.sanitize(marked.parse(this.addon.description || ""))
             )}
           </p>
           <h2>Links</h2>
@@ -120,21 +120,21 @@ export class AddonView extends View implements BeforeEnterObserver {
                   render(
                     html`
                       <vaadin-list-box>
-                        ${this.addon?.versions.map(
+                        ${this.addon?.versions.sort(this.versionOrder).map(
                           (v) => html`
                                 <vaadin-item value="${v.name}" label="${
                             v.name
                           }">
                                 <div style="display: flex; align-items: center;">
-                                <span class="font-bold m-xs">${v.name}</span>
-                                <span class="text-xs font-light">${v.date},
+                                <span class="font-bold">${v.name}</span>
                                 <span class="${
                                   v.maturity == 'STABLE'
                                     ? 'bg-success text-success-contrast'
                                     : 'bg-base'
-                                } text-2xs font-light p-xs rounded-m">${
-                            v.maturity
-                          }</span>
+                                } text-2xs font-light m-xs p-xs rounded-l">
+                                ${v.maturity}
+                                 </span>
+                                 <span class="text-2xs font-light"> ${v.date},
                                 </div>
                                 </vaadin-item>
                                 `
@@ -158,14 +158,14 @@ export class AddonView extends View implements BeforeEnterObserver {
           </p>
           <p>
             ${unsafeHTML(
-              DomPurify.sanitize(marked.parse(this.version.releaseNotes))
+              DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
             )}
           </p>
           <hr />
           <p class="text-s">
-            ${this.version?.date} <br />
-            ${this.version?.maturity}<br />
-            ${this.version?.license}<br />
+            <span>Released: ${this.version?.date}</span> <br />
+            <span>Maturity: ${this.version?.maturity}</span><br />
+            <span>License: ${this.version?.license}</span><br />
           </p>
           <hr />
           <h3>Framework support</h3>
@@ -173,6 +173,8 @@ export class AddonView extends View implements BeforeEnterObserver {
             ${this.version?.compatibility.map(
               (compat) => html`${compat}<br />`
             )}
+            ${this.getAlsoSupported(this.addon, this.version)}
+
           </p>
           <hr />
           <h3>Browser compatibility</h3>
@@ -184,6 +186,35 @@ export class AddonView extends View implements BeforeEnterObserver {
         </div>
       </div>
     `;
+  }
+
+  versionOrder(a: AddonVersion, b: AddonVersion): number {
+    return a.date < b.date ? 1:-1;
+  }
+
+  getLatestVersion(): AddonVersion | undefined {
+    return this.addon?.versions.sort(this.versionOrder)[0];
+  }
+
+  getAlsoSupported(addon: Addon, currentVersion: AddonVersion) {
+    // Collect supported data
+    const supportedByOthers = new Map<string, string>();
+    addon.versions.reverse().forEach(v => // reverse to keep the latest one
+      v.compatibility.forEach((c:string) => supportedByOthers.set(c, v.name))
+    );
+    // Delete versions supported byt this
+    currentVersion.compatibility
+      .forEach(c => supportedByOthers.delete(c));
+
+    return html`
+        <p>
+        <b>Also supported:</b><br />
+        ${Array.from(supportedByOthers.keys()).reverse().map(
+          (c) =>
+          html`${c} <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a><br />`
+        )}
+        </p>
+       `;
   }
 
   getHighlightLinks() {
@@ -212,9 +243,17 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   async onBeforeEnter(location: RouterLocation) {
     const urlIdentifier = location.params.addon as string;
+    const urlVersion = location.params.version as string;
     this.addon = await getAddon(urlIdentifier);
     if (this.addon) {
-      this.version = this.addon.versions[0];
+      if (urlVersion) {
+        const found = this.addon?.versions.find(
+          (v: AddonVersion) => v.name == urlVersion
+        );
+        this.version = found ? found : this.getLatestVersion();
+      } else {
+        this.version = this.getLatestVersion();
+      }
       appStore.currentViewTitle = this.addon.name;
     }
   }
@@ -223,14 +262,23 @@ export class AddonView extends View implements BeforeEnterObserver {
     window.location.href = '../?q=tag:' + tag;
   }
 
+  searchByVersion(v: string) {
+    window.location.href = '../?q=v:' + v;
+  }
+
+  searchByUser(user: string) {
+    window.location.href = '../?q=author:' + user;
+  }
+
+
   versionChange(e: CustomEvent) {
     if (e && e.detail && e.detail && e.detail.value) {
       const found = this.addon?.versions.find(
         (v: AddonVersion) => v.name == e.detail.value
       );
-      this.version = found ? found : this.addon?.versions[0];
+      this.version = found ? found : this.getLatestVersion();
     } else {
-      this.version = this.addon?.versions[0];
+      this.version = this.getLatestVersion();
     }
   }
 }
