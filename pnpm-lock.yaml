@@ -105,6 +105,7 @@ dependencies:
   construct-style-sheets-polyfill: 3.0.4
   date-fns: 2.23.0
   dompurify: 2.3.4
+  keen-slider: 6.6.2
   lit: 2.0.0
   marked: 4.0.7
   mobx: 6.3.8
@@ -3662,6 +3663,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-PNYZIdMjVIvVgDSYKTT63Y+KZ6IZvGRNNWcxwD+GNnUz1MKPfv30J8ueCjdwcN0nDx2SlshgyB7Oy0epAzVRRg==
+  /keen-slider/6.6.2:
+    dev: false
+    resolution:
+      integrity: sha512-ddvhuHIE/QH0neEBFnL/IdLB6GBjeuOLttwusZ3oaOvj8Ut8GzHkaVNuP+6Ur8CO/0pcEIYEEo4BpBzo39rsPw==
   /leven/3.1.0:
     dev: true
     engines:
@@ -4712,6 +4717,7 @@ specifiers:
   date-fns: 2.23.0
   dompurify: ^2.3.4
   glob: 7.1.6
+  keen-slider: ^6.6.2
   lit: 2.0.0
   marked: ^4.0.7
   mkdirp: 1.0.4

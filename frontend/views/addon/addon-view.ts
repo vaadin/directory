@@ -1,4 +1,5 @@
 import './install-tabsheet';
+import './highlight-carousel';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
@@ -58,7 +59,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     return html`
       <div class="flex gap-l">
-        <div class="flex flex-col gap-xs flex-wrap">
+        <div class="flex flex-col flex-wrap">
           <img style="width: 128px; height: 128px" src="${this.addon.icon}">
             <h1>${this.addon.name}</h1>
             <span class="text-m">${this.addon.rating > 0 ?
@@ -82,6 +83,7 @@ export class AddonView extends View implements BeforeEnterObserver {
                 )}
             </div>
             <p>${this.addon.summary}</p>
+            <highlight-carousel .addon=${this.addon}></highlight-carousel>
             <p>
             ${unsafeHTML(DomPurify.sanitize(marked.parse(this.addon.description)))}
             </p>
@@ -90,7 +92,7 @@ export class AddonView extends View implements BeforeEnterObserver {
             ${this.addon.links.map((l) => html`<li><a href="${l.href}">${l.name}</a></li> `)}
             </ul>
           </div>
-          <div class="bg-primary-10 shadow-xs row-span-2 m-s p-m">
+          <div class="side-panel">
               <h3>Install</h3>
               <p>
                   <vaadin-select
