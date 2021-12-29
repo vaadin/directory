@@ -19,6 +19,10 @@ public class Addon {
 
     @NotBlank
     @Nonnull
+    private String urlIdentifier;
+
+    @NotBlank
+    @Nonnull
     private String name;
 
     @NotBlank
@@ -57,6 +61,7 @@ public class Addon {
     public Addon() {}
 
     public Addon(Component component) {
+        this.urlIdentifier = component.getUrlIdentifier();
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
                 (component.getIcon().getLocalFileName().startsWith("http") ?
@@ -86,6 +91,10 @@ public class Addon {
                 .map(highlight -> new MediaHighlight(highlight))
                 .collect(Collectors.toList());
     }
+
+    public String getUrlIdentifier() { return urlIdentifier; }
+
+    public void setUrlIdentifier(String urlIdentifier) { this.urlIdentifier = urlIdentifier; }
 
     public String getName() {
         return name;
