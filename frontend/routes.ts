@@ -14,12 +14,12 @@ export const routes: ViewRoute[] = [
     title: 'Search',
   },
   {
-    path: 'addon/:addon',
+    path: 'addon/:addon/:version?',
     component: 'addon-view',
     title: 'Addon',
   },
   {
-    path: 'component/:addon',
+    path: 'component/:addon/:version?',
     component: 'addon-view',
     title: 'Addon',
   },

@@ -25,11 +25,13 @@ import 'prismjs/components/prism-css';
 import '@vaadin/icon';
 import '@vaadin/icons';
 import { appStore } from 'Frontend/stores/app-store';
+import { router } from '../../index';
 
 const OFFICIAL_TAG = 'Sponsored';
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
+
   @state()
   private addon?: Addon;
 
@@ -144,7 +146,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               )}"></vaadin-select>
             <br /><a
               class="text-xs"
-              href="${location.href + '/' + this.version?.name}"
+              href="${router.urlForPath('component/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
               >Link to this version</a
             >
           </p>
