@@ -26,14 +26,19 @@ export class SearchView extends View {
           Search official and community add-ons and share your own to help
           others.
         </p>
+        <p>
+          Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
+        </p>
       </div>
       <h2>Search for add-ons</h2>
       <vaadin-text-field
+        style="min-width: 400px; max-width: 640px;"
         placeholder="Try e.g. 'upload' or 'icons'"
         .value=${searchStore.query}
         @change=${this.updateQuery}
         clear-button-visible>
       </vaadin-text-field>
+      <div>Found total <b>1842</b> add-ons. <i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or <a href="?q=author%3Ame">author:me</a></i></div>
       <div class="addons-grid" @filter-added=${this.filterAdded}>
         ${searchStore.addons.map(
           (addon) => html` <addon-card .addon=${addon}></addon-card> `
