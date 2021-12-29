@@ -9,9 +9,14 @@ import { customElement } from 'lit/decorators.js';
 import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
+import { appStore } from 'Frontend/stores/app-store';
 
 @customElement('search-view')
 export class SearchView extends View {
+  constructor() {
+    super();
+    appStore.currentViewTitle = 'Search';
+  }
   render() {
     return html`
       <div class="flex flex-col items-center">

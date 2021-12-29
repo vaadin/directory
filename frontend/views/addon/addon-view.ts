@@ -24,6 +24,7 @@ import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-css';
 import '@vaadin/icon';
 import '@vaadin/icons';
+import { appStore } from 'Frontend/stores/app-store';
 
 const OFFICIAL_TAG = 'Sponsored';
 
@@ -210,7 +211,10 @@ export class AddonView extends View implements BeforeEnterObserver {
   async onBeforeEnter(location: RouterLocation) {
     const urlIdentifier = location.params.addon as string;
     this.addon = await getAddon(urlIdentifier);
-    if (this.addon) this.version = this.addon.versions[0];
+    if (this.addon) {
+      this.version = this.addon.versions[0];
+      appStore.currentViewTitle = this.addon.name;
+    }
   }
 
   searchByTag(tag: string) {
