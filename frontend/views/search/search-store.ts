@@ -6,6 +6,7 @@ import { Filter } from './Filter';
 class SearchStore {
   // State
   loading = false;
+  featured: SearchResult[] = [];
   addons: SearchResult[] = [];
   query = '';
   private page = 1;
@@ -19,6 +20,7 @@ class SearchStore {
   init() {
     // Only init if we don't already have a state
     if (this.addons.length === 0) {
+      this.fetchFeatured();
       this.readQueryFromURL();
 
       if (!this.loading) {
@@ -39,9 +41,20 @@ class SearchStore {
     this.setLoading(false);
   }
 
+  async fetchFeatured() {
+    this.setFeatured(
+      this.featured.concat(
+        await SearchEndpoint.getFeaturedAddons()
+      )
+    );
+  }
   // Actions
   setLoading(loading: boolean) {
     this.loading = loading;
+  }
+
+  setFeatured(featured: SearchResult[]) {
+    this.featured = featured;
   }
 
   setAddons(addons: SearchResult[]) {

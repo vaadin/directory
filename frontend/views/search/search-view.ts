@@ -30,6 +30,12 @@ export class SearchView extends View {
           Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
         </p>
       </div>
+      <h2>Featured Add-ons <i class="fa-solid fas fa-award"></i></h2>
+      <div class="featured-list">
+        ${([searchStore.featured[0]]).map(
+          (addon) => html` <addon-card .addon=${addon}></addon-card> `
+        )}
+      </div>
       <h2>Search for add-ons</h2>
       <vaadin-text-field
         style="min-width: 400px; max-width: 640px;"

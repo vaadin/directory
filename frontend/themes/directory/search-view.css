@@ -13,3 +13,16 @@ search-view .addons-grid {
   grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
   gap: var(--lumo-space-l);
 }
+
+search-view .featured-list {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+  gap: var(--lumo-space-m);
+  max-height: 400px;
+  overflow: hidden;
+  border: 1 px solid black;
+}
+
+search-view .featured-list addon-card {
+  margin: 10px; 
+  box-shadow: var(--lumo-box-shadow-s);
+}
