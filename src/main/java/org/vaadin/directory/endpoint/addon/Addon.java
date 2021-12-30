@@ -82,6 +82,7 @@ public class Addon {
                 .collect(Collectors.toList());
         //TODO: Generate icons
         this.links = component.getLinks().stream()
+                .filter(l -> l.getUrl() != null && !l.getUrl().isBlank())
                 .map(l -> new Link(l.getTitle(), l.getUrl(), null))
                 .collect(Collectors.toList());
 
