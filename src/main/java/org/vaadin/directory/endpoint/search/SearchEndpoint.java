@@ -68,6 +68,33 @@ public class SearchEndpoint {
                 .map(c -> new SearchResult(c))
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public @Nonnull List<@Nonnull SearchResult> getFeaturedAddons() {
+        List<TagGroup> tagGroups = tagService.getTagGroups(List.of("Featured"));
+        //TODO: This is a alternative hack for development
+        List<String> keywords = List.of("");
+        if (tagGroups == null || tagGroups.isEmpty()) {
+            keywords = List.of("viritin");
+        }
+        List<ComponentDirectoryUser> owners = List.of();
+        ComponentFramework framework = null;
+        Set<ComponentFrameworkVersion> versions = Set.of();
+        return service
+                .findAllComponentsBySearchCriteria(
+                        List.of(Status.PUBLISHED),
+                        keywords,
+                        tagGroups,
+                        owners,
+                        SortFilter.LAST_UPDATED,
+                        framework,
+                        versions, 
+                        PageRequest.ofSize(3))
+                .stream()
+                .map(c -> new SearchResult(c))
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull SearchResult> search(
             String searchString, int page, int pageSize) {
