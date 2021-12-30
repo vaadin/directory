@@ -134,7 +134,7 @@ export class AddonView extends View implements BeforeEnterObserver {
                                 } text-2xs font-light m-xs p-xs rounded-l">
                                 ${v.maturity}
                                  </span>
-                                 <span class="text-2xs font-light"> ${v.date},
+                                 <span class="text-2xs font-light"> ${v.date}
                                 </div>
                                 </vaadin-item>
                                 `
