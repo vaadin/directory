@@ -5,14 +5,20 @@ import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import '@vaadin/button';
 import './addon-card';
 import { html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
 import { appStore } from 'Frontend/stores/app-store';
+import { AppEndpoint } from 'Frontend/generated/endpoints';
+import VersionInfo from 'Frontend/generated/org/vaadin/directory/endpoint/app/VersionInfo';
 
 @customElement('search-view')
 export class SearchView extends View {
+
+  @property()
+  private versionInfo: string = "(build info)"
+
   constructor() {
     super();
     appStore.currentViewTitle = 'Search';
@@ -20,12 +26,8 @@ export class SearchView extends View {
   render() {
     return html`
       <div class="flex flex-col items-center">
-        <h2 class="uppercase text-xs text-primary">Vaadin directory</h2>
-        <h1>Add-on components and integrations</h1>
-        <p>
-          Search official and community add-ons and share your own to help
-          others.
-        </p>
+        <span id="build-info">${this.versionInfo}</span>
+        <h1>Add-on components and integrations for Vaadin</h1>
         <p>
           Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
         </p>
@@ -64,6 +66,10 @@ export class SearchView extends View {
   firstUpdated() {
     searchStore.init();
     this.setupIntersectionObserver();
+
+    AppEndpoint.getVersionInfo().then(v => {
+      this.versionInfo = v.version +" / " + v.buildTime;
+    });
   }
 
   setupIntersectionObserver() {

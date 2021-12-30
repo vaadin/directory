@@ -75,7 +75,7 @@ public class SearchEndpoint {
         //TODO: This is a alternative hack for development
         List<String> keywords = List.of("");
         if (tagGroups == null || tagGroups.isEmpty()) {
-            keywords = List.of("viritin");
+            keywords = List.of("fluent");
         }
         List<ComponentDirectoryUser> owners = List.of();
         ComponentFramework framework = null;
