@@ -8,6 +8,7 @@ import '@vaadin/icon';
 import '@vaadin/icons';
 
 const OFFICIAL_TAG = "Sponsored";
+const FEATURED_TAG = "Featured";
 
 @customElement('addon-card')
 export class AddonCard extends View {
@@ -40,14 +41,14 @@ export class AddonCard extends View {
             this.addon.name
           } />
           <div class="flex flex-row-reverse gap-xs flex-wrap">
-            ${this.addon.tags.map(
+            ${this.addon.tags.filter(e => FEATURED_TAG !== e).map(
               (tag) =>
                 html`
                   <vaadin-button style="cursor:pointer;"
                     @click=${() => this.addTagFilter(tag)}
                     theme="badge pill">
-                    ${tag}
-                    ${OFFICIAL_TAG === tag ? html`<span class="m-xs"><vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon></span>`:''}
+                    ${OFFICIAL_TAG === tag ? html`${tag} <i class="fa-solid fab fa-vaadin"></i>`:''}
+                    ${OFFICIAL_TAG !== tag ? html`${tag}`:''}
                   </vaadin-button>
                 `
             )}
