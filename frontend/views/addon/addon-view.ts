@@ -65,17 +65,21 @@ export class AddonView extends View implements BeforeEnterObserver {
         <div class="flex flex-col flex-auto flex-wrap">
           <img style="width: 128px; height: 128px" src="${this.addon.icon}" />
           <h1>${this.addon.name}</h1>
-          <span class="text-m"
-            >${this.addon.rating > 0
-              ? this.addon.rating < 5
-                ? '★️'.repeat(this.addon.rating) +
-                  '☆'.repeat(5 - this.addon.rating)
-                : '★️'.repeat(this.addon.rating)
-              : '☆☆☆☆☆'}</span
-          >
-          <div class="updated">Updated on ${this.addon.lastUpdated}</div>
-          <div class="user">By ${this.addon.author}</div>
-          <div class="highlight-links">${this.getHighlightLinks()}</div>
+          <div class="flex">
+            <div class="flex flex-col flex-auto flex-wrap">
+              <span class="text-m"
+                >${this.addon.rating > 0
+                  ? this.addon.rating < 5
+                    ? '★️'.repeat(this.addon.rating) +
+                      '☆'.repeat(5 - this.addon.rating)
+                    : '★️'.repeat(this.addon.rating)
+                  : '☆☆☆☆☆'}</span
+              >
+              <div class="updated">Updated on ${this.addon.lastUpdated}</div>
+              <div class="user">By ${this.addon.author}</div>
+            </div>
+            <div class="highlight-links">${this.getHighlightLinks()}</div>
+          </div>
           <div class="tags">
             ${this.addon.tags.map(
               (tag) =>
@@ -223,18 +227,21 @@ export class AddonView extends View implements BeforeEnterObserver {
     );
     const demoLink = this.addon?.links.find((link) => link.name.match(/demo/i));
 
+    const icons = ["coffee", "cat", "cloud", "couch", "compass", "flask", "flushed", "gift", "glass-martini", "hand-peace", "heart", "poo"];
+    const icon: string = icons[Math.floor(Math.random() * icons.length)];
+
     return html` <ul>
-      ${gitHubLink
-        ? html` <li>
-            <a href=${gitHubLink.href} target="_blank" noopener>
-              <i class="fab fa-github"></i> GitHub
-            </a>
-          </li>`
-        : nothing}
       ${demoLink
         ? html` <li>
             <a href=${demoLink.href} target="_blank" noopener>
-              Demo <i class="fas fa-external-link-alt"></i>
+              <i class="text-xl fas fa-${icon}"></i> Demo
+            </a>
+          </li>`
+        : nothing}
+      ${gitHubLink
+        ? html` <li>
+            <a href=${gitHubLink.href} target="_blank" noopener>
+              <i class="text-xl fab fa-github"></i> GitHub
             </a>
           </li>`
         : nothing}

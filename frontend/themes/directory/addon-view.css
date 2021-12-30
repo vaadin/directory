@@ -25,6 +25,15 @@ addon-view {
     overflow-x: scroll;
 }
 
+.highlight-links {
+    padding-right: var(--lumo-space-m);
+    flex-direction: column;
+    gap: var(--lumo-space-2xs);
+}
+.highlight-links ul li {
+    list-style-type: none;
+}
+
 /* Styles for the carousel */
 .highlight-carousel {
     box-sizing: border-box;
