@@ -62,7 +62,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     return html`
       <div class="flex gap-l">
-        <div class="flex flex-col flex-wrap">
+        <div class="flex flex-col flex-auto flex-wrap">
           <img style="width: 128px; height: 128px" src="${this.addon.icon}" />
           <h1>${this.addon.name}</h1>
           <span class="text-m"
