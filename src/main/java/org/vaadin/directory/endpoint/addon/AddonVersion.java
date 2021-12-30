@@ -52,7 +52,7 @@ public class AddonVersion {
         // TODO: This needs to be more sophisticated for some addons
         this.license = cv.getLicenses().iterator().next().getName();
         this.compatibility = cv.getFrameworkVersions().stream().sorted()
-                .map(v -> v.getFramework().getName()+" "+v.getVersion())
+                .map(Util::getVersionName)
                 .collect(Collectors.toList());
         this.browserCompatibility = cv.getBrowserIndependent() ? List.of("Browser Independent") :
                     cv.getSupportedBrowsers().stream().map(b -> b.getName())
