@@ -16,13 +16,48 @@ search-view .addons-grid {
 
 search-view .featured-list {
   grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
-  gap: var(--lumo-space-m);
   max-height: 400px;
   overflow: hidden;
   border: 1 px solid black;
 }
 
 search-view .featured-list addon-card {
-  margin: 10px; 
-  box-shadow: var(--lumo-box-shadow-s);
+  box-shadow: var(--lumo-box-shadow-xs);
+}
+
+/* Ribbon, only shown on desktop */
+.ribbon-holder {
+  overflow: hidden;
+  position: relative;
+  display: none;
+}
+@media screen and (min-width: 600px) {
+    div.ribbon-holder {
+        display: block;
+    }
+}
+.ribbon {
+  position: absolute;
+  box-shadow: var(--lumo-box-shadow-xl);
+  font-size: var(--lumo-font-size-xs);
+  background: var(--lumo-primary-color);
+  color: var(--lumo-primary-contrast-color);
+  padding: var(--lumo-space-s);
+  transform: rotate(-45deg);
+  text-align: center;
+  top: 70px;
+  left: -80px;
+  width: 360px;
+  content: "Beta"
+}
+
+.ribbon a {
+  color: var(--lumo-primary-contrast-color);
+}
+
+/* Build information */
+#build-info,
+#build-info a {
+  font-size: var(--lumo-font-size-xs);
+  color: var(--lumo-shade-50pct);
 }

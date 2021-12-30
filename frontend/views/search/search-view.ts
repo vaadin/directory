@@ -26,11 +26,8 @@ export class SearchView extends View {
   render() {
     return html`
       <div class="flex flex-col items-center">
-        <span id="build-info">${this.versionInfo}</span>
-        <h1>Add-on components and integrations for Vaadin</h1>
-        <p>
-          Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
-        </p>
+        <span id="build-info"><a target="dgithub" href="https://github.com/vaadin/directory/commits/main">${this.versionInfo}</a></span>
+        <h1>Add-ons, cool widgets, and integrations for Vaadin</h1>
       </div>
       <h2>Featured Add-ons <i class="fa-solid fas fa-award"></i></h2>
       <div class="featured-list">
@@ -38,6 +35,9 @@ export class SearchView extends View {
           (addon) => html` <addon-card .addon=${addon}></addon-card> `
         )}
       </div>
+      <p>
+        Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
+      </p>
       <h2>Search for add-ons</h2>
       <vaadin-text-field
         style="min-width: 400px; max-width: 640px;"
