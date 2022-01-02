@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 /** Load properties from application.properties.
  *
  * This uses properties in Spring via Java configuration.
@@ -24,6 +28,8 @@ public class BuildVersions {
     @Value("${app.java.version}")
     private String appJavaVersion;
 
+    private String startTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX").withZone(ZoneId.of("UTC")).format(Instant.now());
+
     public String getVersion() {
         return appVersion;
     }
@@ -39,5 +45,7 @@ public class BuildVersions {
     public String getJavaVersion() {
         return appJavaVersion;
     }
+
+    public String getStartTime() { return startTime; }
 
 }

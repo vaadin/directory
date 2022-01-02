@@ -68,7 +68,7 @@ export class SearchView extends View {
     this.setupIntersectionObserver();
 
     AppEndpoint.getVersionInfo().then(v => {
-      this.versionInfo = v.version +" / " + v.buildTime;
+      this.versionInfo = v.version +" / " + v.buildTime + " / " + v.startTime;
     });
   }
 
