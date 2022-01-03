@@ -183,9 +183,12 @@ export class AddonView extends View implements BeforeEnterObserver {
           <hr />
           <h3>Browser compatibility</h3>
           <p>
-            ${this.version?.browserCompatibility.map(
+            ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
               (compat) => html`${compat}<br />`
-            )}
+            ) : html`(no browser information provided)` }
+          </p>
+          <p>
+              <a href="${router.urlForPath('component/:addon/:version?', {addon: this.addon.urlIdentifier, version: this.version.name })}?message=Found%20out%20that%20browser%[X]%20..."><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
           </p>
         </div>
       </div>
