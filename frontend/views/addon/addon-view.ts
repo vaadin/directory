@@ -210,15 +210,27 @@ export class AddonView extends View implements BeforeEnterObserver {
     currentVersion.compatibility
       .forEach(c => supportedByOthers.delete(c));
 
-    return html`
+    const versions = Array.from(supportedByOthers.keys());
+    if (versions.length > 0) {
+     return html`
         <p>
         <b>Also supported:</b><br />
-        ${Array.from(supportedByOthers.keys()).reverse().map(
+        ${versions.reverse().map(
           (c) =>
           html`${c} <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a><br />`
         )}
         </p>
+        <p>
+            <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: currentVersion.name })}?message=Could%20you%20also%20support%20Vaadin%20version%20[X]"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+        </p>
        `;
+    } else {
+        return html`
+        <p>
+            <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: currentVersion.name })}?message=Could%20you%20also%20support%20Vaadin%20version%20[X]"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+        </p>
+        `;
+    }
   }
 
   getHighlightLinks() {
