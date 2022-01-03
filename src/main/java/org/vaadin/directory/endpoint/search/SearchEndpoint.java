@@ -145,5 +145,15 @@ public class SearchEndpoint {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public @Nonnull Long searchCount(String searchString) {
+        return service.countAllComponentsBySearchCriteria(
+                List.of(Status.PUBLISHED),
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                Set.of());
+    }
 
 }

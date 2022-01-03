@@ -46,7 +46,7 @@ export class SearchView extends View {
         @change=${this.updateQuery}
         clear-button-visible>
       </vaadin-text-field>
-      <div>Found total <b>1842</b> add-ons. <i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or <a href="?q=author%3Ame">author:me</a></i></div>
+      <div>Found total <b>${searchStore.totalCount}</b> add-ons. <i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or <a href="?q=author%3Ame">author:me</a></i></div>
       <div class="addons-grid" @filter-added=${this.filterAdded}>
         ${searchStore.addons.map(
           (addon) => html` <addon-card .addon=${addon}></addon-card> `

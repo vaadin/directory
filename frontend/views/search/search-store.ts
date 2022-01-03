@@ -8,6 +8,7 @@ class SearchStore {
   loading = false;
   featured: SearchResult[] = [];
   addons: SearchResult[] = [];
+  totalCount: number = -1;
   query = '';
   private page = 1;
   private pageSize = 10;
@@ -27,6 +28,9 @@ class SearchStore {
         this.fetchPage();
       }
     }
+    if (this.totalCount < 0) {
+      this.fetchTotalCount();
+    }
   }
 
   // Server calls
@@ -37,6 +41,9 @@ class SearchStore {
         await SearchEndpoint.search(this.query, this.page, this.pageSize)
       )
     );
+    if (this.page === 1) {
+        this.fetchTotalCount();
+    }
     this.setPage(this.page + 1);
     this.setLoading(false);
   }
@@ -48,6 +55,12 @@ class SearchStore {
       )
     );
   }
+
+  async fetchTotalCount() {
+    this.totalCount =
+      await SearchEndpoint.searchCount(this.query);
+}
+
   // Actions
   setLoading(loading: boolean) {
     this.loading = loading;
