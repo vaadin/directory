@@ -16,6 +16,7 @@ import 'keen-slider/keen-slider.min.css'
 import KeenSlider from 'keen-slider';
 import type { KeenSliderInstance } from 'keen-slider';
 import { observe } from "mobx"
+import { disqusReset } from "../disqus"
 
 @customElement('search-view')
 export class SearchView extends View {
@@ -78,6 +79,9 @@ export class SearchView extends View {
       this.versionInfo = v.version +" / " + v.buildTime + " / " + v.startTime;
     });
 
+    // Reset discuss thread
+    disqusReset("search", "https://directory4.demo.vaadin.com", "Vaadin Directory Search", false);
+    this.setupFeaturedSliderIfNeeded();
   }
 
   setupFeaturedSliderIfNeeded() {

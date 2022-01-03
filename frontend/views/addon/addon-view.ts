@@ -26,6 +26,7 @@ import '@vaadin/icon';
 import '@vaadin/icons';
 import { appStore } from 'Frontend/stores/app-store';
 import { router } from '../../index';
+import { disqusReset } from "../disqus"
 
 const OFFICIAL_TAG = 'Sponsored';
 
@@ -277,6 +278,15 @@ export class AddonView extends View implements BeforeEnterObserver {
         this.version = this.getLatestVersion();
       }
       appStore.currentViewTitle = this.addon.name;
+    }
+  }
+
+  firstUpdated() {
+    // Reset discuss thread
+    if (this.addon) {
+      disqusReset(this.addon.urlIdentifier,
+        "https://directory4.demo.vaadin.com"+router.urlForPath('component/:addon/:version?', {addon: this.addon.urlIdentifier }),
+        this.addon.name, true);
     }
   }
 
