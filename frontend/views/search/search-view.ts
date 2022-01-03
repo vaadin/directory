@@ -12,12 +12,18 @@ import { searchStore } from './search-store';
 import { appStore } from 'Frontend/stores/app-store';
 import { AppEndpoint } from 'Frontend/generated/endpoints';
 import VersionInfo from 'Frontend/generated/org/vaadin/directory/endpoint/app/VersionInfo';
+import 'keen-slider/keen-slider.min.css'
+import KeenSlider from 'keen-slider';
+import type { KeenSliderInstance } from 'keen-slider';
+import { observe } from "mobx"
 
 @customElement('search-view')
 export class SearchView extends View {
 
   @property()
   private versionInfo: string = "(build info)"
+
+  featuredSlider?: KeenSliderInstance;
 
   constructor() {
     super();
@@ -30,10 +36,11 @@ export class SearchView extends View {
         <h1>Add-ons, cool widgets, and integrations for Vaadin</h1>
       </div>
       <h2>Featured Add-ons <i class="fa-solid fas fa-award"></i></h2>
-      <div class="featured-list">
-        ${([searchStore.featured[0]]).map(
-          (addon) => html` <addon-card .addon=${addon}></addon-card> `
+      <div id="featured-list" class="keen-slider">
+        ${searchStore.featured.map(
+          (addon,i) => html` <div class="keen-slider__slide number-slide${i}"><addon-card .addon=${addon}></addon-card></div> `
         )}
+        ${this.setupFeaturedSliderIfNeeded()}
       </div>
       <p>
         Want to publish your work here? Great! <a href="javascript:window.haas.login()">Log in</a> and <a href="https://vaadin.com/directory/help">follow the instructions</a>.
@@ -70,6 +77,53 @@ export class SearchView extends View {
     AppEndpoint.getVersionInfo().then(v => {
       this.versionInfo = v.version +" / " + v.buildTime + " / " + v.startTime;
     });
+
+  }
+
+  setupFeaturedSliderIfNeeded() {
+    const elem: HTMLElement = <HTMLElement>this.renderRoot.querySelector("#featured-list");
+    if (!elem
+        || elem.childElementCount <= 0
+        || (this.featuredSlider && elem.childElementCount === this.featuredSlider.slides.length)) return;
+    this.featuredSlider = new KeenSlider(elem, {
+      initial: 0,
+      loop: true,
+      slides: {
+        perView: 1,
+        spacing: 10,
+      }
+    },
+    [
+      (slider) => {
+        let timeout : any;
+        let mouseOver = false
+        function clearNextTimeout() {
+          clearTimeout(timeout)
+        }
+        function nextTimeout() {
+          clearTimeout(timeout)
+          if (mouseOver) return
+          timeout = setTimeout(() => {
+            slider.next()
+          }, 4000)
+        }
+        slider.on("created", () => {
+          slider.container.addEventListener("mouseover", () => {
+            mouseOver = true
+            clearNextTimeout()
+          })
+          slider.container.addEventListener("mouseout", () => {
+            mouseOver = false
+            nextTimeout()
+          })
+          nextTimeout()
+        })
+        slider.on("dragStarted", clearNextTimeout)
+        slider.on("animationEnded", nextTimeout)
+        slider.on("updated", nextTimeout)
+      },
+    ]
+    );
   }
 
   setupIntersectionObserver() {
