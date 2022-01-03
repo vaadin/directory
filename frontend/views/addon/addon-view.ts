@@ -151,7 +151,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               )}"></vaadin-select>
             <br /><a
               class="text-xs"
-              href="${router.urlForPath('component/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
+              href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
               >Link to this version</a
             >
           </p>
@@ -221,7 +221,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         <b>Also supported:</b><br />
         ${versions.reverse().map(
           (c) =>
-          html`${c} <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a><br />`
+          html`${c} <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a><br />`
         )}
         </p>
         <p>
@@ -285,7 +285,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     // Reset discuss thread
     if (this.addon) {
       disqusReset(this.addon.urlIdentifier,
-        "https://directory4.demo.vaadin.com"+router.urlForPath('component/:addon/:version?', {addon: this.addon.urlIdentifier }),
+        "https://directory4.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
         this.addon.name, true);
     }
   }
