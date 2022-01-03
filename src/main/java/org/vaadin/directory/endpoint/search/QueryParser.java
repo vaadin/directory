@@ -1,12 +1,18 @@
 package org.vaadin.directory.endpoint.search;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.vaadin.directory.entity.directory.ComponentFramework;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
+import com.vaadin.directory.entity.directory.Framework;
 import com.vaadin.directory.entity.directory.TagGroup;
+
+import static com.vaadin.directory.entity.directory.Framework.*;
 
 /**
  * Parser for search strings.
@@ -17,15 +23,13 @@ import com.vaadin.directory.entity.directory.TagGroup;
  */
 public class QueryParser {
 
-    public final static String FRAMEWORK_FROM_VERSION_SEPARATOR = "_";
     public static final String AUTHOR_SELF_TOKEN = "me";
 
-    private List<String> tagGroups = List.of();
-    private Optional<String> author = Optional.empty();
     private List<String> keywords = List.of();
-    private String framework;
-
-    private Set<String> frameworkVersions = Collections.emptySet();
+    private List<String> tagGroups = List.of();
+    private Framework framework = null;
+    private String frameworkVersion = null;
+    private String author = null;
     private boolean isAuthorMe = false;
 
 
@@ -35,14 +39,22 @@ public class QueryParser {
 
     public List<String> getTagGroups() { return tagGroups; }
 
-    public Optional<String> getAuthor() { return author; }
+    public String getAuthor() { return author; }
 
     public List<String> getKeywords() { return keywords; }
 
-    public String getFramework() { return framework; }
+    public Framework getFramework() { return framework; }
 
-    public Set<String> getFrameworkVersions() { return frameworkVersions; }
+    public String getFrameworkVersion() { return frameworkVersion; }
 
+    // Vaadin 10+ needs special handling (from 10 to 24)
+    private static final List<String> vaadin10plusVersions;
+    static {
+        vaadin10plusVersions =
+                IntStream.range(10,24)
+                        .mapToObj(i -> Integer.toString(i))
+                        .collect(Collectors.toList());
+    }
     /**
      * Parses the search string and updates the search field state.
      *
@@ -84,36 +96,33 @@ public class QueryParser {
                 authorParams != null ? authorParams : searchTokens.get(Token.USER.getToken());
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.AUTHOR.getToken());
-        author = authorParams != null && authorParams.size() >= 1 ? Optional.of(authorParams.get(0))
-                : Optional.empty();
-        author.ifPresent(authorName -> isAuthorMe = authorName.equalsIgnoreCase(AUTHOR_SELF_TOKEN));
+        author = authorParams != null && authorParams.size() >= 1 ? authorParams.get(0) : null;
+        isAuthorMe = AUTHOR_SELF_TOKEN.equalsIgnoreCase(author);
 
         List<String> frameworkParams =
           searchTokens.get(Token.FRAMEWORK.getToken());
-        framework = frameworkParams != null && frameworkParams.size() >= 1 ?
-          frameworkParams.get(0) : null;
+        this.framework = frameworkParams != null && frameworkParams.size() >= 1 ?
+                Framework.fromString(frameworkParams.get(0)).get() : null;
+
 
         List<String> frameworkVersionParams =
                 searchTokens.get(Token.FRAMEWORK_VERSION.getToken());
-        frameworkVersions = frameworkVersionParams != null && frameworkVersionParams.size() >= 1 ?
-                Set.copyOf(frameworkVersionParams) : Set.of();
+        this.frameworkVersion = frameworkVersionParams != null && frameworkVersionParams.size() >= 1 ?
+                frameworkVersionParams.get(0) : null;
 
-        /**
-         * TODO: Disabled framework parsing for now. Re-enable if needed by new search
-         * functionality.
-         * frameworkVersions = new LinkedHashSet<>(); List<String> frameworkVersionNames =
-         * searchTokens.get(Token.FRAMEWORK_VERSION.getToken());
-         * 
-         * if (frameworkVersionNames != null) { for (String frameworkVersion :
-         * frameworkVersionNames) { String[] split =
-         * frameworkVersion.split(FRAMEWORK_FROM_VERSION_SEPARATOR); if (split.length == 2) { String
-         * frameworkName = split[0]; String versionName = split[1];
-         * 
-         * ComponentFramework framework = componentFrameworkRepository.findByName(frameworkName); if
-         * (framework != null) { ComponentFrameworkVersion version =
-         * componentFrameworkVersionRepository.findByFrameworkAndVersion(framework, versionName); if
-         * (version != null) { frameworkVersions.add(version); } } } } }
-         */
+        if (this.frameworkVersion != null && framework == null) {
+            // By default we use Vaadin as framework if omitted. V10+ needs special handling.
+            framework = vaadin10plusVersions.stream().anyMatch(s -> this.frameworkVersion.startsWith(s)) ? VAADIN_10 : null;
+            framework = this.frameworkVersion.startsWith("8") ? VAADIN_8 : framework;
+            framework = this.frameworkVersion.startsWith("7") ? VAADIN_7 : framework;
+            framework = this.frameworkVersion.startsWith("6") ? VAADIN_6 : framework;
+
+            // If only major version was searched
+            if (!framework.equals(VAADIN_10) && !this.frameworkVersion.contains(".")) {
+                this.frameworkVersion = null;
+            }
+        };
+
     }
 
     public static QueryParser parse(String searchString) {
