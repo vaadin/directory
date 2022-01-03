@@ -189,7 +189,7 @@ export class AddonView extends View implements BeforeEnterObserver {
             ) : html`(no browser information provided)` }
           </p>
           <p>
-              <a href="${router.urlForPath('component/:addon/:version?', {addon: this.addon.urlIdentifier, version: this.version.name })}?message=Found%20out%20that%20browser%[X]%20..."><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
+              <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
           </p>
         </div>
       </div>
@@ -225,13 +225,13 @@ export class AddonView extends View implements BeforeEnterObserver {
         )}
         </p>
         <p>
-            <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: currentVersion.name })}?message=Could%20you%20also%20support%20Vaadin%20version%20[X]"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
         </p>
        `;
     } else {
         return html`
         <p>
-            <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: currentVersion.name })}?message=Could%20you%20also%20support%20Vaadin%20version%20[X]"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
         </p>
         `;
     }
