@@ -36,7 +36,6 @@ export class SearchView extends View {
         <span id="build-info"><a target="dgithub" href="https://github.com/vaadin/directory/commits/main">${this.versionInfo}</a></span>
         <h1>Add-ons, cool widgets, and integrations for Vaadin</h1>
       </div>
-      <h2>Featured Add-ons <i class="fa-solid fas fa-award"></i></h2>
       <div id="featured-list" class="keen-slider">
         ${searchStore.featured.map(
           (addon,i) => html` <div class="keen-slider__slide number-slide${i}"><addon-card .addon=${addon}></addon-card></div> `
