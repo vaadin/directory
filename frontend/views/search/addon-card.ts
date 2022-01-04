@@ -56,7 +56,7 @@ export class AddonCard extends View {
         </div>
 
         <h3 class="mb-s">
-          <a href="/addon/${this.addon.urlIdentifier}" class="text-body">
+          <a href="/addon/${this.addon.urlIdentifier}" @click="${this.onClick}" class="text-body">
             ${this.addon.name}
           </a>
         </h3>
@@ -83,6 +83,10 @@ export class AddonCard extends View {
         value: tag,
       })
     );
+  }
+
+  onClick() {
+    window.searchScroll = window.scrollY;
   }
 
   addAuthorFilter() {

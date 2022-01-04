@@ -2,6 +2,8 @@ import { MobxLitElement } from '@adobe/lit-mobx';
 import { applyTheme } from 'Frontend/generated/theme';
 import { autorun, IAutorunOptions, IReactionDisposer, IReactionOptions, IReactionPublic, reaction } from 'mobx';
 
+declare global { interface Window { searchScroll : number; } }
+
 export class MobxElement extends MobxLitElement {
   private disposers: IReactionDisposer[] = [];
 

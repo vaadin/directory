@@ -81,6 +81,14 @@ export class SearchView extends View {
     // Reset discuss thread
     disqusReset("search", "https://directory4.demo.vaadin.com", "Vaadin Directory Search", false);
     this.setupFeaturedSliderIfNeeded();
+    this.restoreScrollIfNeeded();
+  }
+
+  restoreScrollIfNeeded() {
+    if (window.searchScroll && window.searchScroll > 0) {
+        // TODO: Really, this trick again...
+        setTimeout(function () { window.scroll(0, window.searchScroll);  }, 500);
+    }
   }
 
   setupFeaturedSliderIfNeeded() {
