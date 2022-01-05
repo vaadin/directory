@@ -240,8 +240,11 @@ export class AddonView extends View implements BeforeEnterObserver {
       link.href.match(/http(s)?:\/\/github.com\/[-_\w\d]+\/[-_\w\d]+(.git)?/)
     );
     const demoLink = this.addon?.links.find((link) => link.name.match(/demo/i));
+    const kofiLink = this.addon?.links.find((link) =>
+      link.href.match(/http(s)?:\/\/ko-fi.com\/[-_\w\d]+/)
+    );
 
-    const icons = ["coffee", "cat", "cloud", "couch", "compass", "flask", "flushed", "gift", "glass-martini", "hand-peace", "heart", "poo"];
+    const icons = ["cat", "cloud", "couch", "compass", "flask", "flushed", "gift", "glass-martini", "hand-peace", "heart", "poo"];
     const icon: string = icons[Math.floor(Math.random() * icons.length)];
 
     return html` <ul>
@@ -256,6 +259,13 @@ export class AddonView extends View implements BeforeEnterObserver {
         ? html` <li>
             <a href=${gitHubLink.href} target="_blank" noopener>
               <i class="text-xl fab fa-github"></i> GitHub
+            </a>
+          </li>`
+        : nothing}
+      ${kofiLink
+        ? html` <li>
+            <a href=${kofiLink.href} target="_blank" noopener>
+              <i class="text-xl fas fa-coffee"></i> Tip me
             </a>
           </li>`
         : nothing}
