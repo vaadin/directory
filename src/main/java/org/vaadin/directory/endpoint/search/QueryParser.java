@@ -101,8 +101,10 @@ public class QueryParser {
 
         List<String> frameworkParams =
           searchTokens.get(Token.FRAMEWORK.getToken());
-        this.framework = frameworkParams != null && frameworkParams.size() >= 1 ?
-                Framework.fromString(frameworkParams.get(0)).get() : null;
+        if (frameworkParams != null && frameworkParams.size() >= 1) {
+            Optional<Framework> fw = fromString(frameworkParams.get(0).replace('_', ' '));
+            framework = fw.isPresent()? fw.get() : null;
+        }
 
 
         List<String> frameworkVersionParams =
