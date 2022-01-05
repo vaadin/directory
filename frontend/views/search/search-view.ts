@@ -116,7 +116,7 @@ export class SearchView extends View {
       // TODO: Really, this trick again...
       setTimeout(function () {
         window.scroll(0, window.searchScroll);
-      }, 500);
+      }, 0);
     }
   }
 
