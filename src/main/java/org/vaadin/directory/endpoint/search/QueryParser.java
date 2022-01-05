@@ -66,16 +66,18 @@ public class QueryParser {
         }
 
         // Collect all non-tokens
-        List<String> keywordParams = Arrays.asList(words).stream().filter(s -> !s.contains(":"))
+        List<String> wordList = Arrays.asList(words);
+        List<String> keywordParams = wordList.stream()
+                .filter(s -> !s.contains(":"))
                 .collect(Collectors.toList());
         keywords = keywordParams != null && keywordParams.size() > 0 ? keywordParams : List.of();
 
         // Filter all token words
-        List<String> tokenWords = Arrays.asList(words).stream().filter(s -> s.contains(":"))
-                .collect(Collectors.toList());
-        Map<String, List<String>> searchTokens = tokenWords.stream().collect(Collectors.toMap(
+        Map<String, List<String>> searchTokens = wordList.stream()
+                .filter(s -> s.contains(":"))
+                .collect(Collectors.toMap(
                 s -> s.split(":")[0],
-                s -> Arrays.stream(s.split(":")[1].split(",")).collect(Collectors.toList()),
+                s -> Arrays.stream(getStringAfterColon(s).split(",")).collect(Collectors.toList()),
                 (tagValues1,tagValues2) -> Stream.of(tagValues1, tagValues2)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList())
@@ -121,6 +123,11 @@ public class QueryParser {
             }
         };
 
+    }
+
+    private String getStringAfterColon(String s) {
+        String[] sa = s.split(":");
+        return sa.length > 0 ? sa[1] : "";
     }
 
     public static QueryParser parse(String searchString) {
