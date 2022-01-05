@@ -1,16 +1,10 @@
 package org.vaadin.directory.endpoint.search;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.vaadin.directory.entity.directory.ComponentFramework;
-import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
-import com.vaadin.directory.entity.directory.Framework;
-import com.vaadin.directory.entity.directory.TagGroup;
 
 import static com.vaadin.directory.entity.directory.Framework.*;
 
