@@ -1,10 +1,12 @@
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
+import SearchListResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchListResult';
 import { autorun, makeAutoObservable } from 'mobx';
 import { Filter } from './Filter';
 
 class SearchStore {
   // State
+  hasMore = true;
   loading = false;
   featured: SearchResult[] = [];
   addons: SearchResult[] = [];
@@ -23,10 +25,7 @@ class SearchStore {
     if (this.addons.length === 0) {
       this.fetchFeatured();
       this.readQueryFromURL();
-
-      if (!this.loading) {
-        this.fetchPage();
-      }
+      this.fetchPage();
     }
     if (this.totalCount < 0) {
       this.fetchTotalCount();
@@ -35,17 +34,19 @@ class SearchStore {
 
   // Server calls
   async fetchPage() {
-    this.setLoading(true);
-    this.setAddons(
-      this.addons.concat(
-        await SearchEndpoint.search(this.query, this.page, this.pageSize)
-      )
-    );
-    if (this.page === 1) {
-        this.fetchTotalCount();
+    if (this.loading) return;
+   this.setLoading(true);
+    try {
+      const res: SearchListResult = await SearchEndpoint.search(this.query, this.page, this.pageSize, this.page == 1);
+      if (this.page === 1 && res.totalCount) {
+          this.setTotalCount(res.totalCount);
+      }
+      this.setHasMore(res.hasMore);
+      this.setAddons(this.addons.concat(res.list));
+      this.setPage(this.page + 1);
+    } finally {
+      this.setLoading(false);
     }
-    this.setPage(this.page + 1);
-    this.setLoading(false);
   }
 
   async fetchFeatured() {
@@ -74,8 +75,16 @@ class SearchStore {
     this.addons = addons;
   }
 
+  setHasMore(hasMore: boolean) {
+    this.hasMore = hasMore;
+  }
+
   setPage(page: number) {
     this.page = page;
+  }
+
+  setTotalCount(totalCount: number) {
+    this.totalCount = totalCount;
   }
 
   setQuery(query: string) {

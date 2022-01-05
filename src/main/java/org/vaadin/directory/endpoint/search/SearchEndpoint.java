@@ -87,8 +87,8 @@ public class SearchEndpoint {
     }
 
     @Transactional(readOnly = true)
-    public @Nonnull List<@Nonnull SearchResult> search(
-            String searchString, int page, int pageSize) {
+    public @Nonnull SearchListResult search(
+            String searchString, int page, int pageSize, boolean includeCount) {
         QueryParser qp = QueryParser.parse(searchString);
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
@@ -100,7 +100,7 @@ public class SearchEndpoint {
             }
             long id = user.startsWith("User_") ? Long.parseLong(user.substring(5)) : -1;
             ComponentDirectoryUser du = userService.findById(id);
-            if (du != null) { owners = List.of(du); } else { return List.of(); };
+            if (du != null) { owners = List.of(du); } else { return new SearchListResult(); };
         }
 
         // Resolve tag groups
@@ -110,7 +110,7 @@ public class SearchEndpoint {
         ComponentFramework framework = null;  // All frameworks
         if (qp.getFramework() != null) {
             framework = frameworkRepository.findByName(qp.getFramework().getName());
-            if (framework == null) { return List.of(); }
+            if (framework == null) { return new SearchListResult(); }
         }
 
         Set<ComponentFrameworkVersion> versions = Set.of();  // All versions
@@ -118,13 +118,13 @@ public class SearchEndpoint {
             if (qp.getFrameworkVersion() != null) {
                 ComponentFrameworkVersion v = frameworkVersionRepository.findByFrameworkAndVersion(framework, qp.getFrameworkVersion());
                 if (v != null) { versions = Set.of(v);
-                } else { return List.of();}
+                } else { return new SearchListResult();}
             }
         } else if (qp.getFrameworkVersion() != null) {
             //TODO: Maybe instead try to match the first framework with the given version?
-            return List.of();
+            return new SearchListResult();
         }
-        return service
+        List<SearchResult> results = service
                 .findAllComponentsBySearchCriteria(
                         List.of(Status.PUBLISHED),
                         qp.getKeywords(),
@@ -137,6 +137,23 @@ public class SearchEndpoint {
                 .stream()
                 .map(c -> new SearchResult(c))
                 .collect(Collectors.toList());
+
+        Long count = null;
+        if (includeCount) {
+            if (results.size() < pageSize) {
+                count = Long.valueOf(results.size());
+            } else {
+                count = service
+                        .countAllComponentsBySearchCriteria(
+                                List.of(Status.PUBLISHED),
+                                qp.getKeywords(),
+                                tagGroups,
+                                owners,
+                                framework,
+                                versions);
+            }
+        }
+        return new SearchListResult(results, count, results.size() == pageSize);
     }
 
     @Transactional(readOnly = true)
