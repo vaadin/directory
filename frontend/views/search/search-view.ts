@@ -80,7 +80,7 @@ export class SearchView extends View {
         id="load-more-button"
         @click=${searchStore.fetchPage}
         ?disabled=${searchStore.loading}
-        ?hidden=${searchStore.addons.length === 0}>
+        ?hidden=${searchStore.addons.length === 0 || !searchStore.hasMore }>
         Load more
       </vaadin-button>
     `;
