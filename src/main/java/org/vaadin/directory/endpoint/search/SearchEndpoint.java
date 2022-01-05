@@ -100,7 +100,7 @@ public class SearchEndpoint {
             }
             long id = user.startsWith("User_") ? Long.parseLong(user.substring(5)) : -1;
             ComponentDirectoryUser du = userService.findById(id);
-            owners = du != null? List.of(du) : List.of();
+            if (du != null) { owners = List.of(du); } else { return List.of(); };
         }
 
         // Resolve tag groups
@@ -110,12 +110,19 @@ public class SearchEndpoint {
         ComponentFramework framework = null;  // All frameworks
         if (qp.getFramework() != null) {
             framework = frameworkRepository.findByName(qp.getFramework().getName());
+            if (framework == null) { return List.of(); }
         }
 
         Set<ComponentFrameworkVersion> versions = Set.of();  // All versions
-        if (framework != null && qp.getFrameworkVersion() != null) {
-            ComponentFrameworkVersion v = frameworkVersionRepository.findByFrameworkAndVersion(framework, qp.getFrameworkVersion());
-            if (v != null)  { versions = Set.of(v); };
+        if (framework != null) {
+            if (qp.getFrameworkVersion() != null) {
+                ComponentFrameworkVersion v = frameworkVersionRepository.findByFrameworkAndVersion(framework, qp.getFrameworkVersion());
+                if (v != null) { versions = Set.of(v);
+                } else { return List.of();}
+            }
+        } else if (qp.getFrameworkVersion() != null) {
+            //TODO: Maybe instead try to match the first framework with the given version?
+            return List.of();
         }
         return service
                 .findAllComponentsBySearchCriteria(

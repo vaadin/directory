@@ -102,8 +102,7 @@ public class QueryParser {
         List<String> frameworkParams =
           searchTokens.get(Token.FRAMEWORK.getToken());
         if (frameworkParams != null && frameworkParams.size() >= 1) {
-            Optional<Framework> fw = fromString(frameworkParams.get(0).replace('_', ' '));
-            framework = fw.isPresent()? fw.get() : null;
+            framework = new Framework(frameworkParams.get(0).replace('_', ' '), "none");
         }
 
 
@@ -114,13 +113,16 @@ public class QueryParser {
 
         if (this.frameworkVersion != null && framework == null) {
             // By default we use Vaadin as framework if omitted. V10+ needs special handling.
-            framework = vaadin10plusVersions.stream().anyMatch(s -> this.frameworkVersion.startsWith(s)) ? VAADIN_10 : null;
-            framework = this.frameworkVersion.startsWith("8") ? VAADIN_8 : framework;
-            framework = this.frameworkVersion.startsWith("7") ? VAADIN_7 : framework;
-            framework = this.frameworkVersion.startsWith("6") ? VAADIN_6 : framework;
+            framework = vaadin10plusVersions.stream().anyMatch(s -> this.frameworkVersion.startsWith(s)) ? new Framework(VAADIN_10) : null;
+            framework = this.frameworkVersion.startsWith("8") ? new Framework(VAADIN_8) : framework;
+            framework = this.frameworkVersion.startsWith("7") ? new Framework(VAADIN_7) : framework;
+            framework = this.frameworkVersion.startsWith("6") ? new Framework(VAADIN_6) : framework;
 
             // If only major version was searched
-            if (!framework.equals(VAADIN_10) && !this.frameworkVersion.contains(".")) {
+            if (framework != null
+                    && this.frameworkVersion != null
+                    && !framework.equals(VAADIN_10)
+                    && !this.frameworkVersion.contains(".")) {
                 this.frameworkVersion = null;
             }
         };
@@ -168,6 +170,26 @@ public class QueryParser {
 
         public String getToken() {
             return token;
+        }
+    }
+
+    public static class Framework {
+
+        private com.vaadin.directory.entity.directory.Framework framework = null;
+        private String defaultName = null;
+
+        private Framework(com.vaadin.directory.entity.directory.Framework framework) {
+            this.framework = framework;
+        }
+
+        private Framework(String name, String defaultName) {
+            Optional<com.vaadin.directory.entity.directory.Framework> fw = fromString(name);
+            if (fw.isPresent()) this.framework = fw.get();
+            else this.defaultName = defaultName;
+        }
+
+        public String getName() {
+            return framework != null ? framework.getName() : this.defaultName;
         }
     }
 }
