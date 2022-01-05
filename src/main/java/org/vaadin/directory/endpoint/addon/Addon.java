@@ -58,6 +58,9 @@ public class Addon {
 
     private @Nonnull Double rating;
 
+    @Nonnull
+    private Long ratingCount;
+
     public Addon() {}
 
     public Addon(Component component) {
@@ -74,6 +77,7 @@ public class Addon {
         this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
         this.author = "User " + component.getOwner().getId().toString();
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
+        this.ratingCount = component.getRatingCount();
         this.tags = Util.tagsToStrings(component.getTagGroups());
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
@@ -168,4 +172,7 @@ public class Addon {
         this.rating = rating;
     }
 
+    public Long getRatingCount() { return ratingCount; }
+
+    public void setRatingCount(Long ratingCount) { this.ratingCount = ratingCount; }
 }
