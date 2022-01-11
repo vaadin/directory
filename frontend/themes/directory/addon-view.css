@@ -23,6 +23,7 @@ addon-view {
 
 .side-panel pre {
     overflow-x: scroll;
+    color: inherit;
 }
 
 .highlight-links {
@@ -69,6 +70,7 @@ table.matrix td {
   margin: var(--lumo-space-m);
   text-align: center;
   vertical-align: top;
+  float: none; /* HaaS FIX */
 }
 
 table.matrix td.on {
