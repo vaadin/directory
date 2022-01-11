@@ -227,7 +227,6 @@ public class SearchEndpoint {
         }
 
         Matrix m = new Matrix(rows,cols,data);
-        System.out.println(m.toTabString());
         return m;
     }
 
@@ -261,7 +260,6 @@ public class SearchEndpoint {
         });
 
         Matrix m = new Matrix(rows,cols,data);
-        System.out.println(m.toTabString());
         return m;
     }
 }
