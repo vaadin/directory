@@ -21,6 +21,14 @@ search-view .featured-list {
   border: 1 px solid black;
 }
 
+search-view addon-card {
+  overflow: hidden;
+}
+
+search-view addon-card:hover {
+  box-shadow: var(--lumo-box-shadow-xs);
+}
+
 search-view .featured-list addon-card {
   box-shadow: var(--lumo-box-shadow-xs);
 }
