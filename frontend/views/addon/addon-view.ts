@@ -1,5 +1,6 @@
 import './install-tabsheet';
 import './highlight-carousel';
+import './feature-matrix';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
@@ -28,6 +29,9 @@ import { appStore } from 'Frontend/stores/app-store';
 import { router } from '../../index';
 import { disqusReset } from "../disqus"
 
+import { SearchEndpoint } from 'Frontend/generated/endpoints';
+import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
+
 const OFFICIAL_TAG = 'Sponsored';
 
 @customElement('addon-view')
@@ -42,6 +46,9 @@ export class AddonView extends View implements BeforeEnterObserver {
   // TODO: User information missing
   @state()
   private user?: Object = {};
+
+  @state()
+  private compatibility?: Matrix;
 
   constructor() {
     super();
@@ -110,6 +117,8 @@ export class AddonView extends View implements BeforeEnterObserver {
               (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
             )}
           </ul>
+          <h2>Full Compatibility</h2>
+          <div class="compatibility-matrix"><feature-matrix .matrix=${this.compatibility}></feature-matrix></div>
         </div>
         <div class="side-panel">
           <h3>Install</h3>
@@ -295,6 +304,7 @@ export class AddonView extends View implements BeforeEnterObserver {
       disqusReset(this.addon.urlIdentifier,
         "https://directory4.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
         this.addon.name, true);
+      this.fetchCompatibility();
     }
   }
 
@@ -321,4 +331,10 @@ export class AddonView extends View implements BeforeEnterObserver {
       this.version = this.getLatestVersion();
     }
   }
+
+    async fetchCompatibility() {
+      this.compatibility =
+        await SearchEndpoint.getCompatibility(this.addon?.urlIdentifier);
+   }
+
 }

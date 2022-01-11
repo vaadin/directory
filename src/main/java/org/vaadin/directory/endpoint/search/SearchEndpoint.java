@@ -13,9 +13,10 @@ import com.vaadin.fusion.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.directory.Util;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Endpoint
@@ -26,6 +27,8 @@ public class SearchEndpoint {
     private final ComponentFramework polymer1, polymer2;
     private final ComponentFramework gwt1, gwt2;
     private final ComponentFramework vaadin6, vaadin7, vaadin8, vaadin10plus;
+    private final List<ComponentFramework> vaadinMajorVersions;
+    private final List<List<ComponentFrameworkVersion>> vaadinMinorVersions;
     private ComponentFrameworkRepository frameworkRepository;
     private ComponentDirectoryUserService userService;
     private ComponentService service;
@@ -51,6 +54,8 @@ public class SearchEndpoint {
         vaadin7 = frameworkRepository.findByName("Vaadin 7");
         vaadin8 = frameworkRepository.findByName("Vaadin 8");
         vaadin10plus = frameworkRepository.findByName("Vaadin platform");
+        this.vaadinMajorVersions = List.of(vaadin6,vaadin7,vaadin8,vaadin10plus);
+        this.vaadinMinorVersions = this.vaadinMajorVersions.stream().map(fw -> frameworkVersionRepository.findByFramework(fw)).collect(Collectors.toList());
     }
 
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
@@ -167,4 +172,96 @@ public class SearchEndpoint {
                 Set.of());
     }
 
+    @Transactional(readOnly = true)
+    public @Nonnull Matrix getCompatibility(String urlIdentifier) {
+
+        Optional<Component> maybveComponent = this.service.getComponentByUrl(urlIdentifier);
+        if (!maybveComponent.isPresent()) { return new Matrix(List.of(),List.of(),List.of()); }
+
+        Component component = maybveComponent.get();
+
+        List<String> cols = new ArrayList<>();
+        List<String> rows = new ArrayList<>();
+        List<List<String>> data = new ArrayList<>();
+
+        // Collect all component versions
+        List<ComponentVersion> versionList = component.getVersions().stream()
+                .filter(ComponentVersion::getAvailable)
+                .sorted(Comparator.comparing(ComponentVersion::getName))
+                .collect(Collectors.toList());
+
+        // Collect all available framework versions
+        List<ComponentFrameworkVersion> frameworkVersions = new ArrayList<>();
+        this.vaadinMinorVersions.stream().forEach(fw -> {
+             fw.stream().sorted(Comparator.comparing(ComponentFrameworkVersion::getVersion))
+                     .filter(fwv -> !fwv.getVersion().endsWith("+"))
+                     .forEach(fwv ->{
+                 frameworkVersions.add(fwv);
+             });
+        });
+
+        // Each row represents a framework version
+        for (int i = 0; i < frameworkVersions.size(); i++) {
+            ComponentFrameworkVersion fwv = frameworkVersions.get(i);
+            ArrayList<String> dataRow = new ArrayList<>();
+            rows.add(fwv.getVersion());
+            data.add(dataRow);
+        }
+
+        // Each column represents a component version
+        versionList.stream().forEach(version -> {
+            cols.add(""+version.getName());
+        });
+
+
+        // Data is compatible vs. not-compatible matrix
+        for (int r = 0; r < frameworkVersions.size(); r++) {
+            ComponentFrameworkVersion fwv = frameworkVersions.get(r);
+            List<String> row = data.get(r);
+            for (int c = 0; c < versionList.size(); c++) {
+                ComponentVersion version = versionList.get(c);
+                List<String> names = version.getFrameworkVersions().stream().map(ComponentFrameworkVersion::getVersion).collect(Collectors.toList());
+                boolean supported = Util.matchingVersionStrings(fwv.getVersion()).stream().anyMatch(name -> names.contains(name));
+                row.add(supported ? "Y" :"");
+            };
+        }
+
+        Matrix m = new Matrix(rows,cols,data);
+        System.out.println(m.toTabString());
+        return m;
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull Matrix getVaadinCompatibility() {
+        List<String> cols = new ArrayList<>();
+        List<String> rows = new ArrayList<>();
+        List<List<String>> data = new ArrayList<>();
+
+        ArrayList<String> row = new ArrayList<>();
+        data.add(row);
+        rows.add("Number of add-oms");
+        this.vaadinMajorVersions.forEach(fw -> {
+            List<ComponentFrameworkVersion> vl = this.frameworkVersionRepository.findByFramework(fw);
+            if (fw == vaadin10plus) {
+                vl.forEach(v -> {
+                    AtomicInteger count = new AtomicInteger(0);
+                    cols.add(v.getVersion());
+                    row.add(""+v.getComponentVersions().size());
+                });
+            } else {
+                AtomicInteger count = new AtomicInteger(0);
+                cols.add(fw.getName());
+                vl.forEach(v -> {
+                    v.getComponentVersions().size();
+                    count.addAndGet(v.getComponentVersions().size());
+                });
+                row.add(""+count.get());
+            }
+
+        });
+
+        Matrix m = new Matrix(rows,cols,data);
+        System.out.println(m.toTabString());
+        return m;
+    }
 }

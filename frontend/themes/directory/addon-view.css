@@ -56,3 +56,22 @@ addon-view {
   box-shadow: inset 0 0 0 1px var(--lumo-primary-color-50pct);
 }
 
+.compatibility-matrix {
+  width: 700px;
+}
+
+.compatibility-matrix .matrix {
+  width: 100%;
+}
+
+table.matrix th,
+table.matrix td {
+  margin: var(--lumo-space-m);
+  text-align: center;
+  vertical-align: top;
+}
+
+table.matrix td.on {
+    background-color: var(--lumo-success-color);
+    color: var(--lumo-success-contrast-color);
+}
