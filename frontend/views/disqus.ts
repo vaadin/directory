@@ -2,7 +2,7 @@
 declare global { interface Window { DISQUS : any; } }
 
 export function disqusReset(newIdentifier:string, newUrl:string, newTitle:string, visible: boolean = true) {
-    console.log("RESET on "+(window.DISQUS)+": "+newIdentifier + ", "+newUrl+", "+newTitle);
+    if (!window.DISQUS) return;
     window.DISQUS.reset({
         reload: true,
         config: function () {
