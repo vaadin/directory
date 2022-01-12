@@ -9,6 +9,11 @@ pre {
   padding: var(--lumo-space-m);
 }
 
+img.avatar {
+  border-radius: 9999px; height: 2.5rem; width: 2.5rem;
+  vertical-align: middle;
+}
+
 .discussions {
     max-width: 1000px;
     margin: auto;
