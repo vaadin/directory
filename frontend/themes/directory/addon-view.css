@@ -21,6 +21,34 @@ addon-view {
   border-radius: var(--lumo-border-radius-m);
 }
 
+.user {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+github-contributors {
+  margin-left: 1.5rem;
+}
+
+github-contributors .total {
+  font-style: italic;
+}
+
+github-contributors .contributors {
+  text-align: right;
+  margin-left: 1.5rem;
+}
+
+github-contributors img.avatar {
+  position: relative;
+  height: 2rem;
+  width: 2rem;
+  box-sizing: content-box;
+  z-index: 1;
+  margin-left: -1.5rem;
+  border: 2px solid var(--lumo-primary-contrast-color);;
+}
+
 .side-panel pre {
     overflow-x: scroll;
     color: inherit;

@@ -1,6 +1,7 @@
 import './install-tabsheet';
 import './highlight-carousel';
 import './feature-matrix';
+import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
@@ -82,7 +83,11 @@ export class AddonView extends View implements BeforeEnterObserver {
                     : '★️'.repeat(this.addon.rating)
                   : '☆☆☆☆☆'} (${this.addon.ratingCount})</span>
               <div class="updated">Updated on ${this.addon.lastUpdated}</div>
-              <div class="user">By ${this.addon.author}</div>
+              <div class="user">
+                <img class="avatar" src="https://vaadin.com/static/portrait/initials/JD" title="John Doe">
+                ${this.addon.author}
+                <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
+              </div>
             </div>
             <div class="highlight-links">${this.getHighlightLinks()}</div>
           </div>
