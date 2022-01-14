@@ -244,10 +244,15 @@ export class AddonView extends View implements BeforeEnterObserver {
     }
   }
 
-  getHighlightLinks() {
-    const gitHubLink = this.addon?.links.find((link) =>
+  getGitHubLink() {
+    const link = this.addon?.links.find((link) =>
       link.href.match(/http(s)?:\/\/github.com\/[-_\w\d]+\/[-_\w\d]+(.git)?/)
     );
+    return link ? link.href : null;
+  }
+
+  getHighlightLinks() {
+    const gitHubLink = this.getGitHubLink();
     const demoLink = this.addon?.links.find((link) => link.name.match(/demo/i));
     const kofiLink = this.addon?.links.find((link) =>
       link.href.match(/http(s)?:\/\/ko-fi.com\/[-_\w\d]+/)
@@ -266,7 +271,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         : nothing}
       ${gitHubLink
         ? html` <li>
-            <a href=${gitHubLink.href} target="_blank" noopener>
+            <a href=${gitHubLink} target="_blank" noopener>
               <i class="text-xl fab fa-github"></i> GitHub
             </a>
           </li>`
