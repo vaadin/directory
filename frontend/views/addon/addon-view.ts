@@ -120,7 +120,7 @@ export class AddonView extends View implements BeforeEnterObserver {
             html`<h2>Sample code</h2>
             <p>
               ${this.addon.codeSamples.map(
-                (s) => html`<pre class="sample-code ${s.type}">${s.code}</pre> `
+                (s) => html`<pre class="sample-code ${s?.type}">${s?.code}</pre> `
               )}
             </p>` :
             html``
