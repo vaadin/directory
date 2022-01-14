@@ -80,7 +80,7 @@ export class SearchView extends View {
           style="min-width: 400px; max-width: 640px;"
           placeholder="Try e.g. 'upload' or 'icons'"
           .value=${searchStore.query}
-          @change=${this.updateQuery}
+          @keyup=${this.debounce((e: any) => this.updateQuery(e))}
           clear-button-visible>
         </vaadin-text-field>
       </div>
@@ -211,4 +211,11 @@ export class SearchView extends View {
       searchStore.setSort(e.target.value);
     }
 
+  debounce(func : Function, timeout = 500){
+    let timer: any;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+  }
 }
