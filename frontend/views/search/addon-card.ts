@@ -71,7 +71,7 @@ export class AddonCard extends View {
                 (this.addon.rating < 5 ?
                   '★️'.repeat(this.addon.rating) + '☆'.repeat(5-this.addon.rating):
                   '★️'.repeat(this.addon.rating) ) :
-                '☆☆☆☆☆' }</span> <span class="updated">${this.addon.lastUpdated}</span></div>
+                '☆☆☆☆☆' }</span> <span class="updated" title="${this.addon.lastUpdated}">${this.formatDate(new Date(this.addon.lastUpdated))}</span></div>
       </a>
 
     `;
@@ -100,4 +100,33 @@ export class AddonCard extends View {
       );
     }
   }
+
+  formatDate(date: Date) {
+    const now = new Date().setHours(0, 0, 0, 0);
+    const then = date.setHours(0, 0, 0, 0);
+    const days = (then - now) / 86400000;
+    if (days > -14) {
+      if (days > -7) {
+        return relative.format(days, 'day');
+      }
+      return relative.format(days, 'week');
+    }
+    return absolute.format(date);
+  }
 }
+
+// Formatter for "Today" and "Yesterday" etc
+const relative = new Intl.RelativeTimeFormat(
+  'en-US', {numeric: 'auto'}
+);
+
+// Formatter for dates, e.g. "Mon, 31 May 2021"
+const absolute = new Intl.DateTimeFormat(
+  'en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric'
+});
+
+
+
