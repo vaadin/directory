@@ -127,7 +127,7 @@ public class QueryParser {
 
     private String getStringAfterColon(String s) {
         String[] sa = s.split(":");
-        return sa.length > 0 ? sa[1] : "";
+        return sa.length > 1 ? sa[1] : "";
     }
 
     public static QueryParser parse(String searchString) {
