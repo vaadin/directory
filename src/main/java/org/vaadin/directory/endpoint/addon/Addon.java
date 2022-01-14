@@ -40,6 +40,9 @@ public class Addon {
     private  List<MediaHighlight> mediaHighlights;
 
     @Nonnull
+    private List<CodeSample> codeSamples;
+
+    @Nonnull
     private Long downloadCount;
 
     @Nonnull
@@ -96,6 +99,11 @@ public class Addon {
                                 || highlight instanceof HighlightVideo)
                 .map(highlight -> new MediaHighlight(highlight))
                 .collect(Collectors.toList());
+
+        this.codeSamples = component.getCodeHighlights().stream()
+                .map(highlight -> new CodeSample(highlight))
+                .collect(Collectors.toList());
+
     }
 
     public String getUrlIdentifier() { return urlIdentifier; }
@@ -175,4 +183,8 @@ public class Addon {
     public Long getRatingCount() { return ratingCount; }
 
     public void setRatingCount(Long ratingCount) { this.ratingCount = ratingCount; }
+
+    public List<CodeSample> getCodeSamples() { return codeSamples; }
+
+    public void setCodeSamples(List<CodeSample> codeSamples) { this.codeSamples = codeSamples; }
 }
