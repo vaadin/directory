@@ -10,7 +10,9 @@ pre {
 }
 
 img.avatar {
-  border-radius: 9999px; height: 2.5rem; width: 2.5rem;
+  border-radius: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
   vertical-align: middle;
 }
 
