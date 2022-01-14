@@ -73,6 +73,8 @@ public class SearchResult {
         return rating;
     }
 
+    public LocalDate getLastUpdated() { return lastUpdated; }
+
     public String getUrlIdentifier() {
         return urlIdentifier;
     }

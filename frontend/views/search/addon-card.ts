@@ -67,12 +67,13 @@ export class AddonCard extends View {
 
         <div>${this.addon.summary}</div>
 
-        <div>${this.addon.rating > 0 ?
+        <div><span class="rating">${this.addon.rating > 0 ?
                 (this.addon.rating < 5 ?
                   '★️'.repeat(this.addon.rating) + '☆'.repeat(5-this.addon.rating):
                   '★️'.repeat(this.addon.rating) ) :
-                '☆☆☆☆☆' }</div>
+                '☆☆☆☆☆' }</span> <span class="updated">${this.addon.lastUpdated}</span></div>
       </a>
+
     `;
   }
 
