@@ -1,5 +1,6 @@
 package org.vaadin.directory.endpoint.search;
 
+import com.google.common.collect.Lists;
 import com.vaadin.directory.backend.SortFilter;
 import com.vaadin.directory.backend.repository.directory.ComponentFrameworkRepository;
 import com.vaadin.directory.backend.repository.directory.ComponentFrameworkVersionRepository;
@@ -55,7 +56,9 @@ public class SearchEndpoint {
         vaadin8 = frameworkRepository.findByName("Vaadin 8");
         vaadin10plus = frameworkRepository.findByName("Vaadin platform");
         this.vaadinMajorVersions = List.of(vaadin6,vaadin7,vaadin8,vaadin10plus);
-        this.vaadinMinorVersions = this.vaadinMajorVersions.stream().map(fw -> frameworkVersionRepository.findByFramework(fw)).collect(Collectors.toList());
+        this.vaadinMinorVersions = this.vaadinMajorVersions.stream()
+                .map(fw -> frameworkVersionRepository.findByFramework(fw))
+                .collect(Collectors.toList());
     }
 
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
@@ -192,9 +195,10 @@ public class SearchEndpoint {
 
         // Collect all available framework versions
         List<ComponentFrameworkVersion> frameworkVersions = new ArrayList<>();
-        this.vaadinMinorVersions.stream().forEach(fw -> {
-             fw.stream().sorted(Comparator.comparing(ComponentFrameworkVersion::getVersion))
+        Lists.reverse(this.vaadinMinorVersions).stream().forEach(fw -> {
+             fw.stream()
                      .filter(fwv -> !fwv.getVersion().endsWith("+"))
+                     .sorted((v0,v1)-> {return Util.compareSemver(v0.getVersion(), v1.getVersion(), true);})
                      .forEach(fwv ->{
                  frameworkVersions.add(fwv);
              });

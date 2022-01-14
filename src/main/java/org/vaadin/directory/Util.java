@@ -2,14 +2,12 @@ package org.vaadin.directory;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
 import com.vaadin.directory.entity.directory.TagGroup;
+import io.swagger.codegen.utils.SemVer;
 
 public class Util {
 
@@ -60,6 +58,17 @@ public class Util {
     }
 
     return matchingVersionStrings;
+  }
+
+  public static int compareSemver(String v0, String v1) {
+    return compareSemver(v0,v1, false);
+  }
+
+  public static int compareSemver(String v0, String v1, boolean reverse) {
+    SemVer sv0 = new SemVer(v0);
+    SemVer sv1 = new SemVer(v1);
+    return reverse ? sv1.compareTo(sv0) : sv0.compareTo(sv1);
+
   }
 }
 
