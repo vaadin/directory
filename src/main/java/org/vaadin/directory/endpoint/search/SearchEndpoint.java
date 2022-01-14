@@ -96,7 +96,7 @@ public class SearchEndpoint {
 
     @Transactional(readOnly = true)
     public @Nonnull SearchListResult search(
-            String searchString, int page, int pageSize, boolean includeCount) {
+            String searchString, int page, int pageSize, String sort, boolean includeCount) {
         QueryParser qp = QueryParser.parse(searchString);
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
@@ -132,13 +132,15 @@ public class SearchEndpoint {
             //TODO: Maybe instead try to match the first framework with the given version?
             return new SearchListResult();
         }
+
+        SortFilter sortBy = SortFilter.fromString(sort).orElse(SortFilter.LAST_UPDATED);
         List<SearchResult> results = service
                 .findAllComponentsBySearchCriteria(
                         List.of(Status.PUBLISHED),
                         qp.getKeywords(),
                         tagGroups,
                         owners,
-                        SortFilter.LAST_UPDATED,
+                        sortBy,
                         framework,
                         versions,
                         PageRequest.of(page, pageSize))

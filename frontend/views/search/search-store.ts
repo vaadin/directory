@@ -12,6 +12,7 @@ class SearchStore {
   addons: SearchResult[] = [];
   totalCount: number = -1;
   query = '';
+  sort = 'recent';
   private page = 1;
   private pageSize = 12;
 
@@ -37,7 +38,7 @@ class SearchStore {
     if (this.loading) return;
    this.setLoading(true);
     try {
-      const res: SearchListResult = await SearchEndpoint.search(this.query, this.page, this.pageSize, this.page == 1);
+      const res: SearchListResult = await SearchEndpoint.search(this.query, this.page, this.pageSize, this.sort, this.page == 1);
       if (this.page === 1 && res.totalCount) {
           this.setTotalCount(res.totalCount);
       }
@@ -94,6 +95,15 @@ class SearchStore {
     this.writeQueryToURL();
     this.fetchPage();
   }
+
+    setSort(sort: string) {
+      this.sort = sort;
+      this.page = 1;
+      this.addons = [];
+      this.writeQueryToURL();
+      this.fetchPage();
+    }
+
 
   addFilter(filter: Filter) {
     this.setQuery(
