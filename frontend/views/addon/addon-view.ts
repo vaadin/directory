@@ -122,7 +122,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
             )}
           </ul>
-          <h2>Full Compatibility</h2>
+          <h2>Compatibility</h2>
           <div class="compatibility-matrix"><feature-matrix .matrix=${this.compatibility}></feature-matrix></div>
         </div>
         <div class="side-panel">
