@@ -13,7 +13,7 @@ class SearchStore {
   totalCount: number = -1;
   query = '';
   private page = 1;
-  private pageSize = 10;
+  private pageSize = 12;
 
   // Init
   constructor() {
