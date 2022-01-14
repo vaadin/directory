@@ -4,8 +4,9 @@ import '@vaadin/icon';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import '@vaadin/button';
 import './addon-card';
-import { html } from 'lit';
+import { html, render } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { guard } from 'lit/directives/guard.js';
 import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
@@ -56,13 +57,33 @@ export class SearchView extends View {
         <a href="https://vaadin.com/directory/help">follow the instructions</a>.
       </p>
       <h2>Search for add-ons</h2>
-      <vaadin-text-field
-        style="min-width: 400px; max-width: 640px;"
-        placeholder="Try e.g. 'upload' or 'icons'"
-        .value=${searchStore.query}
-        @change=${this.updateQuery}
-        clear-button-visible>
-      </vaadin-text-field>
+      <div>
+        <vaadin-select
+          value="${searchStore.sort}"
+          @value-changed=${this.updateSort}
+          .renderer="${guard(
+            [searchStore.sort],
+            () => (elem: HTMLElement) =>
+              render(
+                html`
+                  <vaadin-list-box>
+                    <vaadin-item value="recent" label="New and noteworthy">New and noteworthy</vaadin-item>
+                    <vaadin-item value="rating" label="Popular">Popular</vaadin-item>
+                    <vaadin-item value="alphabetical" label="Alphabetical">Alphabetical</vaadin-item>
+                  </vaadin-list-box>
+                `,
+                elem
+              )
+          )}"></vaadin-select>
+
+        <vaadin-text-field
+          style="min-width: 400px; max-width: 640px;"
+          placeholder="Try e.g. 'upload' or 'icons'"
+          .value=${searchStore.query}
+          @change=${this.updateQuery}
+          clear-button-visible>
+        </vaadin-text-field>
+      </div>
       <div>
         Found total <b>${searchStore.totalCount}</b> add-ons.
         <i class="text-2xs"
@@ -185,4 +206,9 @@ export class SearchView extends View {
   updateQuery(e: { target: HTMLInputElement }) {
     searchStore.setQuery(e.target.value);
   }
+
+    updateSort(e: { target: HTMLInputElement }) {
+      searchStore.setSort(e.target.value);
+    }
+
 }
