@@ -25,10 +25,6 @@ search-view addon-card {
   overflow: hidden;
 }
 
-addon-card .rating {
-  color: #ffd055;;
-}
-
 addon-card .updated {
   color: #999;
   float: right;

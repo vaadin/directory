@@ -76,12 +76,12 @@ export class AddonView extends View implements BeforeEnterObserver {
           <h1>${this.addon.name}</h1>
           <div class="flex">
             <div class="flex flex-col flex-auto flex-wrap">
-              <span>${this.addon.rating > 0
+              <span><span class="rating">${this.addon.rating > 0
                   ? this.addon.rating < 5
                     ? '★️'.repeat(this.addon.rating) +
                       '☆'.repeat(5 - this.addon.rating)
                     : '★️'.repeat(this.addon.rating)
-                  : '☆☆☆☆☆'} (${this.addon.ratingCount})</span>
+                  : '☆☆☆☆☆'}</span> (${this.addon.ratingCount})</span>
               <div class="updated">Updated on ${this.addon.lastUpdated}</div>
               <div class="user">
                 <img class="avatar" src="https://vaadin.com/static/portrait/initials/JD" title="John Doe">

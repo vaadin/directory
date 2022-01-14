@@ -31,3 +31,7 @@ img.avatar {
 .discussions.active {
     display: block;
 }
+
+.rating {
+  color: #ffd055;;
+}
