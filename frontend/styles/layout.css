@@ -1,0 +1,30 @@
+/* max-width and padding values copied from vaadin.com main.css style sheet */
+
+html {
+  background-color: var(--base-white);
+  --layout-max-width: 80rem;
+  --layout-padding: 1rem;
+}
+
+body {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  html {
+    --layout-padding: 2rem;
+  }
+}
+
+@media (min-width: 640px) {
+  html {
+    --layout-padding: 1.5rem;
+  }
+}
+
+.discussions {
+  max-width: var(--layout-max-width);
+  padding: 0 var(--layout-padding);
+  margin: 0 auto;
+  box-sizing: border-box;
+}

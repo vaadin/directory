@@ -87,7 +87,7 @@ public class SearchEndpoint {
                         owners,
                         SortFilter.LAST_UPDATED,
                         framework,
-                        versions, 
+                        versions,
                         PageRequest.ofSize(3))
                 .stream()
                 .map(c -> new SearchResult(c))

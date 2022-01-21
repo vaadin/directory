@@ -1,0 +1,11 @@
+html {
+  --background-color: var(--base-white);
+  --surface-color: var(--base-white);
+  --surface-shadow-m: 0 10px 20px -5px var(--gray-200), 0 8px 12px -5px var(--gray-200);
+  --divider-color1: var(--gray-200);
+  --secondary-text-color: var(--color-secondary-text);
+  --body-text-color: var(--color-base-text);
+  --heading-text-color: var(--color-base-header);
+  --surface-color-alt: var(--blue-50);
+  --link-color: var(--blue-500);
+}

@@ -1,0 +1,59 @@
+search-view {
+  display: block;
+  box-sizing: border-box;
+  max-width: var(--layout-max-width);
+  padding: 0 var(--layout-padding);
+  margin: 0 auto;
+}
+
+search-view .featured-addons {
+  background-color: var(--surface-color-alt);
+  border-radius: var(--roundness-lg);
+  margin: var(--space-md) calc(var(--layout-padding) * -1);
+}
+
+search-view .featured-addons h2 {
+  padding: var(--space-md);
+  margin: 0;
+}
+search-view .featured-addons h2 span {
+  display: block;
+  width: min-content;
+  white-space: nowrap;
+  font-size: var(--text-size-md);
+  /* Copied from vaadin.com style sheet */
+  --tw-gradient-from: #1a81fa;
+  --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to,rgb(26 129 250/0));
+  --tw-gradient-to: #8854fc;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(to right,var(--tw-gradient-stops));
+  color: transparent;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+search-view .featured-addons .gallery {
+  display: flex;
+  gap: var(--space-md);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 var(--space-md) var(--space-md);
+  scroll-padding: var(--space-md);
+}
+
+search-view .featured-addons addon-card {
+  flex: none;
+  scroll-snap-align: start;
+  background-color: var(--background-color);
+  border: 0;
+  box-shadow: var(--surface-shadow-m);
+  width: calc((100% - var(--space-md) * 2) / 3);
+  min-width: max(18rem, 28%);
+}
+
+search-view .results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+}

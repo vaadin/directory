@@ -1,7 +1,7 @@
 package org.vaadin.directory;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
-import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.NoTheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @SpringBootApplication
 @EnableAsync
-@Theme(value = "directory")
+@NoTheme
 @Import(com.vaadin.directory.backend.BackendConfig.class)
 public class Application extends SpringBootServletInitializer
         implements AppShellConfigurator, ApplicationListener<ContextRefreshedEvent> {

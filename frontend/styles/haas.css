@@ -1,0 +1,13 @@
+/* copied from vaadin.com style sheet, needed to avoid layout shift */
+.haas {
+  height: 4rem;
+  max-width: var(--layout-max-width);
+  padding: 0 var(--layout-padding);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* bug in Antlers: typography.css adds margin-bottom to HaaS nav items, with this specific selector */
+.haas-nav-items:not(:last-child) {
+  margin-bottom: 0;
+}

@@ -1,0 +1,51 @@
+.directory-header {
+  display: block;
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.directory-header > section {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  max-width: var(--layout-max-width);
+  padding: 0 var(--layout-padding);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.directory-header h1 {
+  font-size: var(--text-size-lg);
+  margin: 0;
+}
+
+.directory-header nav {
+  flex: auto;
+}
+
+.directory-header ul {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  color: var(--secondary-text-color);
+  font-size: var(--text-size-sm);
+  line-height: 18px;
+}
+
+.directory-header a {
+  font-weight: var(--text-weight-semibold);
+}
+
+.directory-header .twitter svg {
+  width: 18px;
+  fill: currentColor;
+}
+
+.preview-badge {
+  margin-inline-end: auto;
+  font-size: var(--text-size-xs);
+}

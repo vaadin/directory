@@ -1,6 +1,5 @@
 package org.vaadin.directory.endpoint.search;
 
-import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.directory.entity.directory.Component;
@@ -26,7 +25,7 @@ public class SearchResult {
 
     @NotBlank
     @Nonnull
-    private LocalDate lastUpdated;
+    private Long ratingCount;
 
     private @Nonnull List<@Nonnull String> tags;
 
@@ -45,7 +44,7 @@ public class SearchResult {
                         Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName()):
                 Addon.DEFAULT_ICON_URL;
         this.summary = component.getSummary();
-        this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
+        this.ratingCount = component.getRatingCount();
         this.author = "User " + component.getOwner().getId().toString();
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
         this.tags = Util.tagsToStrings(component.getTagGroups());
@@ -73,7 +72,7 @@ public class SearchResult {
         return rating;
     }
 
-    public LocalDate getLastUpdated() { return lastUpdated; }
+    public Long getRatingCount() { return ratingCount; }
 
     public String getUrlIdentifier() {
         return urlIdentifier;

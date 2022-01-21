@@ -22,7 +22,8 @@
     "baseUrl": "frontend",
     "paths": {
       "Frontend/*": ["*"]
-    }
+    },
+    "types": ["vite/client"]
   },
   "include": ["frontend/**/*.ts", "frontend/index.js", "types.d.ts"],
   "exclude": []
