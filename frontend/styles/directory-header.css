@@ -2,6 +2,15 @@
   display: block;
   border-top: 1px solid var(--gray-100);
   border-bottom: 1px solid var(--gray-100);
+  color: var(--secondary-text-color);
+  font-size: var(--text-size-sm);
+  line-height: 18px;
+}
+
+@media (max-width: 40rem) {
+  .directory-header {
+    font-size: var(--text-size-xs);
+  }
 }
 
 .directory-header > section {
@@ -16,36 +25,49 @@
   box-sizing: border-box;
 }
 
-.directory-header h1 {
+.directory-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5rem;
+}
+
+.directory-title h1 {
   font-size: var(--text-size-lg);
   margin: 0;
 }
 
-.directory-header nav {
+.directory-support-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0 1rem;
   flex: auto;
 }
 
-.directory-header ul {
+.directory-support-nav p {
+  margin: 0;
+}
+
+.directory-support-nav ul {
   display: flex;
   list-style: none;
   gap: 1rem;
   margin: 0;
   padding: 0;
-  color: var(--secondary-text-color);
-  font-size: var(--text-size-sm);
-  line-height: 18px;
 }
 
 .directory-header a {
   font-weight: var(--text-weight-semibold);
 }
 
-.directory-header .twitter svg {
+.directory-header .icon svg {
   width: 18px;
   fill: currentColor;
+  vertical-align: -4px;
 }
 
-.preview-badge {
-  margin-inline-end: auto;
+.build-label {
   font-size: var(--text-size-xs);
 }
