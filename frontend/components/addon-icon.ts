@@ -22,7 +22,7 @@ export class AddonIcon extends LitElement {
     img {
       width: 50%;
       object-fit: contain;
-      --filter: grayscale() contrast(150%);
+      --filter: grayscale() contrast(100%);
       filter: var(--filter);
       mix-blend-mode: screen;
       border-radius: var(--roundness-md);
@@ -39,7 +39,7 @@ export class AddonIcon extends LitElement {
     const color = colors[num % colors.length];
     const shade = shades[num % shades.length];
     this.style.setProperty('background-color', `var(--${color}-${shade})`);
-    if (shade < 300) {
+    if (shade <= 300) {
       this.classList.add('light')
     }
   }
@@ -53,7 +53,7 @@ export class AddonIcon extends LitElement {
 }
 
 const colors = ['blue', 'indigo', 'violet', 'green', 'orange', 'yellow', 'red'];
-const shades = [100, 200, 300, 400, 500];
+const shades = [100, 200, 300, 400, 500, 600];
 
 const convertImageUrlToNumber = (url:string|undefined): number => {
   if (url) {
