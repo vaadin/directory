@@ -114,18 +114,17 @@ export class AddonView extends View implements BeforeEnterObserver {
         </section>
 
         <highlight-carousel .addon=${this.addon}></highlight-carousel>
-        <p>
-          ${unsafeHTML(
-            DomPurify.sanitize(marked.parse(this.addon.description || ""))
-          )}
-        </p>
+
+        ${unsafeHTML(
+          DomPurify.sanitize(marked.parse(this.addon.description || ""))
+        )}
+
         ${this.addon.codeSamples && this.addon.codeSamples.length > 0 ?
           html`<h2>Sample code</h2>
-          <p>
             ${this.addon.codeSamples.map((s) => html`
               <pre class="sample-code ${s?.type}">${s?.code}</pre>
-            `)}
-          </p>` :
+            `)}`
+          :
           html``
         }
 

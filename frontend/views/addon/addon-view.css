@@ -136,3 +136,12 @@ addon-view .tags button {
   border-radius: var(--roundness-md);
   font-size: var(--text-size-sm);
 }
+
+/* Add-on authors should not use H1 or H2 in the description */
+addon-view .main h1 {
+  font-size: var(--text-size-2xl);
+}
+
+addon-view .main h2 {
+  font-size: var(--text-size-xl);
+}
