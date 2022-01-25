@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { View } from '../view';
 import '@vaadin/avatar-group/src/vaadin-avatar-group';
 
@@ -9,12 +9,8 @@ export class GitHubContributors extends View {
   @property({ attribute: true })
   repositoryUrl?:  String;
 
-  @property({ attribute: false })
+  @state()
   contributors?:  GithubUser[] = [];
-
-  constructor() {
-    super();
-  }
 
   render() {
     if (!this.contributors || this.contributors.length < 2) {
@@ -29,8 +25,7 @@ export class GitHubContributors extends View {
     });
 
     return html`
-      <a href="${this.repositoryUrl}/contributors" class="contributors">${this.contributors.length} contributors</a>
-      <vaadin-avatar-group .items="${contributors}" max-items-visible="5"></vaadin-avatar-group>
+      <vaadin-avatar-group .items="${contributors}" max-items-visible="6"></vaadin-avatar-group>
     `;
   }
 

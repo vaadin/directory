@@ -15,7 +15,7 @@ export class AddonIcon extends LitElement {
       align-items: center;
       justify-content: center;
       margin: 0;
-      background-color: var(--icon-background-color, var(--blue-500));
+      background-color: var(--blue-500);
       border-radius: var(--roundness-lg);
     }
 
@@ -24,14 +24,24 @@ export class AddonIcon extends LitElement {
       object-fit: contain;
       --filter: grayscale() contrast(150%);
       filter: var(--filter);
-      mix-blend-mode: hard-light;
+      mix-blend-mode: screen;
       border-radius: var(--roundness-md);
+    }
+
+    :host(.light) img {
+      mix-blend-mode: multiply;
     }
   `;
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
     this.setAttribute('role', 'figure');
+    const num = convertImageUrlToNumber(this.src);
+    const color = colors[num % colors.length];
+    const shade = shades[num % shades.length];
+    this.style.setProperty('background-color', `var(--${color}-${shade})`);
+    if (shade < 300) {
+      this.classList.add('light')
+    }
   }
 
   render() {
@@ -42,6 +52,12 @@ export class AddonIcon extends LitElement {
 
 }
 
-const convertImageUrlToNumber = (url:string): number => {
-  return parseInt(url.replace(/[^0-9]/g, '').substr(0, 20)) || 0;
+const colors = ['blue', 'indigo', 'violet', 'green', 'orange', 'yellow', 'red'];
+const shades = [100, 200, 300, 400, 500];
+
+const convertImageUrlToNumber = (url:string|undefined): number => {
+  if (url) {
+    return parseInt(url.replace(/[^0-9]/g, '').substr(0, 10)) || 0;
+  }
+  return 0;
 }

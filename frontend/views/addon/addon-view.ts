@@ -74,37 +74,65 @@ export class AddonView extends View implements BeforeEnterObserver {
     params.set('q', searchStore.query);
 
     return html`
-      <a href="${router.baseUrl}?${params}">← Back</a>
-      <section>
-      <div>
+      <a href="${router.baseUrl}?${params}" class="back-to-search">← Back</a>
+      <section class="main">
+
         <addon-icon src="${this.addon.icon}"></addon-icon>
-        <h2>${this.addon.name}</h2>
-        <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
-        <div class="updated">Updated on ${this.addon.lastUpdated}</div>
-        <div class="user">
-          <vaadin-avatar .img="https://vaadin.com/static/portrait/initials/JD" name="John Doe"></vaadin-avatar>
-          ${this.addon.author}
-        </div>
-        <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
-        <div class="highlight-links">${this.getHighlightLinks()}</div>
-        <div class="tags">
-          ${this.addon.tags.map(
-            (tag) =>
-              html`
-                <button
-                  style="cursor:pointer;"
-                  @click=${() => this.searchByTag(tag)}>
-                  ${tag}
-                  ${OFFICIAL_TAG === tag
-                    ? html`<span class="m-xs">
-                        <vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon>
-                      </span>`
-                    : ''}
-                </button>
-              `
-          )}
-        </div>
-        <p>${this.addon.summary}</p>
+        <h2 class="addon-name">${this.addon.name}</h2>
+        <p class="addon-summary">${this.addon.summary}</p>
+
+        <section class="meta">
+          <section class="author">
+            <h3>Author</h3>
+            <button @click="${this.searchByAuthor}">
+              <vaadin-avatar .img="https://vaadin.com/static/portrait/initials/JD" name="John Doe"></vaadin-avatar>
+              ${this.addon.author}
+            </button>
+          </section>
+
+          ${this.getGitHubLink() ? html`
+            <section class="contributors">
+              <h3>Contributors</h3>
+              <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
+            </section>
+          `:nothing}
+
+          <section class="rating">
+            <h3>Rating</h3>
+            <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
+          </section>
+
+          <section class="updated">
+            <h3>Updated</h3>
+            <p>${this.addon.lastUpdated}</p>
+          </section>
+
+          ${this.addon.links.length > 0 ? html`
+            <section class="links">
+              <h3>Links</h3>
+              ${this.getHighlightLinks()}
+            </section>
+          `:nothing}
+
+          <section class="tags">
+          <h3>Tags</h3>
+            ${this.addon.tags.map(
+              (tag) =>
+                html`
+                  <button
+                    @click=${() => this.searchByTag(tag)}>
+                    ${tag}
+                    ${OFFICIAL_TAG === tag
+                      ? html`<span class="m-xs">
+                          <vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon>
+                        </span>`
+                      : ''}
+                  </button>
+                `
+            )}
+          </section>
+        </section>
+
         <highlight-carousel .addon=${this.addon}></highlight-carousel>
         <p>
           ${unsafeHTML(
@@ -120,21 +148,17 @@ export class AddonView extends View implements BeforeEnterObserver {
           </p>` :
           html``
         }
-        <h2>Links</h2>
+
+        <h3>Links</h3>
         <ul>
           ${this.addon.links.map(
             (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
           )}
         </ul>
-      </div>
+      </section>
 
-
-
-
-
-
-      <div class="side-panel">
-        <h3>Install</h3>
+      <section class="versions">
+        <h3>Versions</h3>
         <p>
           <vaadin-select
             value="${this.version?.name}"
@@ -211,7 +235,6 @@ export class AddonView extends View implements BeforeEnterObserver {
         <p>
             <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
         </p>
-      </div>
       </section>
     `;
   }
@@ -323,6 +346,12 @@ export class AddonView extends View implements BeforeEnterObserver {
         "https://directory4.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
         this.addon.name, true);
       this.fetchCompatibility();
+    }
+  }
+
+  searchByAuthor() {
+    if (this.addon) {
+      this.searchByUser(this.addon.author);
     }
   }
 
