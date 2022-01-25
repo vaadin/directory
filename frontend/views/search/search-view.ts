@@ -1,5 +1,5 @@
-import '@vaadin/grid';
-import './addon-card';
+import './search-view.css';
+import '../../components/addon-card';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { View } from '../view';
@@ -16,6 +16,16 @@ export class SearchView extends View {
     appStore.currentViewTitle = 'Search';
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('click', this._clickListener);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this._clickListener);
+    super.disconnectedCallback();
+  }
+
   render() {
     return html`
       <article class="featured-addons" aria-label="featured add-ons">
@@ -30,7 +40,7 @@ export class SearchView extends View {
         </section>
       </article>
 
-      <form role="search">
+      <form role="search" id="search">
         <select
           .value="${searchStore.sort}"
           @change="${this.updateSort}">
@@ -40,26 +50,28 @@ export class SearchView extends View {
         <input
           type="search"
           placeholder="Search"
-          .value=${searchStore.query}
-          @input=${this.debounce((e: any) => this.updateQuery(e))} />
+          .value="${searchStore.query}"
+          @input="${this.debounce((e: any) => this.updateQuery(e))}" />
         <p>
           <b>${searchStore.totalCount}</b> add-ons found.
           <i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or
           <a href="?q=author%3Ame">author:me</a></i>
-        </div>
+        </p>
       </form>
 
-      <section class="results" @filter-added=${this.filterAdded}>
+      <section class="results" @filter-added="${this.filterAdded}">
         ${searchStore.addons.map(
-          (addon) => html` <addon-card .addon=${addon}></addon-card> `
+          (addon) => html`
+            <addon-card .addon=${addon}></addon-card>
+          `
         )}
       </section>
 
       <button
         id="load-more-button"
-        @click=${searchStore.fetchPage}
-        ?disabled=${searchStore.loading}
-        ?hidden=${searchStore.addons.length === 0 || !searchStore.hasMore }>
+        @click="${searchStore.fetchPage}"
+        ?disabled="${searchStore.loading}"
+        ?hidden="${searchStore.addons.length === 0 || !searchStore.hasMore }">
         Load more
       </button>
     `;
@@ -76,18 +88,20 @@ export class SearchView extends View {
       'Vaadin Directory Search',
       false
     );
+
     this.restoreScrollIfNeeded();
   }
 
   restoreScrollIfNeeded() {
-    if (window.searchScroll && window.searchScroll > 0) {
-      // TODO: Really, this trick again...
-      setTimeout(function () {
-        window.scroll(0, window.searchScroll);
-      }, 0);
-    }
+    // TODO: workaround for an issue in Vaadin Router, which scrolls the page to the top before updating the browser location
+    setTimeout(function () {
+      window.scroll(0, appStore.searchViewScrollTop);
+    }, 0);
   }
 
+  _clickListener() {
+    appStore.searchViewScrollTop = window.scrollY;
+  }
 
   setupIntersectionObserver() {
     const observer = new IntersectionObserver((entries) => {

@@ -1,0 +1,22 @@
+addon-view {
+  display: block;
+  max-width: var(--layout-max-width);
+  padding: var(--space-md) var(--layout-padding);
+  margin: 0 auto;
+}
+
+addon-view > section {
+  display: flex;
+}
+
+addon-view section .side-panel {
+  width: 20rem;
+  flex: none;
+}
+
+addon-view vaadin-avatar,
+addon-view vaadin-avatar-group::part(avatar) {
+  --vaadin-avatar-size: 32px;
+  background-color: var(--gray-100);
+  color: var(--body-text-color);
+}

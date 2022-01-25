@@ -1,7 +1,7 @@
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import {guard} from 'lit/directives/guard.js';
 import { View } from '../view';
+import '@vaadin/avatar-group/src/vaadin-avatar-group';
 
 @customElement('github-contributors')
 export class GitHubContributors extends View {
@@ -20,12 +20,18 @@ export class GitHubContributors extends View {
     if (!this.contributors || this.contributors.length < 2) {
       return html``;
     }
+
+    const contributors = this.contributors.sort((a, b) => {return a.contributions - b.contributions}).map((user) => {
+      return {
+        name: user.login,
+        img: user.avatar_url
+      }
+    });
+
     return html`
-      <a href="${this.repositoryUrl}/contributors" class="contributors">${guard([this.contributors], () => this.contributors && this.contributors.length > 0 ?
-        html`${this.contributors.sort((a, b) => {return a.contributions - b.contributions}).map((user) =>
-          html`<img class="avatar" src="${user.avatar_url}" title="${user.login}"/>`)}` :
-          html``)}</a> <span class="total">${this.contributors.length} contributors</span>
-      `;
+      <a href="${this.repositoryUrl}/contributors" class="contributors">${this.contributors.length} contributors</a>
+      <vaadin-avatar-group .items="${contributors}" max-items-visible="5"></vaadin-avatar-group>
+    `;
   }
 
   firstUpdated() {

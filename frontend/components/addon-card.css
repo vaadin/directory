@@ -7,27 +7,6 @@ addon-card {
   border: 1px solid var(--divider-color1);
   box-sizing: border-box;
   position: relative;
-  --icon-background-color: var(--blue-400);
-}
-
-addon-card figure {
-  width: 4rem;
-  height: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  background-color: var(--icon-background-color);
-  border-radius: var(--roundness-lg);
-}
-
-addon-card figure img {
-  width: 50%;
-  object-fit: contain;
-  --filter: grayscale() contrast(150%);
-  filter: var(--filter);
-  mix-blend-mode: hard-light;
-  border-radius: var(--roundness-md);
 }
 
 addon-card h3 {
@@ -43,7 +22,7 @@ addon-card h3 a:any-link {
 addon-card h3 a::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: var(--roundness-lg);
   border: 1px solid transparent;
   transition: border-color 0.2s;
@@ -72,9 +51,8 @@ addon-card .author:hover {
   color: var(--link-color);
 }
 
-addon-card .rating {
-  font-size: var(--text-size-sm);
-  color: var(--secondary-text-color);
+addon-card rating-stars {
+  font-size: var(--text-size-xs);
 }
 
 addon-card .summary {

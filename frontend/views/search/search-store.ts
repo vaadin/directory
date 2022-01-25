@@ -126,9 +126,9 @@ class SearchStore {
     params.set('q', this.query);
 
     if (this.query) {
-      history.replaceState({}, '', `${location.pathname}?${params}`);
+      history.replaceState({}, '', `${location.pathname}?${params}${location.hash}`);
     } else {
-      history.replaceState({}, '', `${location.pathname}`);
+      history.replaceState({}, '', `${location.pathname}${location.hash}`);
     }
   }
 }

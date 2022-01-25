@@ -2,7 +2,6 @@
 @import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/custom-properties.css');
 @import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/typography.css');
 
-/* Shared */
 @import './palette-light.css';
 @import './layout.css';
 @import './haas.css';
@@ -11,6 +10,15 @@
 /* This class is defined in lineawesome.css, but keeping it here as a reminder */
 /* .sr-only {} */
 
-/* Views */
-@import './search-view.css';
-@import './addon-card.css';
+input[type="text"],
+input[type="search"],
+select {
+  border: var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-color);
+  border-radius: var(--roundness-md);
+  padding: 0.5em 0.75em;
+  margin: 0;
+  font: inherit;
+  font-weight: var(--text-weight-semibold);
+}

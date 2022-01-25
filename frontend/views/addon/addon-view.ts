@@ -1,3 +1,6 @@
+import './addon-view.css';
+import '../../components/addon-icon';
+import '../../components/rating-stars';
 import './install-tabsheet';
 import './highlight-carousel';
 import './feature-matrix';
@@ -5,13 +8,9 @@ import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
-import '@vaadin/vaadin-text-field';
-import '@vaadin/vaadin-grid/vaadin-grid';
 import '@vaadin/vaadin-select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import '@vaadin/vaadin-lumo-styles/sizing';
-import '@vaadin/vaadin-lumo-styles/spacing';
 import { View } from '../view';
 import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
@@ -26,9 +25,11 @@ import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-css';
 import '@vaadin/icon';
 import '@vaadin/icons';
+import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
+import { searchStore } from 'Frontend/views/search/search-store';
 import { router } from '../../index';
-import { disqusReset } from "../disqus"
+import { disqusReset } from "../disqus";
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
@@ -69,151 +70,149 @@ export class AddonView extends View implements BeforeEnterObserver {
       return html`Loading...`;
     }
 
-    return html`
-      <div>
-        <div>
-          <img style="width: 128px; height: 128px" src="${this.addon.icon}" />
-          <h1>${this.addon.name}</h1>
-          <div class="flex">
-            <div class="flex flex-col flex-auto flex-wrap">
-              <span><span class="rating">${this.addon.rating > 0
-                  ? this.addon.rating < 5
-                    ? '★️'.repeat(this.addon.rating) +
-                      '☆'.repeat(5 - this.addon.rating)
-                    : '★️'.repeat(this.addon.rating)
-                  : '☆☆☆☆☆'}</span> (${this.addon.ratingCount})</span>
-              <div class="updated">Updated on ${this.addon.lastUpdated}</div>
-              <div class="user">
-                <img class="avatar" src="https://vaadin.com/static/portrait/initials/JD" title="John Doe">
-                ${this.addon.author}
-                <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
-              </div>
-            </div>
-            <div class="highlight-links">${this.getHighlightLinks()}</div>
-          </div>
-          <div class="tags">
-            ${this.addon.tags.map(
-              (tag) =>
-                html`
-                  <vaadin-button
-                    style="cursor:pointer;"
-                    @click=${() => this.searchByTag(tag)}
-                    theme="badge pill">
-                    ${tag}
-                    ${OFFICIAL_TAG === tag
-                      ? html`<span class="m-xs">
-                          <vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon>
-                        </span>`
-                      : ''}
-                  </vaadin-button>
-                `
-            )}
-          </div>
-          <p>${this.addon.summary}</p>
-          <highlight-carousel .addon=${this.addon}></highlight-carousel>
-          <p>
-            ${unsafeHTML(
-              DomPurify.sanitize(marked.parse(this.addon.description || ""))
-            )}
-          </p>
-          ${this.addon.codeSamples && this.addon.codeSamples.length > 0 ?
-            html`<h2>Sample code</h2>
-            <p>
-              ${this.addon.codeSamples.map(
-                (s) => html`<pre class="sample-code ${s?.type}">${s?.code}</pre> `
-              )}
-            </p>` :
-            html``
-          }
-          <h2>Links</h2>
-          <ul>
-            ${this.addon.links.map(
-              (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
-            )}
-          </ul>
-          <h2>Compatibility</h2>
-          <div class="compatibility-matrix"><feature-matrix .matrix=${this.compatibility}></feature-matrix></div>
-        </div>
-        <div class="side-panel">
-          <h3>Install</h3>
-          <p>
-            <vaadin-select
-              value="${this.version?.name}"
-              @value-changed=${this.versionChange}
-              .renderer="${guard(
-                [],
-                () => (elem: HTMLElement) =>
-                  render(
-                    html`
-                      <vaadin-list-box>
-                        ${this.addon?.versions.sort(this.versionOrder).map(
-                          (v) => html`
-                                <vaadin-item value="${v.name}" label="${
-                            v.name
-                          }">
-                                <div style="display: flex; align-items: center;">
-                                <span class="font-bold">${v.name}</span>
-                                <span class="${
-                                  v.maturity == 'STABLE'
-                                    ? 'bg-success text-success-contrast'
-                                    : 'bg-base'
-                                } text-2xs font-light m-xs p-xs rounded-l">
-                                ${v.maturity}
-                                 </span>
-                                 <span class="text-2xs font-light"> ${v.date}
-                                </div>
-                                </vaadin-item>
-                                `
-                        )}
-                      </vaadin-list-box>
-                    `,
-                    elem
-                  )
-              )}"></vaadin-select>
-            <br /><a
-              class="text-xs"
-              href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
-              >Link to this version</a
-            >
-          </p>
-          <p>
-            ${this.user
-              ? html`<install-tabsheet
-                  .version=${this.version}></install-tabsheet>`
-              : html`<vaadin-button>Log in to install</vaadin-button>`}
-          </p>
-          <p>
-            ${unsafeHTML(
-              DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
-            )}
-          </p>
-          <hr />
-          <p class="text-s">
-            <span>Released: ${this.version?.date}</span> <br />
-            <span>Maturity: ${this.version?.maturity}</span><br />
-            <span>License: ${this.version?.license}</span><br />
-          </p>
-          <hr />
-          <h3>Framework support</h3>
-          <p>
-            ${this.version?.compatibility.map(
-              (compat) => html`${compat}<br />`
-            )}
-            ${this.getAlsoSupported(this.addon, this.version)}
+    const params = new URLSearchParams();
+    params.set('q', searchStore.query);
 
-          </p>
-          <hr />
-          <h3>Browser compatibility</h3>
-          <p>
-            ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
-              (compat) => html`${compat}<br />`
-            ) : html`(no browser information provided)` }
-          </p>
-          <p>
-              <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
-          </p>
+    return html`
+      <a href="${router.baseUrl}?${params}">← Back</a>
+      <section>
+      <div>
+        <addon-icon src="${this.addon.icon}"></addon-icon>
+        <h2>${this.addon.name}</h2>
+        <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
+        <div class="updated">Updated on ${this.addon.lastUpdated}</div>
+        <div class="user">
+          <vaadin-avatar .img="https://vaadin.com/static/portrait/initials/JD" name="John Doe"></vaadin-avatar>
+          ${this.addon.author}
         </div>
+        <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
+        <div class="highlight-links">${this.getHighlightLinks()}</div>
+        <div class="tags">
+          ${this.addon.tags.map(
+            (tag) =>
+              html`
+                <button
+                  style="cursor:pointer;"
+                  @click=${() => this.searchByTag(tag)}>
+                  ${tag}
+                  ${OFFICIAL_TAG === tag
+                    ? html`<span class="m-xs">
+                        <vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon>
+                      </span>`
+                    : ''}
+                </button>
+              `
+          )}
+        </div>
+        <p>${this.addon.summary}</p>
+        <highlight-carousel .addon=${this.addon}></highlight-carousel>
+        <p>
+          ${unsafeHTML(
+            DomPurify.sanitize(marked.parse(this.addon.description || ""))
+          )}
+        </p>
+        ${this.addon.codeSamples && this.addon.codeSamples.length > 0 ?
+          html`<h2>Sample code</h2>
+          <p>
+            ${this.addon.codeSamples.map(
+              (s) => html`<pre class="sample-code ${s?.type}">${s?.code}</pre> `
+            )}
+          </p>` :
+          html``
+        }
+        <h2>Links</h2>
+        <ul>
+          ${this.addon.links.map(
+            (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
+          )}
+        </ul>
       </div>
+
+
+
+
+
+
+      <div class="side-panel">
+        <h3>Install</h3>
+        <p>
+          <vaadin-select
+            value="${this.version?.name}"
+            @value-changed=${this.versionChange}
+            .renderer="${guard(
+              [],
+              () => (elem: HTMLElement) =>
+                render(
+                  html`
+                    <vaadin-list-box>
+                      ${this.addon?.versions.sort(this.versionOrder).map(
+                        (v) => html`
+                              <vaadin-item value="${v.name}" label="${
+                          v.name
+                        }">
+                              <div style="display: flex; align-items: center;">
+                              <span class="font-bold">${v.name}</span>
+                              <span class="${
+                                v.maturity == 'STABLE'
+                                  ? 'bg-success text-success-contrast'
+                                  : 'bg-base'
+                              } text-2xs font-light m-xs p-xs rounded-l">
+                              ${v.maturity}
+                               </span>
+                               <span class="text-2xs font-light"> ${v.date}
+                              </div>
+                              </vaadin-item>
+                              `
+                      )}
+                    </vaadin-list-box>
+                  `,
+                  elem
+                )
+            )}"></vaadin-select>
+          <br /><a
+            class="text-xs"
+            href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
+            >Link to this version</a
+          >
+        </p>
+        <p>
+          ${this.user
+            ? html`<install-tabsheet
+                .version=${this.version}></install-tabsheet>`
+            : html`Log in to install`}
+        </p>
+        <p>
+          ${unsafeHTML(
+            DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
+          )}
+        </p>
+        <hr />
+        <p class="text-s">
+          <span>Released: ${this.version?.date}</span> <br />
+          <span>Maturity: ${this.version?.maturity}</span><br />
+          <span>License: ${this.version?.license}</span><br />
+        </p>
+        <hr />
+        <h3>Framework support</h3>
+        <p>
+          ${this.version?.compatibility.map(
+            (compat) => html`${compat}<br />`
+          )}
+          ${this.getAlsoSupported(this.addon, this.version)}
+
+        </p>
+        <hr />
+        <h3>Browser compatibility</h3>
+        <p>
+          ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
+            (compat) => html`${compat}<br />`
+          ) : html`(no browser information provided)` }
+        </p>
+        <p>
+            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
+        </p>
+      </div>
+      </section>
     `;
   }
 
@@ -328,15 +327,15 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   searchByTag(tag: string) {
-    window.location.href = '../?q=tag:' + tag;
+    window.location.href = router.baseUrl + '?q=tag:' + tag;
   }
 
   searchByVersion(v: string) {
-    window.location.href = '../?q=v:' + v;
+    window.location.href = router.baseUrl + '?q=v:' + v;
   }
 
   searchByUser(user: string) {
-    window.location.href = '../?q=author:' + user;
+    window.location.href = router.baseUrl + '?q=author:' + user;
   }
 
 

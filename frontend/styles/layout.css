@@ -22,6 +22,11 @@ body {
   }
 }
 
+main {
+  /* TODO Ensure that the page has enough height so it can be scrolled to the #search anchor/id */
+  min-height: 200vh;
+}
+
 .discussions {
   max-width: var(--layout-max-width);
   padding: 0 var(--layout-padding);

@@ -8,4 +8,7 @@ html {
   --heading-text-color: var(--color-base-header);
   --surface-color-alt: var(--blue-50);
   --link-color: var(--blue-500);
+  --input-bg: var(--gray-50);
+  --input-border: 1px solid var(--divider-color1);
+  --input-color: var(--color-base-text);
 }

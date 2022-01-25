@@ -8,7 +8,7 @@ search-view {
 
 search-view .featured-addons {
   background-color: var(--surface-color-alt);
-  border-radius: var(--roundness-lg);
+  border-radius: calc(var(--roundness-lg) * 2);
   margin: var(--space-md) calc(var(--layout-padding) * -1);
 }
 
@@ -16,6 +16,7 @@ search-view .featured-addons h2 {
   padding: var(--space-md);
   margin: 0;
 }
+
 search-view .featured-addons h2 span {
   display: block;
   width: min-content;
@@ -40,16 +41,29 @@ search-view .featured-addons .gallery {
   scroll-snap-type: x mandatory;
   padding: 0 var(--space-md) var(--space-md);
   scroll-padding: var(--space-md);
+  min-height: 17rem;
 }
 
 search-view .featured-addons addon-card {
   flex: none;
   scroll-snap-align: start;
   background-color: var(--background-color);
-  border: 0;
+  border-color: transparent;
   box-shadow: var(--surface-shadow-m);
-  width: calc((100% - var(--space-md) * 2) / 3);
-  min-width: max(18rem, 28%);
+  --fit-items: 3;
+  width: calc((100% - 10rem) / var(--fit-items));
+}
+
+@media (max-width: 65rem) {
+  search-view .featured-addons addon-card {
+    --fit-items: 2;
+  }
+}
+
+@media (max-width: 45rem) {
+  search-view .featured-addons addon-card {
+    --fit-items: 1;
+  }
 }
 
 search-view .results {
