@@ -119,6 +119,22 @@ addon-view vaadin-avatar-group::part(avatar) {
   font-size: var(--text-size-lg);
 }
 
+addon-view highlight-carousel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  border: 1px solid var(--divider-color1);
+  border-radius: var(--roundness-lg);
+}
+
+addon-view highlight-carousel > div {
+  padding: var(--space-sm);
+}
+
+addon-view highlight-carousel img {
+  width: 100%;
+  object-fit: contain;
+}
+
 addon-view .tags {
   margin: var(--space-md) 0;
 }
@@ -144,4 +160,20 @@ addon-view .main h1 {
 
 addon-view .main h2 {
   font-size: var(--text-size-xl);
+}
+
+addon-view .versions {
+  background-color: var(--secondary-surface-color);
+  padding: var(--space-md);
+  border-radius: var(--roundness-lg);
+  font-size: var(--text-size-sm);
+}
+
+addon-view .versions vaadin-select,
+addon-view .versions vaadin-select vaadin-item {
+  display: inline-block;
+}
+
+addon-view .versions vaadin-select vaadin-item {
+  padding: 0.1em 0.3em;
 }

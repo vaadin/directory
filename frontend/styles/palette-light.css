@@ -1,6 +1,7 @@
 html {
   --background-color: var(--base-white);
   --surface-color: var(--base-white);
+  --secondary-surface-color: var(--gray-50);
   --surface-shadow-m: var(--elevation-md);
   --divider-color1: var(--gray-200);
   --secondary-text-color: var(--color-secondary-text);

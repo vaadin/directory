@@ -143,8 +143,8 @@ export class AddonView extends View implements BeforeEnterObserver {
       </section>
 
       <section class="versions">
-        <h3>Versions</h3>
-        <p>
+        <h3>
+          Version
           <vaadin-select
             value="${this.version?.name}"
             @value-changed=${this.versionChange}
@@ -178,12 +178,12 @@ export class AddonView extends View implements BeforeEnterObserver {
                   elem
                 )
             )}"></vaadin-select>
-          <br /><a
-            class="text-xs"
-            href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}"
-            >Link to this version</a
-          >
-        </p>
+        </h3>
+
+        <a href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}">
+          Link to this version
+        </a>
+
         <p>
           ${this.user
             ? html`<install-tabsheet .version=${this.version}></install-tabsheet>`
