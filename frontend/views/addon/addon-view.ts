@@ -8,7 +8,7 @@ import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon } from 'Frontend/generated/AddonEndpoint';
-import '@vaadin/vaadin-select';
+import '@vaadin/vaadin-select/src/vaadin-select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { View } from '../view';
@@ -23,8 +23,6 @@ import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-css';
-import '@vaadin/icon';
-import '@vaadin/icons';
 import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { searchStore } from 'Frontend/views/search/search-store';
@@ -113,24 +111,6 @@ export class AddonView extends View implements BeforeEnterObserver {
               ${this.getHighlightLinks()}
             </section>
           `:nothing}
-
-          <section class="tags">
-          <h3>Tags</h3>
-            ${this.addon.tags.map(
-              (tag) =>
-                html`
-                  <button
-                    @click=${() => this.searchByTag(tag)}>
-                    ${tag}
-                    ${OFFICIAL_TAG === tag
-                      ? html`<span class="m-xs">
-                          <vaadin-icon icon="vaadin:vaadin-v"></vaadin-icon>
-                        </span>`
-                      : ''}
-                  </button>
-                `
-            )}
-          </section>
         </section>
 
         <highlight-carousel .addon=${this.addon}></highlight-carousel>
@@ -142,19 +122,25 @@ export class AddonView extends View implements BeforeEnterObserver {
         ${this.addon.codeSamples && this.addon.codeSamples.length > 0 ?
           html`<h2>Sample code</h2>
           <p>
-            ${this.addon.codeSamples.map(
-              (s) => html`<pre class="sample-code ${s?.type}">${s?.code}</pre> `
-            )}
+            ${this.addon.codeSamples.map((s) => html`
+              <pre class="sample-code ${s?.type}">${s?.code}</pre>
+            `)}
           </p>` :
           html``
         }
 
         <h3>Links</h3>
         <ul>
-          ${this.addon.links.map(
-            (l) => html`<li><a href="${l.href}">${l.name}</a></li> `
-          )}
+          ${this.addon.links.map((l) => html`
+            <li><a href="${l.href}">${l.name}</a></li>
+          `)}
         </ul>
+
+        <section class="tags">
+          ${this.addon.tags.map((tag) => html`
+            <button @click=${() => this.searchByTag(tag)}>${tag}</button>
+          `)}
+        </section>
       </section>
 
       <section class="versions">
@@ -201,8 +187,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         </p>
         <p>
           ${this.user
-            ? html`<install-tabsheet
-                .version=${this.version}></install-tabsheet>`
+            ? html`<install-tabsheet .version=${this.version}></install-tabsheet>`
             : html`Log in to install`}
         </p>
         <p>
@@ -233,7 +218,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           ) : html`(no browser information provided)` }
         </p>
         <p>
-            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
+            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
         </p>
       </section>
     `;
@@ -268,13 +253,13 @@ export class AddonView extends View implements BeforeEnterObserver {
         )}
         </p>
         <p>
-            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
         </p>
        `;
     } else {
         return html`
         <p>
-            <a href="${location.href}#discussions"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
+            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
         </p>
         `;
     }
@@ -294,29 +279,20 @@ export class AddonView extends View implements BeforeEnterObserver {
       link.href.match(/http(s)?:\/\/ko-fi.com\/[-_\w\d]+/)
     );
 
-    const icons = ["cat", "cloud", "couch", "compass", "flask", "flushed", "gift", "glass-martini", "hand-peace", "heart", "poo"];
-    const icon: string = icons[Math.floor(Math.random() * icons.length)];
-
     return html` <ul>
       ${demoLink
         ? html` <li>
-            <a href=${demoLink.href} target="_blank" noopener>
-              <i class="text-xl fas fa-${icon}"></i> Demo
-            </a>
+            <a href=${demoLink.href} target="_blank" noopener>Demo</a>
           </li>`
         : nothing}
       ${gitHubLink
         ? html` <li>
-            <a href=${gitHubLink} target="_blank" noopener>
-              <i class="text-xl fab fa-github"></i> GitHub
-            </a>
+            <a href=${gitHubLink} target="_blank" noopener>GitHub</a>
           </li>`
         : nothing}
       ${kofiLink
         ? html` <li>
-            <a href=${kofiLink.href} target="_blank" noopener>
-              <i class="text-xl fas fa-coffee"></i> Tip me
-            </a>
+            <a href=${kofiLink.href} target="_blank" noopener>Tip me</a>
           </li>`
         : nothing}
     </ul>`;

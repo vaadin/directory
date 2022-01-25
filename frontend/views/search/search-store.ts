@@ -96,14 +96,13 @@ class SearchStore {
     this.fetchPage();
   }
 
-    setSort(sort: string) {
-      this.sort = sort;
-      this.page = 1;
-      this.addons = [];
-      this.writeQueryToURL();
-      this.fetchPage();
-    }
-
+  setSort(sort: string) {
+    this.sort = sort;
+    this.page = 1;
+    this.addons = [];
+    this.writeQueryToURL();
+    this.fetchPage();
+  }
 
   addFilter(filter: Filter) {
     this.setQuery(

@@ -22,8 +22,7 @@ export class AddonIcon extends LitElement {
     img {
       width: 50%;
       object-fit: contain;
-      --filter: grayscale() contrast(100%);
-      filter: var(--filter);
+      filter: grayscale() contrast(100%);
       mix-blend-mode: screen;
       border-radius: var(--roundness-md);
     }

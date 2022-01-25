@@ -71,4 +71,19 @@ search-view .results {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-md);
+  min-height: 100vh;
+}
+
+#load-more-button {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: var(--space-lg) 0;
+  width: 100%;
+  background: transparent;
+  font: inherit;
+  font-weight: var(--text-weight-semibold);
+  color: var(--blue-500);
+  cursor: pointer;
 }

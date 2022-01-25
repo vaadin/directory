@@ -55,19 +55,11 @@ addon-view .meta {
   font-size: var(--text-size-sm);
   font-weight: var(--text-weight-semibold);
   color: var(--body-text-color);
+  justify-content: flex-start;
 }
 
 addon-view .meta > section {
-  flex: none;
   min-width: 6rem;
-  max-width: 12rem;
-}
-
-addon-view .meta .author,
-addon-view .meta .links,
-addon-view .meta .tags {
-  min-width: 8rem;
-  flex: 1;
 }
 
 addon-view .meta h3 {
@@ -96,13 +88,6 @@ addon-view .meta button:hover {
   color: var(--blue-500);
 }
 
-addon-view .author button {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-}
-
 addon-view .meta rating-stars {
   font-size: var(--text-size-sm);
   color: inherit;
@@ -112,21 +97,13 @@ addon-view .meta p {
   margin: 0;
 }
 
-addon-view .meta .tags button {
-  border: 1px solid var(--divider-color1);
-  padding: 0 0.3em;
-  margin: 0 0 0.3em;
-  border-radius: var(--roundness-md);
-  font-size: var(--text-size-sm);
-}
-
 addon-view .meta .links ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75em;
 }
 
 addon-view .meta .links a {
@@ -140,4 +117,22 @@ addon-view vaadin-avatar-group::part(avatar) {
   color: var(--body-text-color);
   vertical-align: middle;
   font-size: var(--text-size-lg);
+}
+
+addon-view .tags {
+  margin: var(--space-md) 0;
+}
+
+addon-view .tags button {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+  border: 1px solid var(--divider-color1);
+  padding: 0 0.3em;
+  margin: 0 0 0.3em;
+  border-radius: var(--roundness-md);
+  font-size: var(--text-size-sm);
 }

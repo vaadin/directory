@@ -22,3 +22,18 @@ select {
   font: inherit;
   font-weight: var(--text-weight-semibold);
 }
+
+hr {
+  border: 0;
+  height: 1px;
+  overflow: hidden;
+  margin: var(--space-md) 0;
+  background-color: var(--divider-color1);
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  text-shadow: none;
+  color: var(--gray-200);
+  background: var(--gray-700);
+}

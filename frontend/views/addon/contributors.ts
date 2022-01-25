@@ -17,7 +17,7 @@ export class GitHubContributors extends View {
       return html``;
     }
 
-    const contributors = this.contributors.sort((a, b) => {return a.contributions - b.contributions}).map((user) => {
+    const contributors = this.contributors.sort((a, b) => {return b.contributions - a.contributions}).map((user) => {
       return {
         name: user.login,
         img: user.avatar_url
