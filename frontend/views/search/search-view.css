@@ -45,13 +45,14 @@ search-view .featured-addons .gallery {
 }
 
 search-view .featured-addons addon-card {
-  flex: none;
+  flex-grow: 1;
+  flex-shrink: 0;
   scroll-snap-align: start;
   background-color: var(--background-color);
   border-color: transparent;
   box-shadow: var(--surface-shadow-m);
   --fit-items: 3;
-  width: calc((100% - 10rem) / var(--fit-items));
+  width: calc((100% - var(--space-md) * var(--fit-items) - 2rem) / var(--fit-items));
 }
 
 @media (max-width: 65rem) {
