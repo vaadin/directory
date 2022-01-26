@@ -226,12 +226,29 @@ addon-view .footer .updated {
 
 /* Add-on authors should not use H1 or H2 in the description */
 addon-view .highlights ~ h1 {
-  font-size: var(--text-size-2xl);
+  font-size: var(--text-size-3xl);
 }
 
 addon-view .highlights ~ h2 {
+  font-size: var(--text-size-2xl);
+}
+
+addon-view .highlights ~ h3 {
   font-size: var(--text-size-xl);
 }
+
+addon-view .highlights ~ h4 {
+  font-size: var(--text-size-lg);
+}
+
+addon-view .highlights ~ h5 {
+  font-size: var(--text-size-md);
+}
+
+addon-view .highlights ~ h6 {
+  font-size: var(--text-size-sm);
+}
+
 
 addon-view .highlights ~ :is(h1, h2, h3, h4, h5, h6) {
   margin-top: 2em;
