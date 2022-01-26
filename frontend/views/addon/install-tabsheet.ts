@@ -21,7 +21,7 @@ export class InstallTabSheet extends View {
   private user?: Object = {};
 
   render() {
-    if (!this.version) {
+    if (!this.version || !this.addon) {
       return html`skeletor!`;
     }
 
@@ -37,8 +37,7 @@ export class InstallTabSheet extends View {
     mavenText.innerText = this.version.installs['Maven'] || '';
 
     const linkToVersion = document.createElement('a');
-    // TODO
-    // linkToVersion.href = router.urlForPath('addon/:addon/:version?', { addon: this.addon?.urlIdentifier, version: this.version?.name });
+    linkToVersion.href = router.urlForPath('addon/:addon/:version?', { addon: this.addon.urlIdentifier, version: this.version?.name });
     linkToVersion.innerText = 'Link to this version';
 
     const compatibilityIssues = document.createElement('a');
@@ -57,7 +56,8 @@ export class InstallTabSheet extends View {
             return {}
           }
         })
-      },
+      }];
+    const extraOptions: MenuBarItem[] = [
       {
         text: '···',
         children: [
@@ -82,6 +82,7 @@ export class InstallTabSheet extends View {
 
     return html`
       <vaadin-menu-bar .items="${options}" theme="addon-version-menu"></vaadin-menu-bar>
+      <vaadin-menu-bar .items="${extraOptions}" theme="addon-version-menu"></vaadin-menu-bar>
     `;
   }
 

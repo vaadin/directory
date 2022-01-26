@@ -333,9 +333,9 @@ addon-view .versions vaadin-select vaadin-item {
 }
 
 /* Aligning vaadin-menu-bar items to the right is terribly difficult, when you want to avoid the items collapsing */
-addon-view install-tabsheet,
-addon-view install-tabsheet vaadin-menu-bar {
-  width: 7em;
+addon-view install-tabsheet {
+  display: flex;
+  gap: 0.5em;
   margin-inline-start: auto;
   font-size: var(--text-size-md);
 }
