@@ -244,7 +244,7 @@ public class SearchEndpoint {
 
         ArrayList<String> row = new ArrayList<>();
         data.add(row);
-        rows.add("Number of add-oms");
+        rows.add("Number of add-ons");
         this.vaadinMajorVersions.forEach(fw -> {
             List<ComponentFrameworkVersion> vl = this.frameworkVersionRepository.findByFramework(fw);
             if (fw == vaadin10plus) {
