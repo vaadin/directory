@@ -71,7 +71,8 @@ search-view .results {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-md);
-  min-height: 100vh;
+  /* Approximately one addon-card */
+  min-height: 18rem;
 }
 
 #load-more-button {
