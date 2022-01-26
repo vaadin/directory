@@ -16,12 +16,20 @@ export class HighlightCarousel extends View {
   render() {
     return html`
       ${this.addon?.mediaHighlights.map((m,i) => html`
-        <div class="item" id="highlight-${i}">
+        <div class="item item-${i}">
           <img src="${m?.url}">
-          <a class="open" href="/addon/${this.addon?.urlIdentifier}#highlight-${i}">View larger</a>
-          <a class="close" href="/addon/${this.addon?.urlIdentifier}#_">Close</a>
+          <button class="btn-open" @click="${this.open}">View larger</button>
+          <button class="btn-close" @click="${this.close}">Close</button>
         </div>
       `)}
     `;
+  }
+
+  open(e:MouseEvent) {
+    (e.target as HTMLButtonElement).parentElement?.classList.add('item-open');
+  }
+
+  close() {
+    this.querySelectorAll('.item').forEach(item => item.classList.remove('item-open'));
   }
 }
