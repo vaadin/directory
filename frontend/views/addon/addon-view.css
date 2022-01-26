@@ -80,6 +80,7 @@ addon-view .meta button {
   padding: 0;
   background: transparent;
   font: inherit;
+  color: inherit;
   cursor: pointer;
   text-align: start;
 }
@@ -136,14 +137,17 @@ addon-view .highlights.empty {
 addon-view .highlights .item {
   padding: var(--space-sm);
   position: relative;
+  height: 10rem;
+  box-sizing: border-box;
 }
 
 addon-view .highlights .item + .item {
   border-inline-start: 1px solid var(--divider-color1);
 }
 
-addon-view .highlights img {
+addon-view .highlights .item img {
   width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
@@ -154,6 +158,7 @@ addon-view .highlights .item:target .open {
 
 addon-view .highlights .item:target {
   position: fixed;
+  z-index: 1;
   inset: 0;
   height: 100%;
   width: 100%;
@@ -171,6 +176,7 @@ addon-view .highlights .open {
 
 addon-view .highlights .close {
   position: fixed;
+  z-index: 1;
   top: 1em;
   right: 1em;
   font-weight: var(--text-weight-semibold);
