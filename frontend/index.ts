@@ -62,3 +62,19 @@ registerStyles('vaadin-item', css`
     font-size: var(--text-size-lg);
   }
 `);
+
+// Using gap is not supported, need to use padding on the items
+registerStyles('vaadin-menu-bar', css`
+  :host([theme~="addon-version-menu"]) vaadin-menu-bar-button {
+    padding: 0.25em 0.5em;
+    color: var(--blue-500);
+    cursor: pointer;
+    border: 1px solid var(--blue-200);
+    border-radius: var(--roundness-md);
+    margin-inline-start: 4px;
+  }
+
+  :host([theme~="addon-version-menu"]) vaadin-menu-bar-button:hover {
+    color: var(--blue-600);
+  }
+`);

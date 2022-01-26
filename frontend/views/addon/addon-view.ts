@@ -41,10 +41,6 @@ export class AddonView extends View implements BeforeEnterObserver {
   @state()
   private version?: AddonVersion;
 
-  // TODO: User information missing
-  @state()
-  private user?: Object = {};
-
   @state()
   private compatibility?: Matrix;
 
@@ -166,16 +162,8 @@ export class AddonView extends View implements BeforeEnterObserver {
                 )
             )}">
           </vaadin-select>
-          <a href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}">
-            # <span class="sr-only">Link to this version</span>
-          </a>
+          <install-tabsheet .addon="${this.addon}" .version="${this.version}"></install-tabsheet>
         </header>
-
-        <section class="install">
-          ${this.user
-            ? html`<install-tabsheet .version="${this.version}"></install-tabsheet>`
-            : html`<p>Log in to install</p>`}
-        </section>
 
         <section class="release-notes">
           ${unsafeHTML(
@@ -202,7 +190,6 @@ export class AddonView extends View implements BeforeEnterObserver {
             (compat) => html`<dd>${compat}</dd>`
           ) : html`<dd>N/A</dd>` }
         </dl>
-        <a href="${location.href}#discussion">Report a compatibility issue</a>
       </section>
     `;
   }

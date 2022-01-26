@@ -300,26 +300,40 @@ addon-view .versions header:first-child a {
   color: var(--secondary-text-color);
 }
 
-addon-view .versions .install {
-  margin: var(--space-sm) 0;
+/* Aligning vaadin-menu-bar items to the right is terribly difficult, when you want to avoid the items collapsing */
+addon-view install-tabsheet,
+addon-view install-tabsheet vaadin-menu-bar {
+  width: 7em;
+  margin-inline-start: auto;
+  font-size: var(--text-size-md);
 }
 
-addon-view .versions pre {
-  font-size: var(--text-size-xs);
-}
-
-addon-view .download-zip {
+[theme~="addon-version-menu"] :is(a, button) {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0.5em 0.75em;
+  display: block;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: start;
   font-weight: var(--text-weight-semibold);
-  background-color: var(--blue-500);
-  color: #fff;
-  padding: 0.5em;
+  font-size: var(--text-size-sm);
+  cursor: pointer;
   border-radius: var(--roundness-md);
 }
 
-addon-view .download-zip:hover {
-  color: #fff;
-  background-color: var(--blue-600);
-  text-decoration: none;
+[theme~="addon-version-menu"] :is(a, button):hover {
+  background-color: var(--blue-100);
+}
+
+[theme~="addon-version-menu"] :is(a, button) span {
+  display: block;
+  font-size: 0.8em;
+  color: var(--secondary-text-color);
+  font-weight: var(--text-weight-regular);
 }
 
 addon-view .versions dl {
