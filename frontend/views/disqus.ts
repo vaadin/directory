@@ -12,8 +12,8 @@ export function disqusReset(newIdentifier:string, newUrl:string, newTitle:string
         }
     });
     if (visible) {
-        document.getElementsByClassName("discussions")[0].classList.add("active");
+        document.getElementsByClassName("discussion")[0].classList.add("active");
     } else {
-        document.getElementsByClassName("discussions")[0].classList.remove("active");
+        document.getElementsByClassName("discussion")[0].classList.remove("active");
     }
 }
