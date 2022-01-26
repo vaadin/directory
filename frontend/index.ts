@@ -74,6 +74,10 @@ registerStyles('vaadin-menu-bar', css`
     margin-inline-start: 4px;
   }
 
+  :host([theme~="addon-version-menu"]) vaadin-menu-bar-button[focused] {
+    border-color: var(--blue-500);
+  }
+
   :host([theme~="addon-version-menu"]) vaadin-menu-bar-button:hover {
     color: var(--blue-600);
   }

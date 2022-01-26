@@ -9,7 +9,7 @@ search-view {
 search-view .featured-addons {
   background-color: var(--surface-color-alt);
   border-radius: calc(var(--roundness-lg) * 2);
-  margin: var(--space-md) calc(var(--layout-padding) * -1);
+  margin: var(--space-md) 0;
 }
 
 search-view .featured-addons h2 {
