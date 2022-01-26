@@ -94,11 +94,6 @@ export class AddonView extends View implements BeforeEnterObserver {
             <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
           </section>
 
-          <section class="updated">
-            <h3>Updated</h3>
-            <p>${this.addon.lastUpdated}</p>
-          </section>
-
           ${this.addon.links.length > 0 ? html`
             <section class="links">
               <h3>Links</h3>
@@ -129,10 +124,11 @@ export class AddonView extends View implements BeforeEnterObserver {
           `)}
         </ul>
 
-        <section class="tags">
+        <section class="footer">
           ${this.addon.tags.map((tag) => html`
-            <button @click=${() => this.searchByTag(tag)}>${tag}</button>
+            <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
           `)}
+          <p class="updated">Last updated: ${this.addon.lastUpdated}</p>
         </section>
       </section>
 

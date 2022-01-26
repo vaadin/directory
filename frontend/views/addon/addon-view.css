@@ -128,6 +128,9 @@ addon-view .highlights {
   border: 1px solid var(--divider-color1);
   border-radius: var(--roundness-lg);
   margin: var(--space-md) 0;
+  gap: 1px;
+  background-color: var(--divider-color1);
+  overflow: hidden;
 }
 
 addon-view .highlights.empty {
@@ -139,10 +142,7 @@ addon-view .highlights .item {
   position: relative;
   height: 10rem;
   box-sizing: border-box;
-}
-
-addon-view .highlights .item + .item {
-  border-inline-start: 1px solid var(--divider-color1);
+  background-color: var(--background-color);
 }
 
 addon-view .highlights .item img {
@@ -186,11 +186,14 @@ addon-view .highlights .close {
   padding: 0.25em 0.5em;
 }
 
-addon-view .tags {
-  margin: var(--space-md) 0;
+addon-view .footer {
+  margin: var(--space-lg) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
 }
 
-addon-view .tags button {
+addon-view .tag {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
@@ -201,6 +204,12 @@ addon-view .tags button {
   padding: 0 0.3em;
   margin: 0 0 0.3em;
   border-radius: var(--roundness-md);
+  font-size: var(--text-size-sm);
+}
+
+addon-view .footer .updated {
+  margin: 0;
+  margin-inline-start: auto;
   font-size: var(--text-size-sm);
 }
 
@@ -223,6 +232,7 @@ addon-view .versions {
   padding: var(--space-md);
   border-radius: var(--roundness-lg);
   font-size: var(--text-size-sm);
+  align-self: flex-start;
 }
 
 addon-view .versions header {
@@ -238,7 +248,7 @@ addon-view .versions header:first-child {
   color: var(--heading-text-color);
 }
 
-addon-view .versions h3 {
+addon-view .versions header:first-child h3 {
   font-size: inherit;
   margin: 0;
 }
@@ -267,11 +277,6 @@ addon-view .versions vaadin-select vaadin-item::after {
 
 addon-view .versions vaadin-select vaadin-item {
   padding: 0 0.3em;
-}
-
-addon-view .versions header:first-child a {
-  margin-inline-start: auto;
-  font-weight: inherit;
 }
 
 [theme~="version-select"] vaadin-item {
@@ -336,10 +341,13 @@ addon-view install-tabsheet vaadin-menu-bar {
   font-weight: var(--text-weight-regular);
 }
 
+addon-view .release-notes :is(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--text-size-md);
+}
+
 addon-view .versions dl {
   display: grid;
   grid-template-columns: min-content auto;
-  margin: 0;
 }
 
 addon-view .versions dt {
