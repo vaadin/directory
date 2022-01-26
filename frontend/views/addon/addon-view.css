@@ -119,20 +119,63 @@ addon-view vaadin-avatar-group::part(avatar) {
   font-size: var(--text-size-lg);
 }
 
-addon-view highlight-carousel {
+addon-view .highlights {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   border: 1px solid var(--divider-color1);
   border-radius: var(--roundness-lg);
+  margin: var(--space-md) 0;
 }
 
-addon-view highlight-carousel > div {
+addon-view .highlights.empty {
+  display: none;
+}
+
+addon-view .highlights .item {
   padding: var(--space-sm);
+  position: relative;
 }
 
-addon-view highlight-carousel img {
+addon-view .highlights .item + .item {
+  border-inline-start: 1px solid var(--divider-color1);
+}
+
+addon-view .highlights img {
   width: 100%;
   object-fit: contain;
+}
+
+addon-view .highlights .item:not(:target) .close,
+addon-view .highlights .item:target .open {
+  display: none;
+}
+
+addon-view .highlights .item:target {
+  position: fixed;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  background-color: var(--surface-color);
+}
+
+addon-view .highlights .open {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+}
+
+addon-view .highlights .close {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  font-weight: var(--text-weight-semibold);
+  background-color: var(--blue-500);
+  color: #fff;
+  border-radius: var(--roundness-md);
+  padding: 0.25em 0.5em;
 }
 
 addon-view .tags {
@@ -154,11 +197,11 @@ addon-view .tags button {
 }
 
 /* Add-on authors should not use H1 or H2 in the description */
-addon-view .main h1 {
+addon-view .highlight ~ h1 {
   font-size: var(--text-size-2xl);
 }
 
-addon-view .main h2 {
+addon-view .highlights ~ h2 {
   font-size: var(--text-size-xl);
 }
 

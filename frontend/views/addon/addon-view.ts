@@ -113,7 +113,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           `:nothing}
         </section>
 
-        <highlight-carousel .addon=${this.addon}></highlight-carousel>
+        <highlight-carousel class="highlights" .addon=${this.addon}></highlight-carousel>
 
         ${unsafeHTML(
           DomPurify.sanitize(marked.parse(this.addon.description || ""))

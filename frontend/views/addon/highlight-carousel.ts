@@ -9,13 +9,18 @@ export class HighlightCarousel extends View {
   @property({ attribute: false })
   addon?: Addon;
 
+  firstUpdated() {
+    this.classList.toggle('empty', this.addon?.mediaHighlights.length === 0);
+  }
+
   render() {
-    if (!this.addon) {
-      return html`skeletor!`;
-    }
     return html`
-      ${this.addon.mediaHighlights.map((m,i) => html`
-        <div><img src="${m?.url}"></img></div>
+      ${this.addon?.mediaHighlights.map((m,i) => html`
+        <div class="item" id="highlight-${i}">
+          <img src="${m?.url}">
+          <a class="open" href="/addon/${this.addon?.urlIdentifier}#highlight-${i}">View larger</a>
+          <a class="close" href="/addon/${this.addon?.urlIdentifier}#_">Close</a>
+        </div>
       `)}
     `;
   }
