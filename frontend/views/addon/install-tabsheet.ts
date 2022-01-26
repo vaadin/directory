@@ -30,8 +30,14 @@ export class InstallTabSheet extends View {
     download.textContent = 'Download ZIP';
 
     const copyMaven = document.createElement('button');
-    copyMaven.onclick = () => { this.copyToClipboard(this.version?.installs['Maven']) };
-    copyMaven.innerHTML = 'Maven <span>Copy Maven dependency XML to clipboard</span>';
+    copyMaven.onclick = () => {
+      this.copyToClipboard(this.version?.installs['Maven']);
+      copyMaven.firstElementChild!.textContent = 'Copied ✔';
+      setTimeout(() => {
+        copyMaven.firstElementChild!.textContent = 'Maven POM';
+      }, 3000);
+    };
+    copyMaven.innerHTML = '<div>Maven POM</div><span>Copy Maven dependency XML to clipboard</span>';
 
     const mavenText = document.createElement('pre');
     mavenText.innerText = this.version.installs['Maven'] || '';
