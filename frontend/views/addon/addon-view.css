@@ -249,7 +249,6 @@ addon-view .highlights ~ h6 {
   font-size: var(--text-size-sm);
 }
 
-
 addon-view .highlights ~ :is(h1, h2, h3, h4, h5, h6) {
   margin-top: 2em;
   margin-bottom: 1rem;
@@ -390,4 +389,31 @@ addon-view .versions dd {
 addon-view .versions dd + dd + dt,
 addon-view .versions dd + dd + dt + dd {
   margin-top: var(--space-sm);
+}
+
+addon-view .main pre {
+  font-size: var(--text-size-sm);
+}
+
+.compatibility-matrix {
+  width: 700px;
+  max-width: 100%;
+}
+
+.compatibility-matrix .matrix {
+  width: 100%;
+}
+
+table.matrix th,
+table.matrix td {
+  margin: var(--lumo-space-m);
+  text-align: center;
+  vertical-align: top;
+  float: none; /* HaaS FIX */
+}
+
+table.matrix td.on {
+  background-color: var(--green-500);
+  color: #fff;
+  border-radius: var(--roundness-sm);
 }

@@ -124,6 +124,9 @@ export class AddonView extends View implements BeforeEnterObserver {
           `)}
         </ul>
 
+        <h3>Compatibility</h3>
+        <feature-matrix .matrix="${this.compatibility}" class="compatibility-matrix"></feature-matrix>
+
         <section class="footer">
           ${this.addon.tags.map((tag) => html`
             <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
@@ -211,7 +214,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     const versions = Array.from(supportedByOthers.keys());
     if (versions.length > 0) {
       return versions.reverse().map((c) => html`
-        <dd>${c} <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a></dd>
+        <dd>${c} in <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}">${supportedByOthers.get(c)}</a></dd>
       `);
     } else {
       return nothing;
@@ -235,17 +238,17 @@ export class AddonView extends View implements BeforeEnterObserver {
     return html` <ul>
       ${demoLink
         ? html` <li>
-            <a href=${demoLink.href} target="_blank" noopener>Demo</a>
+            <a href="${demoLink.href}" target="_blank" noopener>Demo</a>
           </li>`
         : nothing}
       ${gitHubLink
         ? html` <li>
-            <a href=${gitHubLink} target="_blank" noopener>GitHub</a>
+            <a href="${gitHubLink}" target="_blank" noopener>GitHub</a>
           </li>`
         : nothing}
       ${kofiLink
         ? html` <li>
-            <a href=${kofiLink.href} target="_blank" noopener>Tip me</a>
+            <a href="${kofiLink.href}" target="_blank" noopener>Tip me</a>
           </li>`
         : nothing}
     </ul>`;
