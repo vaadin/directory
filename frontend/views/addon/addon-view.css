@@ -213,6 +213,11 @@ addon-view .highlights ~ h2 {
   font-size: var(--text-size-xl);
 }
 
+addon-view .highlights ~ :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 2em;
+  margin-bottom: 1rem;
+}
+
 addon-view .versions {
   background-color: var(--secondary-surface-color);
   padding: var(--space-md);
@@ -220,11 +225,119 @@ addon-view .versions {
   font-size: var(--text-size-sm);
 }
 
+addon-view .versions header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.1em;
+}
+
+addon-view .versions header:first-child {
+  font-size: var(--text-size-xl);
+  font-weight: var(--text-weight-semibold);
+  line-height: var(--text-leading-sm);
+  color: var(--heading-text-color);
+}
+
+addon-view .versions h3 {
+  font-size: inherit;
+  margin: 0;
+}
+
+addon-view .versions h4 {
+  font-size: var(--text-size-lg);
+  margin-top: var(--text-margin-lg);
+}
+
 addon-view .versions vaadin-select,
 addon-view .versions vaadin-select vaadin-item {
+  display: flex;
+  width: min-content;
+  --vaadin-field-default-width: auto;
+}
+
+addon-view .versions vaadin-select vaadin-item::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 5px solid;
+  border-color: var(--secondary-text-color) transparent transparent transparent;
+  margin: 7px 0 0 7px;
   display: inline-block;
 }
 
 addon-view .versions vaadin-select vaadin-item {
-  padding: 0.1em 0.3em;
+  padding: 0 0.3em;
+}
+
+addon-view .versions header:first-child a {
+  margin-inline-start: auto;
+  font-weight: inherit;
+}
+
+[theme~="version-select"] vaadin-item {
+  font-weight: var(--text-weight-semibold);
+}
+
+[theme~="version-select"] .maturity {
+  text-transform: capitalize;
+  font-size: var(--text-size-xs);
+  background-color: var(--gray-200);
+  color: var(--gray-500);
+  padding: 0.2em 0.4em;
+  border-radius: var(--roundness-md);
+  vertical-align: 2px;
+}
+
+[theme~="version-select"] .maturity.stable {
+  background-color: var(--green-500);
+  color: #fff;
+}
+
+[theme~="version-select"] .release-date {
+  display: block;
+  font-size: var(--text-size-xs);
+  font-weight: var(--text-weight-regular);
+  color: var(--secondary-text-color);
+}
+
+addon-view .versions .install {
+  margin: var(--space-sm) 0;
+}
+
+addon-view .versions pre {
+  font-size: var(--text-size-xs);
+}
+
+addon-view .download-zip {
+  font-weight: var(--text-weight-semibold);
+  background-color: var(--blue-500);
+  color: #fff;
+  padding: 0.5em;
+  border-radius: var(--roundness-md);
+}
+
+addon-view .download-zip:hover {
+  color: #fff;
+  background-color: var(--blue-600);
+  text-decoration: none;
+}
+
+addon-view .versions dl {
+  display: grid;
+  grid-template-columns: min-content auto;
+  margin: 0;
+}
+
+addon-view .versions dt {
+  color: var(--secondary-text-color);
+}
+
+addon-view .versions dd {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+addon-view .versions dd + dd + dt,
+addon-view .versions dd + dd + dt + dd {
+  margin-top: var(--space-sm);
 }

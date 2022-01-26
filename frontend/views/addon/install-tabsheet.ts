@@ -16,7 +16,7 @@ export class InstallTabSheet extends View {
     return html`
       ${Object.keys(this.version?.installs).map((key) => html`
         ${key == "Zip" ?
-          html`<div class="p-l a-c"><a href=" https://static.vaadin.com/directory/${this.version?.installs[key]}">Download Zip</a></div>`
+          html`<p><a class="download-zip" href=" https://static.vaadin.com/directory/${this.version?.installs[key]}">Download Zip</a></p>`
         :
           html`<pre @click="${this.copyToClipboard}">${this.version?.installs[key]}</pre>`}
       `)}

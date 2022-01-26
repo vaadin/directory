@@ -50,8 +50,7 @@ registerStyles('vaadin-item', css`
   }
 
   :host(:hover) {
-    background-color: var(--blue-500);
-    color: #fff;
+    background-color: var(--blue-100);
   }
 
   /* This is so cumbersome */

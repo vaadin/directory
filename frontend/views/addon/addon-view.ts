@@ -32,8 +32,6 @@ import { disqusReset } from "../disqus";
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
 
-const OFFICIAL_TAG = 'Sponsored';
-
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
 
@@ -143,9 +141,10 @@ export class AddonView extends View implements BeforeEnterObserver {
       </section>
 
       <section class="versions">
-        <h3>
-          Version
+        <header>
+          <h3>Version</h3>
           <vaadin-select
+            theme="version-select"
             value="${this.version?.name}"
             @value-changed=${this.versionChange}
             .renderer="${guard(
@@ -154,71 +153,56 @@ export class AddonView extends View implements BeforeEnterObserver {
                 render(
                   html`
                     <vaadin-list-box>
-                      ${this.addon?.versions.sort(this.versionOrder).map(
-                        (v) => html`
-                              <vaadin-item value="${v.name}" label="${
-                          v.name
-                        }">
-                              <div style="display: flex; align-items: center;">
-                              <span class="font-bold">${v.name}</span>
-                              <span class="${
-                                v.maturity == 'STABLE'
-                                  ? 'bg-success text-success-contrast'
-                                  : 'bg-base'
-                              } text-2xs font-light m-xs p-xs rounded-l">
-                              ${v.maturity}
-                               </span>
-                               <span class="text-2xs font-light"> ${v.date}
-                              </div>
-                              </vaadin-item>
-                              `
-                      )}
+                      ${this.addon?.versions.sort(this.versionOrder).map((v) => html`
+                        <vaadin-item value="${v.name}" label="${v.name}">
+                          <span>${v.name}</span>
+                          <span class="maturity ${v.maturity.toLowerCase()}">${v.maturity.toLowerCase()}</span>
+                          <span class="release-date">${v.date}</span>
+                        </vaadin-item>
+                      `)}
                     </vaadin-list-box>
                   `,
                   elem
                 )
-            )}"></vaadin-select>
-        </h3>
+            )}">
+          </vaadin-select>
+          <a href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}">
+            # <span class="sr-only">Link to this version</span>
+          </a>
+        </header>
 
-        <a href="${router.urlForPath('addon/:addon/:version?', {addon: this.addon?.urlIdentifier, version: this.version?.name })}">
-          Link to this version
-        </a>
-
-        <p>
+        <section class="install">
           ${this.user
-            ? html`<install-tabsheet .version=${this.version}></install-tabsheet>`
-            : html`Log in to install`}
-        </p>
-        <p>
+            ? html`<install-tabsheet .version="${this.version}"></install-tabsheet>`
+            : html`<p>Log in to install</p>`}
+        </section>
+
+        <section class="release-notes">
           ${unsafeHTML(
             DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
           )}
-        </p>
-        <hr />
-        <p class="text-s">
-          <span>Released: ${this.version?.date}</span> <br />
-          <span>Maturity: ${this.version?.maturity}</span><br />
-          <span>License: ${this.version?.license}</span><br />
-        </p>
-        <hr />
-        <h3>Framework support</h3>
-        <p>
-          ${this.version?.compatibility.map(
-            (compat) => html`${compat}<br />`
-          )}
+        </section>
+
+        <dl class="details">
+          <dt>Released</dt><dd>${this.version?.date}</dd>
+          <dt>Maturity</dt><dd>${this.version?.maturity}</dd>
+          <dt>License</dt><dd>${this.version?.license}</dd>
+        </dl>
+
+        <h4>Compatibility</h4>
+        <dl class="compatibility">
+          <dt>Framework</dt>
+          ${this.version?.compatibility.map((compat) => html`
+              <dd>${compat}</dd>
+          `)}
           ${this.getAlsoSupported(this.addon, this.version)}
 
-        </p>
-        <hr />
-        <h3>Browser compatibility</h3>
-        <p>
+          <dt>Browser</dt>
           ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
-            (compat) => html`${compat}<br />`
-          ) : html`(no browser information provided)` }
-        </p>
-        <p>
-            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Report browser compatibility.</a>
-        </p>
+            (compat) => html`<dd>${compat}</dd>`
+          ) : html`<dd>N/A</dd>` }
+        </dl>
+        <a href="${location.href}#discussion">Report a compatibility issue</a>
       </section>
     `;
   }
@@ -243,24 +227,11 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     const versions = Array.from(supportedByOthers.keys());
     if (versions.length > 0) {
-     return html`
-        <p>
-        <b>Also supported:</b><br />
-        ${versions.reverse().map(
-          (c) =>
-          html`${c} <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a><br />`
-        )}
-        </p>
-        <p>
-            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
-        </p>
-       `;
+      return versions.reverse().map((c) => html`
+        <dd>${c} <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}"> in ${supportedByOthers.get(c)}</a></dd>
+      `);
     } else {
-        return html`
-        <p>
-            <a href="${location.href}#discussion"><span class="fa far fa-lightbulb"></span> Suggest support for a new version.</a>
-        </p>
-        `;
+      return nothing;
     }
   }
 
