@@ -205,7 +205,7 @@ addon-view .tags button {
 }
 
 /* Add-on authors should not use H1 or H2 in the description */
-addon-view .highlight ~ h1 {
+addon-view .highlights ~ h1 {
   font-size: var(--text-size-2xl);
 }
 
