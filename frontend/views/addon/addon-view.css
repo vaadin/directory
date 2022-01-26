@@ -113,10 +113,12 @@ addon-view .meta .links a {
 addon-view vaadin-avatar,
 addon-view vaadin-avatar-group::part(avatar) {
   --vaadin-avatar-size: 24px;
+  --vaadin-avatar-group-overlap: 5px;
   background-color: var(--gray-200);
-  color: var(--body-text-color);
+  color: inherit;
   vertical-align: middle;
   font-size: var(--text-size-lg);
+  cursor: pointer;
 }
 
 addon-view .highlights {

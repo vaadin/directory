@@ -7,10 +7,13 @@ import '@vaadin/avatar-group/src/vaadin-avatar-group';
 export class GitHubContributors extends View {
 
   @property({ attribute: true })
-  repositoryUrl?:  String;
+  repositoryUrl?:  string;
 
   @state()
   contributors?:  GithubUser[] = [];
+
+  @state()
+  githubUrl?: string;
 
   render() {
     if (!this.contributors || this.contributors.length < 2) {
@@ -25,7 +28,12 @@ export class GitHubContributors extends View {
     });
 
     return html`
-      <vaadin-avatar-group .items="${contributors}" max-items-visible="6"></vaadin-avatar-group>
+      <vaadin-avatar-group
+        .items="${contributors}"
+        max-items-visible="6"
+        @click="${this._onClick}"
+        theme="contributors">
+      </vaadin-avatar-group>
     `;
   }
 
@@ -38,10 +46,18 @@ export class GitHubContributors extends View {
     const matches = this.repositoryUrl.match(/http(?:s)?:\/\/github.com\/([-_\w\d]+\/[-_\w\d]+)(?:.git)?/);
     const repo = matches && matches.length > 1? matches[1]: undefined;
     if (!repo) { return; }
+    this.githubUrl = `https://github.com/${repo}`;
     this.contributors = await fetch("https://api.github.com/repos/"+repo+"/contributors")
                     // the JSON body is taken from the response
                     .then(res => res.json())
                     .then(res => { return res as GithubUser[]});
+  }
+
+  _onClick(e:MouseEvent) {
+    console.log(e)
+    if (this.repositoryUrl) {
+      window.location.href = `${this.githubUrl}/contributors`;
+    }
   }
 }
 

@@ -53,4 +53,13 @@ registerStyles('vaadin-item', css`
     background-color: var(--blue-500);
     color: #fff;
   }
+
+  /* This is so cumbersome */
+  :host([theme~="avatar-group-item"]) ::slotted(vaadin-avatar) {
+    --vaadin-avatar-size: 24px;
+    background-color: var(--gray-200);
+    color: inherit;
+    vertical-align: middle;
+    font-size: var(--text-size-lg);
+  }
 `);
