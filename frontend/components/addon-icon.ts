@@ -34,12 +34,18 @@ export class AddonIcon extends LitElement {
 
   firstUpdated() {
     this.setAttribute('role', 'figure');
-    const num = convertImageUrlToNumber(this.src);
-    const color = colors[num % colors.length];
-    const shade = shades[num % shades.length];
-    this.style.setProperty('background-color', `var(--${color}-${shade})`);
-    if (shade <= 300) {
-      this.classList.add('light')
+    if (this.src) {
+      let color = 'gray';
+      let shade = 100;
+      if (this.src.indexOf('addon-icon-default.png') === -1) {
+        const num = convertImageUrlToNumber(this.src);
+        color = colors[num % colors.length];
+        shade = shades[num % shades.length];
+      }
+      this.style.setProperty('background-color', `var(--${color}-${shade})`);
+      if (shade <= 300) {
+        this.classList.add('light')
+      }
     }
   }
 
