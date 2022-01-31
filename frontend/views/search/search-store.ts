@@ -8,7 +8,7 @@ class SearchStore {
   // State
   hasMore = true;
   loading = false;
-  featured: SearchResult[] = [];
+  featured: string[] = [];
   addons: SearchResult[] = [];
   totalCount: number = -1;
   query = '';
@@ -51,25 +51,22 @@ class SearchStore {
   }
 
   async fetchFeatured() {
-    this.setFeatured(
-      this.featured.concat(
-        await SearchEndpoint.getFeaturedAddons()
-      )
-    );
+    const fts = await SearchEndpoint.getFeatured();
+    this.setFeatured(fts);
   }
 
   async fetchTotalCount() {
     this.totalCount =
       await SearchEndpoint.searchCount(this.query);
-}
+  }
 
   // Actions
   setLoading(loading: boolean) {
     this.loading = loading;
   }
 
-  setFeatured(featured: SearchResult[]) {
-    this.featured = featured;
+  setFeatured(featured: string[]) {
+    this.featured = featured ? featured : [];
   }
 
   setAddons(addons: SearchResult[]) {

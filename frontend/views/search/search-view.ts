@@ -28,18 +28,6 @@ export class SearchView extends View {
 
   render() {
     return html`
-      <article class="featured-addons" aria-label="featured add-ons">
-        <h2>
-          <span>Our favorites</span><span class="sr-only">.</span>
-          Featured add-ons
-        </h2>
-        <section class="gallery">
-          ${searchStore.featured.map(
-            (addon) => html`<addon-card .addon=${addon}></addon-card>`
-          )}
-        </section>
-      </article>
-
       <form role="search" id="search">
         <select
           .value="${searchStore.sort}"
@@ -62,7 +50,7 @@ export class SearchView extends View {
       <section class="results" @filter-added="${this.filterAdded}">
         ${searchStore.addons.map(
           (addon) => html`
-            <addon-card .addon=${addon}></addon-card>
+            <addon-card .addon=${addon} .featured=${searchStore.featured.includes(addon.urlIdentifier)}></addon-card>
           `
         )}
       </section>

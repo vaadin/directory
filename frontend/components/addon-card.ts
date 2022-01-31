@@ -13,11 +13,15 @@ export class AddonCard extends View {
   @property({ attribute: false })
   addon?: SearchResult;
 
+  @property({ attribute: false })
+  featured: boolean = false;
+
   render() {
     if (!this.addon) {
       return html`skeletor!`;
     }
     return html`
+      ${this.featured ? html`<b>FEATURED</b>` : ''}
       <addon-icon src="${this.addon.icon}"></addon-icon>
 
       <section class="content">
