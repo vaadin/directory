@@ -17,6 +17,10 @@ search-view .featured-addons h2 {
   margin: 0;
 }
 
+article.discussion {
+  display: none;
+}
+
 search-view .featured-addons h2 span {
   display: block;
   width: min-content;
