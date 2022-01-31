@@ -7,6 +7,7 @@ import com.vaadin.directory.backend.repository.directory.ComponentFrameworkVersi
 import com.vaadin.directory.backend.service.ComponentDirectoryUserService;
 import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.directory.backend.service.TagGroupService;
+import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
@@ -30,6 +31,7 @@ public class SearchEndpoint {
     private final ComponentFramework vaadin6, vaadin7, vaadin8, vaadin10plus;
     private final List<ComponentFramework> vaadinMajorVersions;
     private final List<List<ComponentFrameworkVersion>> vaadinMinorVersions;
+    private final UserInfoService userNameService;
     private ComponentFrameworkRepository frameworkRepository;
     private ComponentDirectoryUserService userService;
     private ComponentService service;
@@ -39,10 +41,12 @@ public class SearchEndpoint {
                           @Autowired TagGroupService tagService,
                           @Autowired ComponentFrameworkRepository frameworkRepository,
                           @Autowired ComponentFrameworkVersionRepository frameworkVersionRepository,
-                          @Autowired ComponentDirectoryUserService userService) {
+                          @Autowired ComponentDirectoryUserService userService,
+                          @Autowired UserInfoService userNameService) {
         this.service = service;
         this.tagService = tagService;
         this.userService = userService;
+        this.userNameService = userNameService;
         this.frameworkRepository = frameworkRepository;
         this.frameworkVersionRepository = frameworkVersionRepository;
 
@@ -64,7 +68,7 @@ public class SearchEndpoint {
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
             int pageSize) {
         return service.findAllPublishedComponents(PageRequest.of(page, pageSize)).stream()
-                .map(c -> new SearchResult(c))
+                .map(c -> createSearchResult(c))
                 .collect(Collectors.toList());
     }
 
@@ -123,7 +127,7 @@ public class SearchEndpoint {
                         versions,
                         PageRequest.of(page, pageSize))
                 .stream()
-                .map(c -> new SearchResult(c))
+                .map(c -> createSearchResult(c))
                 .collect(Collectors.toList());
 
         Long count = null;
@@ -246,4 +250,11 @@ public class SearchEndpoint {
         Matrix m = new Matrix(rows,cols,data);
         return m;
     }
+
+    private SearchResult createSearchResult(Component c) {
+        SearchResult r = new SearchResult(c);
+        r.setAuthor(userNameService.getNameforId(c.getOwner().getId()));
+        return r;
+    }
+
 }
