@@ -20,6 +20,7 @@ import org.vaadin.directory.Util;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Endpoint
 @AnonymousAllowed
@@ -67,13 +68,25 @@ public class SearchEndpoint {
 
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
             int pageSize) {
-        return service.findAllPublishedComponents(PageRequest.of(page, pageSize)).stream()
+        List<SearchResult> result = new ArrayList<>();
+        result.addAll(getFeaturedAddons());
+        result.addAll(service.findAllPublishedComponents(PageRequest.of(page, pageSize)).stream()
                 .map(c -> createSearchResult(c))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        return result;
     }
 
     public @Nonnull List<@Nonnull String> getFeatured() {
         return List.of("fluent-vaadin-flow","app-layout-add-on","filteringtable");
+    }
+
+    public @Nonnull List<@Nonnull SearchResult> getFeaturedAddons() {
+        List<SearchResult> result = new ArrayList<>();
+        getFeatured().forEach(urlId -> {
+            Optional<Component> c = service.getComponentByUrl(urlId);
+            if (c.isPresent()) result.add(new SearchResult(c.get()));
+        });
+        return result;
     }
 
     @Transactional(readOnly = true)
@@ -151,7 +164,17 @@ public class SearchEndpoint {
                                 versions);
             }
         }
-        return new SearchListResult(results, count, results.size() == pageSize);
+
+
+        // Add featured as first, if no other search
+        boolean hasMore = results.size() == pageSize;
+        if (page == 1 && (searchString == null || searchString.isEmpty() || searchString.isBlank())) {
+            results = Stream.of(getFeaturedAddons(), results)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+        }
+
+        return new SearchListResult(results, count, hasMore);
     }
 
     @Transactional(readOnly = true)
