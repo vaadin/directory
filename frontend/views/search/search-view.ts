@@ -31,6 +31,7 @@ export class SearchView extends View {
       <form role="search" id="search">
         <div class="search-input">
           <input
+            autofocus
             type="search"
             placeholder="Search add-ons"
             aria-label="Search add-ons"
