@@ -53,6 +53,11 @@ registerStyles('vaadin-item', css`
     background-color: var(--blue-100);
   }
 
+  :host([focused]) {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--blue-400);
+  }
+
   /* This is so cumbersome */
   :host([theme~="avatar-group-item"]) ::slotted(vaadin-avatar) {
     --vaadin-avatar-size: 24px;
@@ -65,20 +70,24 @@ registerStyles('vaadin-item', css`
 
 // Using gap is not supported, need to use padding on the items
 registerStyles('vaadin-menu-bar', css`
+  :host([theme~="addon-version-menu"]) [part="container"] {
+    overflow: visible;
+  }
+
   :host([theme~="addon-version-menu"]) vaadin-menu-bar-button {
-    padding: 0.25em 0.5em;
-    color: var(--blue-500);
+    padding: 0.5em 0.75em;
     cursor: pointer;
-    border: 1px solid var(--blue-200);
+    background-color: var(--blue-500);
+    color: #fff;
     border-radius: var(--roundness-md);
     margin-inline-start: 4px;
   }
 
   :host([theme~="addon-version-menu"]) vaadin-menu-bar-button[focused] {
-    border-color: var(--blue-500);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue-400);
   }
 
   :host([theme~="addon-version-menu"]) vaadin-menu-bar-button:hover {
-    color: var(--blue-600);
+    background-color: var(--blue-600);
   }
 `);

@@ -359,6 +359,13 @@ addon-view install-tabsheet {
 
 [theme~="addon-version-menu"] :is(a, button):hover {
   background-color: var(--blue-100);
+  color: var(--blue-600);
+  text-decoration: none;
+}
+
+[theme~="addon-version-menu"] :is(a, button):focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--blue-400);
 }
 
 [theme~="addon-version-menu"] :is(a, button) span {
