@@ -93,6 +93,7 @@ public class QueryParser {
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.AUTHOR.getToken());
         author = authorParams != null && authorParams.size() >= 1 ? authorParams.get(0) : null;
+        author = author.replace('_',' '); // Use underscore as space
         isAuthorMe = AUTHOR_SELF_TOKEN.equalsIgnoreCase(author);
 
         List<String> frameworkParams =
