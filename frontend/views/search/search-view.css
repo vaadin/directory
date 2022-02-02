@@ -6,69 +6,8 @@ search-view {
   margin: 0 auto;
 }
 
-search-view .featured-addons {
-  background-color: var(--surface-color-alt);
-  border-radius: calc(var(--roundness-lg) * 2);
-  margin: var(--space-md) 0;
-}
-
-search-view .featured-addons h2 {
-  padding: var(--space-md);
-  margin: 0;
-}
-
 article.discussion {
   display: none;
-}
-
-search-view .featured-addons h2 span {
-  display: block;
-  width: min-content;
-  white-space: nowrap;
-  font-size: var(--text-size-md);
-  /* Copied from vaadin.com style sheet */
-  --tw-gradient-from: #1a81fa;
-  --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to,rgb(26 129 250/0));
-  --tw-gradient-to: #8854fc;
-  -webkit-background-clip: text;
-  background-clip: text;
-  background-image: linear-gradient(to right,var(--tw-gradient-stops));
-  color: transparent;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-search-view .featured-addons .gallery {
-  display: flex;
-  gap: var(--space-md);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 0 var(--space-md) var(--space-md);
-  scroll-padding: var(--space-md);
-  min-height: 17rem;
-}
-
-search-view .featured-addons addon-card {
-  flex-grow: 1;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  background-color: var(--background-color);
-  border-color: transparent;
-  box-shadow: var(--surface-shadow-m);
-  --fit-items: 3;
-  width: calc((100% - var(--space-md) * var(--fit-items) - 2rem) / var(--fit-items));
-}
-
-@media (max-width: 65rem) {
-  search-view .featured-addons addon-card {
-    --fit-items: 2;
-  }
-}
-
-@media (max-width: 45rem) {
-  search-view .featured-addons addon-card {
-    --fit-items: 1;
-  }
 }
 
 search-view .results {
