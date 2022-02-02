@@ -84,7 +84,7 @@ public class SearchEndpoint {
         List<SearchResult> result = new ArrayList<>();
         getFeatured().forEach(urlId -> {
             Optional<Component> c = service.getComponentByUrl(urlId);
-            if (c.isPresent()) result.add(new SearchResult(c.get()));
+            if (c.isPresent()) result.add(createSearchResult(c.get()));
         });
         return result;
     }
