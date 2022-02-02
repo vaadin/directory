@@ -93,7 +93,9 @@ public class QueryParser {
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.AUTHOR.getToken());
         author = authorParams != null && authorParams.size() >= 1 ? authorParams.get(0) : null;
-        author = author != null ? author.replace('_',' '): null; // Use underscore as space
+        if (author != null) {
+            author = author.replace('_',' ').toLowerCase(); // Use underscore as space
+        }
         isAuthorMe = AUTHOR_SELF_TOKEN.equalsIgnoreCase(author);
         if (author == null || author.length() < 3) { author = null; } // Ignore too short author names
 
