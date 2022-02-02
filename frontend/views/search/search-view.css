@@ -41,6 +41,12 @@ search-view form {
   align-items: baseline;
 }
 
+@media (pointer: coarse) {
+  search-view .search-input input {
+    font-size: 16px;
+  }
+}
+
 search-view .search-input,
 search-view .sort-select {
   height: 2.5rem;
@@ -57,8 +63,8 @@ search-view .search-input {
   padding: 0.25em 0;
   padding-inline-start: 28px;
   background-position: 12px 45%;
-  height: 2.5rem;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 search-view .search-input:focus-within {
@@ -73,7 +79,9 @@ search-view .search-input :is(input, select) {
 }
 
 search-view .search-input input {
+  min-width: 0;
   border-inline-end: 1px solid var(--divider-color1);
+  padding-inline-end: 0.25em;
 }
 
 search-view .search-input :is(input, select):focus {
