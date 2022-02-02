@@ -28,13 +28,18 @@ export class SearchView extends View {
 
   render() {
     return html`
-      <form role="search" id="search">
+      <form role="search" id="search" onsubmit="event.preventDefault(); document.activeElement.blur();">
         <div class="search-input">
           <input
             autofocus
             type="search"
             placeholder="Search add-ons"
             aria-label="Search add-ons"
+            enterkeyhint="Search"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
             .value="${searchStore.query}"
             @input="${this.debounce((e: any) => this.updateQuery(e))}" />
           <select
