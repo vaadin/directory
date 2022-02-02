@@ -49,9 +49,9 @@ export class SearchView extends View {
 
       <section class="results" @filter-added="${this.filterAdded}">
         ${searchStore.addons.map(
-          (addon) => html`
-            <addon-card .addon=${addon} .featured=${searchStore.featured.includes(addon.urlIdentifier)}></addon-card>
-          `
+          (addon) => addon ? html`
+            <addon-card .addon=${addon} .featured=${searchStore.featured.includes(addon.urlIdentifier)}></addon-card>`
+            : html`<i>no addons found</i>`
         )}
       </section>
 
