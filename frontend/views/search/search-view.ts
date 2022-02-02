@@ -40,6 +40,16 @@ export class SearchView extends View {
           placeholder="Search"
           .value="${searchStore.query}"
           @input="${this.debounce((e: any) => this.updateQuery(e))}" />
+        <select
+         .value="${searchStore.version}"
+         @change="${this.updateVersion}">
+           <option value="all">For all Vaadin versions</option>
+           <option value="22">Vaadin 22</option>
+           <option value="14">Vaadin 14</option>
+           <option value="8">Vaadin 8</option>
+           <option value="7">Vaadin 7</option>
+           <option value="6">Vaadin 6</option>
+        </select>
         <p>
           <b>${searchStore.totalCount >=0 ? searchStore.totalCount : '0'}</b> add-ons found.
           ${searchStore.totalCount > 50 ? html`<i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or
@@ -113,6 +123,10 @@ export class SearchView extends View {
 
   updateSort(e: { target: HTMLInputElement }) {
     searchStore.setSort(e.target.value);
+  }
+
+  updateVersion(e: { target: HTMLInputElement }) {
+    searchStore.setVersion(e.target.value);
   }
 
   debounce(func : Function, timeout = 500){

@@ -13,6 +13,7 @@ class SearchStore {
   totalCount: number = -1;
   query = '';
   sort = 'recent';
+  version = 'all'
   private page = 1;
   private pageSize = 12;
 
@@ -38,9 +39,10 @@ class SearchStore {
     if (this.loading) return;
    this.setLoading(true);
     try {
-      const res: SearchListResult = await SearchEndpoint.search(this.query, this.page, this.pageSize, this.sort, this.page == 1);
-      if (this.page === 1 && res.totalCount) {
-          this.setTotalCount(res.totalCount);
+      const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , this.page, this.pageSize, this.sort, this.page == 1);
+      if (this.page === 1) {
+          this.setTotalCount(res.totalCount ? res.totalCount : 0);
       }
       this.setHasMore(res.hasMore);
       this.setAddons(this.addons.concat(res.list));
@@ -95,6 +97,14 @@ class SearchStore {
 
   setSort(sort: string) {
     this.sort = sort;
+    this.page = 1;
+    this.addons = [];
+    this.writeQueryToURL();
+    this.fetchPage();
+  }
+
+  setVersion(version: string) {
+    this.version = version;
     this.page = 1;
     this.addons = [];
     this.writeQueryToURL();
