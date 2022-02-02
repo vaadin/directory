@@ -82,7 +82,7 @@ public class SearchEndpoint {
         QueryParser qp = QueryParser.parse(searchString);
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
-        if (qp.getAuthor() != null ) {
+        if (qp.getAuthor() != null || qp.isAuthorMe()) {
             // TODO: We need to get the user names somehow. Not in current DB model.
             String user = qp.getAuthor();
             if (qp.isAuthorMe()) {
