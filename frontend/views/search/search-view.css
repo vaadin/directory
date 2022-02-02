@@ -2,7 +2,7 @@ search-view {
   display: block;
   box-sizing: border-box;
   max-width: var(--layout-max-width);
-  padding: 0 var(--layout-padding);
+  padding: var(--space-md) var(--layout-padding);
   margin: 0 auto;
 }
 
@@ -30,4 +30,61 @@ search-view .results {
   font-weight: var(--text-weight-semibold);
   color: var(--blue-500);
   cursor: pointer;
+}
+
+search-view form {
+  font-size: var(--text-size-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  margin-bottom: var(--space-md);
+  align-items: baseline;
+}
+
+search-view .search-input,
+search-view .sort-select {
+  height: 2.5rem;
+}
+
+search-view .search-input {
+  display: inline-flex;
+  border: var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-color);
+  border-radius: var(--roundness-md);
+  background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.875 0.875C6.43018 0.875 3.625 3.68018 3.625 7.125C3.625 8.62158 4.1499 9.99365 5.03125 11.0703L0.0507812 16.0508L0.949219 16.9492L5.92969 11.9688C7.00635 12.8501 8.37842 13.375 9.875 13.375C13.3198 13.375 16.125 10.5698 16.125 7.125C16.125 3.68018 13.3198 0.875 9.875 0.875ZM9.875 2.125C12.6436 2.125 14.875 4.35645 14.875 7.125C14.875 9.89355 12.6436 12.125 9.875 12.125C7.10645 12.125 4.875 9.89355 4.875 7.125C4.875 4.35645 7.10645 2.125 9.875 2.125Z' fill='%23657892'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  padding: 0.25em 0;
+  padding-inline-start: 28px;
+  background-position: 12px 45%;
+  height: 2.5rem;
+  box-sizing: border-box;
+}
+
+search-view .search-input:focus-within {
+  box-shadow: 0 0 0 2px var(--blue-400);
+}
+
+search-view .search-input :is(input, select) {
+  border: 0;
+  border-radius: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+search-view .search-input input {
+  border-inline-end: 1px solid var(--divider-color1);
+}
+
+search-view .search-input :is(input, select):focus {
+  box-shadow: none;
+}
+
+search-view p {
+  margin: 0;
+}
+
+search-view p :is(i, b) {
+  font-style: normal;
+  font-weight: normal;
 }

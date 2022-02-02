@@ -29,26 +29,33 @@ export class SearchView extends View {
   render() {
     return html`
       <form role="search" id="search">
+        <div class="search-input">
+          <input
+            type="search"
+            placeholder="Search add-ons"
+            aria-label="Search add-ons"
+            .value="${searchStore.query}"
+            @input="${this.debounce((e: any) => this.updateQuery(e))}" />
+          <select
+            class="vaadin-version-select"
+            .value="${searchStore.version}"
+            @change="${this.updateVersion}"
+            aria-label="Vaadin version">
+            <option value="all">for all versions</option>
+            <option value="22">Vaadin 22</option>
+            <option value="14">Vaadin 14</option>
+            <option value="8">Vaadin 8</option>
+            <option value="7">Vaadin 7</option>
+            <option value="6">Vaadin 6</option>
+          </select>
+        </div>
         <select
+          class="sort-select"
           .value="${searchStore.sort}"
-          @change="${this.updateSort}">
-            <option value="recent">New and noteworthy</option>
+          @change="${this.updateSort}"
+          aria-label="Sorting">
+            <option value="recent">New &amp; noteworthy</option>
             <option value="rating">Popular</option>
-        </select>
-        <input
-          type="search"
-          placeholder="Search"
-          .value="${searchStore.query}"
-          @input="${this.debounce((e: any) => this.updateQuery(e))}" />
-        <select
-         .value="${searchStore.version}"
-         @change="${this.updateVersion}">
-           <option value="all">For all Vaadin versions</option>
-           <option value="22">Vaadin 22</option>
-           <option value="14">Vaadin 14</option>
-           <option value="8">Vaadin 8</option>
-           <option value="7">Vaadin 7</option>
-           <option value="6">Vaadin 6</option>
         </select>
         <p>
           <b>${searchStore.totalCount >=0 ? searchStore.totalCount : '0'}</b> add-ons found.

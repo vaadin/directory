@@ -1,26 +1,17 @@
 .directory-header {
   display: block;
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
   color: var(--secondary-text-color);
   font-size: var(--text-size-sm);
-  line-height: 18px;
-}
-
-@media (max-width: 40rem) {
-  .directory-header {
-    font-size: var(--text-size-xs);
-  }
 }
 
 .directory-header > section {
   display: flex;
   align-items: baseline;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
   max-width: var(--layout-max-width);
   padding: 0 var(--layout-padding);
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  padding-top: 2rem;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -29,11 +20,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0 0.5rem;
+  gap: 0.25rem 0.5rem;
+  font-size: var(--text-size-md);
+  margin-inline-end: auto;
+  position: relative;
 }
 
 .directory-title h1 {
-  font-size: var(--text-size-lg);
+  font-size: var(--text-size-3xl);
   margin: 0;
 }
 
@@ -41,9 +35,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: flex-end;
   gap: 0 1rem;
-  flex: auto;
 }
 
 .directory-support-nav p {
@@ -69,5 +61,13 @@
 }
 
 .build-label {
-  font-size: var(--text-size-xs);
+  position: absolute;
+  background: var(--blue-100);
+  color: var(--blue-500) !important;
+  padding: 4px 4px;
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 1;
+  top: -1.75em;
+  right: -0.5em;
 }

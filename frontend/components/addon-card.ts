@@ -20,8 +20,9 @@ export class AddonCard extends View {
     if (!this.addon) {
       return html`skeletor!`;
     }
+    this.classList.toggle('featured', this.featured);
     return html`
-      ${this.featured ? html`<b>FEATURED</b>` : ''}
+      ${this.featured ? html`<b class="badge featured">Featured</b>` : ''}
       <addon-icon src="${this.addon.icon}"></addon-icon>
 
       <section class="content">

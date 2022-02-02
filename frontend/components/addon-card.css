@@ -9,6 +9,10 @@ addon-card {
   position: relative;
 }
 
+addon-card.featured {
+  border-color: var(--blue-300);
+}
+
 addon-card h3 {
   margin: 0;
   font-size: var(--text-size-lg);
@@ -22,6 +26,7 @@ addon-card h3 a:any-link {
 addon-card h3 a::before {
   content: "";
   position: absolute;
+  z-index: 2;
   inset: -1px;
   border-radius: var(--roundness-lg);
   border: 1px solid transparent;
@@ -34,7 +39,7 @@ addon-card h3 a:is(:hover, :focus)::before {
 
 addon-card .author {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   -webkit-appearance: none;
   appearance: none;
   border: 0;
@@ -63,4 +68,19 @@ addon-card .summary {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+}
+
+addon-card .badge {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  font-weight: var(--text-weight-semibold);
+  font-size: var(--text-size-xs);
+  color: var(--blue-500);
+  border: 1px solid var(--blue-300);
+  border-width: 0 0 1px 1px;
+  border-radius: 0 var(--roundness-lg) 0 var(--roundness-md);
+  padding: 0.25em 0.5em;
+  background-color: var(--blue-50);
 }

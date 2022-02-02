@@ -23,6 +23,25 @@ select {
   font-weight: var(--text-weight-semibold);
 }
 
+input[type="text"]:focus,
+input[type="search"]:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--blue-400);
+}
+
+select {
+	background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.845703 0.716797L0.216797 1.3457L5.68555 6.81445L6 7.11523L6.31445 6.81445L11.7832 1.3457L11.1543 0.716797L6 5.87109L0.845703 0.716797Z' fill='%23657892'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 8px) 50%;
+  -webkit-appearance: none;
+  padding-inline-end: 26px;
+}
+
+input::placeholder {
+  color: var(--secondary-text-color);
+}
+
 hr {
   border: 0;
   height: 1px;
