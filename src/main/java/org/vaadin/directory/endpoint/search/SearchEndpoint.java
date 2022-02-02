@@ -84,7 +84,7 @@ public class SearchEndpoint {
         List<SearchResult> result = new ArrayList<>();
         getFeatured().forEach(urlId -> {
             Optional<Component> c = service.getComponentByUrl(urlId);
-            if (c.isPresent()) result.add(new SearchResult(c.get()));
+            if (c.isPresent()) result.add(createSearchResult(c.get()));
         });
         return result;
     }
@@ -169,6 +169,12 @@ public class SearchEndpoint {
         // Add featured as first, if no other search
         boolean hasMore = results.size() == pageSize;
         if (page == 1 && (searchString == null || searchString.isEmpty() || searchString.isBlank())) {
+            // remove featured from search results if present
+            List<String> featured = getFeatured();
+            results = results.stream()
+                    .filter(r -> !featured.contains(r.getUrlIdentifier()))
+                    .collect(Collectors.toList());
+            // Catenate
             results = Stream.of(getFeaturedAddons(), results)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
