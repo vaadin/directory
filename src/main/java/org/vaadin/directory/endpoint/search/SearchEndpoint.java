@@ -88,9 +88,15 @@ public class SearchEndpoint {
             if (qp.isAuthorMe()) {
                 user = "User_16"; // TODO: We should get this from login
             }
-            long id = user.startsWith("User_") ? Long.parseLong(user.substring(5)) : -1;
-            ComponentDirectoryUser du = userService.findById(id);
-            if (du != null) { owners = List.of(du); } else { return new SearchListResult(); };
+            List<Long> ids = List.of(-1L);
+            if (user.startsWith("User_")) {
+                ids = List.of(Long.parseLong(user.substring(5)));
+            } else {
+                ids = userNameService.findByName(user);
+            }
+
+            owners = ids.stream().map(id -> userService.findById(id)).collect(Collectors.toList());
+            if (owners.isEmpty()) { return new SearchListResult(); };
         }
 
         // Resolve tag groups
