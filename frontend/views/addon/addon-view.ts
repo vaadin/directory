@@ -77,7 +77,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           <section class="author">
             <h3>Author</h3>
             <button @click="${this.searchByAuthor}">
-              <vaadin-avatar .img="https://vaadin.com/static/portrait/initials/JD" name="John Doe"></vaadin-avatar>
+              <vaadin-avatar .img="https://vaadin.com/static/portrait/initials/JD" name="${this.addon.author}"></vaadin-avatar>
               ${this.addon.author}
             </button>
           </section>
