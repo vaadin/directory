@@ -29,6 +29,10 @@ export class InstallTabSheet extends View {
     download.href = `https://static.vaadin.com/directory/${this.version.installs['Zip']}`;
     download.textContent = 'Download ZIP';
 
+    const create = document.createElement('a');
+    create.href = `https://start.vaadin.com/dl?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
+    create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
+
     const copyMaven = document.createElement('button');
     copyMaven.onclick = () => {
       this.copyToClipboard(this.version?.installs['Maven']);
@@ -50,14 +54,18 @@ export class InstallTabSheet extends View {
     compatibilityIssues.href = location.href + '#discussion';
     compatibilityIssues.innerText = 'Report compatibility issues';
 
+    const menuItems = Object.keys(this.version.installs);
+    menuItems.push("Create");
     const options: MenuBarItem[] = [
       {
         text: 'Install',
-        children: Object.keys(this.version.installs).map((key) => {
+        children: menuItems.map((key) => {
           if (key == 'Zip') {
             return { component: download };
           } else if (key == 'Maven') {
             return { component: ("clipboard" in navigator) ? copyMaven : mavenText};
+          } else if (key == 'Create') {
+            return { component: create };
           } else {
             return {}
           }
