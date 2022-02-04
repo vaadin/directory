@@ -30,7 +30,7 @@ export class InstallTabSheet extends View {
     download.textContent = 'Download ZIP';
 
     const create = document.createElement('a');
-    create.href = `https://start.vaadin.com/dl?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
+    create.href = `https://start.stg.vaadin.com/dl?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
     create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
 
     const copyMaven = document.createElement('button');
