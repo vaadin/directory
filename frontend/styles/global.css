@@ -56,3 +56,7 @@ pre[class*="language-"] {
   color: var(--gray-200);
   background: var(--gray-700);
 }
+
+img {
+  max-width: 100%;
+}
