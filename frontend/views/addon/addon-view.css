@@ -204,7 +204,7 @@ addon-view .footer {
   gap: 0.5em;
 }
 
-addon-view .tag {
+addon-view .footer .tag {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
