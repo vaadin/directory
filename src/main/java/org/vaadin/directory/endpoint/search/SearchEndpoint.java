@@ -241,12 +241,18 @@ public class SearchEndpoint {
         for (int r = 0; r < frameworkVersions.size(); r++) {
             ComponentFrameworkVersion fwv = frameworkVersions.get(r);
             List<String> row = data.get(r);
+            boolean noSupport = true;
             for (int c = 0; c < versionList.size(); c++) {
                 ComponentVersion version = versionList.get(c);
                 List<String> names = version.getFrameworkVersions().stream().map(ComponentFrameworkVersion::getVersion).collect(Collectors.toList());
                 boolean supported = Util.matchingVersionStrings(fwv.getVersion()).stream().anyMatch(name -> names.contains(name));
                 row.add(supported ? "Y" :"");
+                noSupport &= !supported;
             };
+            if (noSupport) {
+                rows.set(r,"("+rows.get(r)+")");
+            }
+
         }
 
         Matrix m = new Matrix(rows,cols,data);

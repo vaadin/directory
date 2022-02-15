@@ -411,6 +411,10 @@ addon-view .main pre {
   width: 100%;
 }
 
+.compatibility-matrix .not-supported-fw {
+  display: none;
+}
+
 table.matrix th,
 table.matrix td {
   margin: var(--lumo-space-m);
