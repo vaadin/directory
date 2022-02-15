@@ -1,6 +1,6 @@
 import './addon-view.css';
 import '../../components/addon-icon';
-import '../../components/rating-stars';
+import { RatingStars, RatingEvent } from '../../components/rating-stars';
 import './install-tabsheet';
 import './highlight-carousel';
 import './feature-matrix';
@@ -91,7 +91,11 @@ export class AddonView extends View implements BeforeEnterObserver {
 
           <section class="rating">
             <h3>Rating</h3>
-            <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
+            <rating-stars
+              @rating=${this.addRating}
+              .rating="${this.addon.rating}"
+              .ratingCount="${this.addon.ratingCount}">
+            </rating-stars>
           </section>
 
           ${this.addon.links.length > 0 ? html`
@@ -299,6 +303,10 @@ export class AddonView extends View implements BeforeEnterObserver {
     window.location.href = router.baseUrl + '?q=author:' + user;
   }
 
+  addRating(e: RatingEvent) {
+     (e.target as RatingStars).userRating = true;
+     //TODO: store rating
+  }
 
   versionChange(e: CustomEvent) {
     if (e && e.detail && e.detail && e.detail.value) {
