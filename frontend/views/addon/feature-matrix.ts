@@ -20,7 +20,7 @@ export class FeatureMatrix extends View {
     return html`
       <table class="matrix">
         <tr>
-          <th>Add-on<br />Vaadin</th>
+          <th class="rowh"></th>
           ${this.matrix.cols?.map((title,col) =>
             html`<th class="colh col-${col}">${title}</th>`
           )}

@@ -403,8 +403,9 @@ addon-view .main pre {
 }
 
 .compatibility-matrix {
-  width: 700px;
+  display: flex;
   max-width: 100%;
+  overflow-x: auto;
 }
 
 .compatibility-matrix .matrix {
@@ -427,4 +428,14 @@ table.matrix td.on {
   background-color: var(--green-500);
   color: #fff;
   border-radius: var(--roundness-sm);
+}
+
+table.matrix th {
+  background-color: var(--base-white);
+}
+
+table.matrix th.rowh {
+  position: sticky;
+  left: 0;
+  z-index: 2;
 }
