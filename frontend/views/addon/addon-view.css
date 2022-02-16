@@ -143,6 +143,8 @@ addon-view .highlights .item {
   height: 10rem;
   box-sizing: border-box;
   background-color: var(--background-color);
+  --x: 400px;
+  --y: 500px;
 }
 
 addon-view .highlights .item img {
@@ -154,6 +156,15 @@ addon-view .highlights .item img {
 addon-view .highlights .item:not(.item-open) .btn-close,
 addon-view .highlights .item-open .btn-open {
   display: none;
+}
+
+addon-view .highlights .item-open-start {
+  position: absolute;
+  left:  var(--x);
+  top: var(--y);
+  width: 0;
+  height: 0;
+  transition: all .3s ease-in-out;
 }
 
 addon-view .highlights .item-open {

@@ -26,7 +26,26 @@ export class HighlightCarousel extends View {
   }
 
   open(e:MouseEvent) {
-    (e.target as HTMLButtonElement).parentElement?.classList.add('item-open');
+    const el = e.target as HTMLButtonElement;
+    const item = el.parentElement;
+    if (item) {
+
+      // Pop up from mouse x/y
+      item.style.setProperty('--x', ''+e.clientX+'px');
+      item.style.setProperty('--y', ''+e.clientY+'px');
+      item.classList.add('item-open-start');
+
+      // Allow previous class to render before applying new
+      setTimeout(function () {
+        item.classList.add('item-open');
+        item.focus();
+      }, 0);
+
+      // remove start position styles
+      setTimeout(function () {
+        item.classList.remove('item-open-start');
+      }, 200);
+    }
   }
 
   closeOnEsc(e: KeyboardEvent) {
@@ -36,4 +55,5 @@ export class HighlightCarousel extends View {
   close() {
     this.querySelectorAll('.item').forEach(item => item.classList.remove('item-open'));
   }
+
 }
