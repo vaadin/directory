@@ -16,8 +16,8 @@ export class HighlightCarousel extends View {
   render() {
     return html`
       ${this.addon?.mediaHighlights.map((m,i) => html`
-        <div class="item item-${i}">
-          <img src="${m?.url}">
+        <div class="item item-${i}" @keydown="${this.closeOnEsc}" tabindex="0">
+          <img src="${m?.url}" @click="${this.close}">
           <button class="btn-open" @click="${this.open}">View larger</button>
           <button class="btn-close" @click="${this.close}">Close</button>
         </div>
@@ -27,6 +27,10 @@ export class HighlightCarousel extends View {
 
   open(e:MouseEvent) {
     (e.target as HTMLButtonElement).parentElement?.classList.add('item-open');
+  }
+
+  closeOnEsc(e: KeyboardEvent) {
+    if (e.keyCode == 27) { this.close(); }
   }
 
   close() {
