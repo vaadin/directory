@@ -128,7 +128,7 @@ export class RatingStars extends LitElement {
           <div class="ratings ${this.userRating?'user-rating':''} ${this.hasEnoughRatings() || this.userRating?'':'hidden'}">
             ${this.hasEnoughRatings() && !this.userRating ?
                 html`<span class="count">${this.ratingCount}</span>` :
-                html`<span class="user-score">${this.rating}/5</span>`}
+                html`<span class="user-score">${this.userRating ? this.rating : '-'}/5</span>`}
             <input @click="${this._handleClick}" class="rating" type="radio" name="stars" id="star-5" value="5"/><label for="star-5"></label>
             <input @click="${this._handleClick}" class="rating" type="radio" name="stars" id="star-4" value="4"/><label for="star-4"></label>
             <input @click="${this._handleClick}" class="rating" type="radio" name="stars" id="star-3" value="3"/><label for="star-3"></label>
