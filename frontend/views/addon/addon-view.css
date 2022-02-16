@@ -431,7 +431,7 @@ table.matrix td.on {
 }
 
 table.matrix th {
-  background-color: var(--base-white);
+  background-color: var(--surface-color);
 }
 
 table.matrix th.rowh {
