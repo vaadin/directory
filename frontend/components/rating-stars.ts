@@ -29,6 +29,7 @@ export class RatingStars extends LitElement {
 
     .ratings {
       display: flex;
+      width: 110px;
       align-items: center;
       flex-direction: row-reverse;
       position: relative;
@@ -37,6 +38,8 @@ export class RatingStars extends LitElement {
     }
 
     .no-rating {
+      white-space: nowrap;
+      font-size: var(--text-size-s);
     }
 
     .count,
@@ -46,7 +49,7 @@ export class RatingStars extends LitElement {
     }
 
     .select .user-score {
-      display: none;
+
     }
 
     .user-rating .user-score {
