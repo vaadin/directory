@@ -2,88 +2,156 @@ package org.vaadin.directory.store;
 
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.Instant;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class Store {
 
     private StoreSettings settings;
-    private Firestore firestoreInstance;
-    private WeakHashMap<String, AddonRatingInfo> cache = new WeakHashMap<>();
+    private Firestore dbInstance;
+    private WeakHashMap<String, AddonRatingInfo> ratingCache = new WeakHashMap<>();
+    private WeakHashMap<String, UserInstallInfo> installCache = new WeakHashMap<>();
 
     public Store(@Autowired StoreSettings settings) {
         this.settings = settings;
     }
 
-
-    public Firestore getFirestore() throws IOException {
-        if (this.firestoreInstance != null) {
-            return this.firestoreInstance;
+    public Firestore getDb() throws IOException {
+        if (this.dbInstance != null) {
+            return this.dbInstance;
         }
 
         InputStream input = new ByteArrayInputStream(settings.getValue("storekey").getBytes(StandardCharsets.UTF_8));
         GoogleCredentials credentials = GoogleCredentials.fromStream(input);
 
         FirestoreOptions options = FirestoreOptions.newBuilder().setCredentials(credentials).build();
-        this.firestoreInstance = options.getService();
-        return firestoreInstance;
+        this.dbInstance = options.getService();
+        return dbInstance;
     }
 
-    private void writeAddonRating(AddonRatingInfo a) {
+    @PreDestroy
+    public void preDestroy() {
+        if (this.dbInstance != null) {
+            try {
+                this.dbInstance.close();
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO: logging
+            }
+        }
+    }
+
+    private void writeAddonRating(AddonRatingInfo addonRatingInfo) {
         try {
             // write through cache
-            synchronized (this.cache) {
-                this.cache.put(a.getAddon(), a);
+            synchronized (this.ratingCache) {
+                this.ratingCache.put(addonRatingInfo.getAddon(), addonRatingInfo);
             }
-            WriteResult writeResult = this.getFirestore().document("addonRatings/" + a.getAddon()).set(a).get();
+            WriteResult writeResult = this.getDb()
+                    .collection("addonRatings")
+                    .document(addonRatingInfo.getAddon()).set(addonRatingInfo)
+                    .get();
         } catch (Exception e) {
             e.printStackTrace(); //TODO: logging
         }
     }
 
-    private AddonRatingInfo readAddonRating(String urlIdentifier, boolean createIfMissing) {
-        AddonRatingInfo a = null;
+    private void writeUserInstall(UserInstallInfo installInfo) {
+        try {
+            // write through cache
+            synchronized (this.installCache) {
+                this.installCache.put(installInfo.getUserId(), installInfo);
+            }
+            WriteResult writeResult = this.getDb()
+                    .collection("userInstalls")
+                    .document(installInfo.getUserId()).set(installInfo)
+                    .get();
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: logging
+        }
+    }
+
+    private UserInstallInfo readUserInstalls(String userId, boolean createIfMissing) {
+        UserInstallInfo data = null;
 
         // Try cache
-        synchronized (this.cache) {
-            if (this.cache.containsKey(urlIdentifier)) {
-                return this.cache.get(urlIdentifier);
+        synchronized (this.ratingCache) {
+            if (this.installCache.containsKey(userId)) {
+                return this.installCache.get(userId);
             }
         }
 
         // Read remote and cache
         try {
-            ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = this.getFirestore().document("addonRatings/" + urlIdentifier).get();
-            a = documentSnapshotApiFuture.get().toObject(AddonRatingInfo.class);
-            if (a != null) {
-                synchronized (this.cache) {
-                    cache.put(urlIdentifier, a);
+            ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = this.getDb()
+                    .collection("userInstalls")
+                    .document(userId)
+                    .get();
+            data = documentSnapshotApiFuture.get().toObject(UserInstallInfo.class);
+            if (data != null) {
+                synchronized (this.installCache) {
+                    this.installCache.put(userId, data);
                 }
+                return data;
             }
-            return a;
         } catch (Exception e) {
             e.printStackTrace(); //TODO: logging
         }
 
         if (createIfMissing) {
-            a = new AddonRatingInfo();
-            a.setAddon(urlIdentifier);
+            data = new UserInstallInfo();
+            data.setUserId(userId);
         }
-        return a;
+        return data;
+    }
+
+    private AddonRatingInfo readAddonRating(String urlIdentifier, boolean createIfMissing) {
+        AddonRatingInfo data = null;
+
+        // Try cache
+        synchronized (this.ratingCache) {
+            if (this.ratingCache.containsKey(urlIdentifier)) {
+                return this.ratingCache.get(urlIdentifier);
+            }
+        }
+
+        // Read remote and cache
+        try {
+            ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = this.getDb()
+                    .collection("addonRatings")
+                    .document(urlIdentifier)
+                    .get();
+            data = documentSnapshotApiFuture.get().toObject(AddonRatingInfo.class);
+            if (data != null) {
+                synchronized (this.ratingCache) {
+                    ratingCache.put(urlIdentifier, data);
+                }
+                return data;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: logging
+        }
+
+        if (createIfMissing) {
+            data = new AddonRatingInfo();
+            data.setAddon(urlIdentifier);
+        }
+        return data;
     }
 
     public int getUserRating(String urlIdentifier, String user) {
@@ -131,5 +199,63 @@ public class Store {
     public Double getAverageRating(String urlIdentifier) {
         AddonRatingInfo a = readAddonRating(urlIdentifier, false);
         return a != null ? a.getAvg() : 0;
+    }
+
+
+    public void logInstall(String addon, String version, String type, String userId) {
+
+        final String t = type.toUpperCase();
+        if ("MAVEN".equals(t) || "BOWER".equals(t) || "NPMYARN".equals(t) || "ZIP".equals(t) || "CREATE".equals(t)) {
+
+            // Log
+            log(addon,version,"COMPONENT_UI_"+type.toUpperCase()+"_INSTALL",userId);
+
+            // User installs
+            UserInstallInfo data = readUserInstalls(userId, true);
+            ArrayList<InstallInfo> list = new ArrayList<>();
+            if (data.getInstalls() != null) {
+                list.addAll(data.getInstalls());
+            }
+
+            // Update install time or add new install entry
+            Optional<InstallInfo> previousInstall = list.stream()
+                    .filter(i -> addon.equals(i.getAddon()) && type.equals(i.getType())
+                            && version.equals(i.getVersion()))
+                    .findFirst();
+            if (previousInstall.isPresent()) {
+                previousInstall.get().setTimestamp(Date.from(Instant.now()));
+            } else {
+                InstallInfo install = new InstallInfo(Date.from(Instant.now()),addon,version,type);
+                list.add(install);
+                data.setInstalls(list);
+            }
+
+            // Write
+            try {
+                writeUserInstall(data);
+            } catch (Exception e) {
+                e.printStackTrace(); //TODO: logging
+            }
+        }
+    }
+
+    public void log(String addon, String version, String event, String userId) {
+        LogEntry l = new LogEntry(Date.from(Instant.now()), addon, version, "",
+                event, userId, false);
+        try {
+            this.getDb().collection("log").add(l);
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: logging
+        }
+    }
+
+    public List<String> getAddonInstalls(String addon, String user) {
+        UserInstallInfo data = readUserInstalls(user, false);
+        if (data != null && data.getInstalls() != null) {
+            return data.getInstalls().stream().filter(i -> addon.equals(i.getAddon()))
+                    .map(i -> i.getVersion()+"/"+i.getType()+"/"+i.getTimestamp())
+                    .collect(Collectors.toList());
+        }
+        return List.of();
     }
 }
