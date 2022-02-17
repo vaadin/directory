@@ -386,6 +386,15 @@ addon-view install-tabsheet {
   font-weight: var(--text-weight-regular);
 }
 
+[theme~="addon-version-menu"] :is(hr) {
+  margin: var(--space-sm);
+}
+
+[theme~="addon-version-menu"] :is(i) {
+  font-size: var(--text-size-sm);
+  margin-top: var(--space-sm);
+}
+
 addon-view .release-notes :is(h1, h2, h3, h4, h5, h6) {
   font-size: var(--text-size-md);
 }

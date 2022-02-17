@@ -1,5 +1,6 @@
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
+import { logAddonInstall, getAddonInstalls } from 'Frontend/generated/AddonEndpoint';
 import { html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { View } from '../view';
@@ -16,29 +17,37 @@ export class InstallTabSheet extends View {
   @property({ attribute: false })
   version?: AddonVersion;
 
-  // TODO: User information missing
+
+  @property({ attribute: false })
+  user?: String;
+
   @state()
-  private user?: Object = {};
+  private installs: String[] = [];
 
   render() {
     if (!this.version || !this.addon) {
-      return html`skeletor!`;
+      return html`No version selected`;
     }
 
     const download = document.createElement('a');
     download.href = `https://static.vaadin.com/directory/${this.version.installs['Zip']}`;
+    download.onclick = () => { logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "zip", this.getCurrentUserId()); }
+
     download.textContent = 'Download ZIP';
 
     const create = document.createElement('a');
     create.href = `https://start.stg.vaadin.com/dl?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
+    create.onclick = () => { logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "create", this.getCurrentUserId()); }
     create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
 
     const copyMaven = document.createElement('button');
     copyMaven.onclick = () => {
+      logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "maven", this.getCurrentUserId());
       this.copyToClipboard(this.version?.installs['Maven']);
       copyMaven.firstElementChild!.textContent = 'Copied ✔';
       setTimeout(() => {
         copyMaven.firstElementChild!.textContent = 'Maven POM';
+        this.updateInstallInfo();
       }, 3000);
     };
     copyMaven.innerHTML = '<div>Maven POM</div><span>Copy Maven dependency XML to clipboard</span>';
@@ -54,8 +63,28 @@ export class InstallTabSheet extends View {
     compatibilityIssues.href = location.href + '#discussion';
     compatibilityIssues.innerText = 'Report compatibility issues';
 
+    const previousInstalls = document.createElement('div');
+    previousInstalls.appendChild(document.createElement('hr'));
+    const previousInstallsTitle = document.createElement('i');
+    previousInstallsTitle.innerText = 'Previously installed:';
+    previousInstalls.appendChild(previousInstallsTitle);
+    if (this.installs.length > 0) {
+      this.installs.forEach((s) => {
+        const linkToVersion = document.createElement('a');
+        linkToVersion.href = router.urlForPath('addon/:addon/:version?', { addon: ''+this.addon?.urlIdentifier, version: s.split('/')[0] });
+        linkToVersion.innerText = s.split('/')[0]+' ('+s.split('/')[1]+')';
+        linkToVersion.title = 'Installed at '+s.split('/')[2]+'';
+        previousInstalls.appendChild(linkToVersion);
+      });
+    } else {
+        const na = document.createElement('div');
+        na.innerText = '(no previous installs)';
+        previousInstalls.appendChild(na);
+    }
+
     const menuItems = Object.keys(this.version.installs);
     menuItems.push("Create");
+    menuItems.push("Previous");
     const options: MenuBarItem[] = [
       {
         text: 'Install',
@@ -66,6 +95,8 @@ export class InstallTabSheet extends View {
             return { component: ("clipboard" in navigator) ? copyMaven : mavenText};
           } else if (key == 'Create') {
             return { component: create };
+          } else if (key == 'Previous') {
+            return { component: previousInstalls };
           } else {
             return {}
           }
@@ -85,7 +116,7 @@ export class InstallTabSheet extends View {
       }
     ];
 
-    if (!this.user) {
+    if (!this.getCurrentUserId()) {
       options[0].children = [
         {
           text: 'Log in to install',
@@ -97,7 +128,11 @@ export class InstallTabSheet extends View {
     return html`
       <vaadin-menu-bar .items="${options}" theme="addon-version-menu"></vaadin-menu-bar>
       <vaadin-menu-bar .items="${extraOptions}" theme="addon-version-menu"></vaadin-menu-bar>
-    `;
+      `;
+  }
+
+  firstUpdated() {
+    setTimeout(() => {this.updateInstallInfo();},0);
   }
 
   copyToClipboard(content: string|undefined) {
@@ -106,5 +141,12 @@ export class InstallTabSheet extends View {
       } catch (e) {
         throw new Error("Failed to copy content to clipboard");
       }
+  }
+
+  async updateInstallInfo() {
+    getAddonInstalls(this.addon?.urlIdentifier, this.getCurrentUserId())
+      .then(installs => {
+        this.installs = installs;
+    });
   }
 }

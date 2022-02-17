@@ -5,10 +5,12 @@ import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
+import com.vaadin.fusion.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.store.Store;
 
+import java.util.List;
 import java.util.Optional;
 
 @Endpoint
@@ -49,6 +51,14 @@ public class AddonEndpoint {
 
     public void setUserRating(String addon, int rating, String user) {
         store.setUserRating(addon, rating, user);
+    }
+
+    public void logAddonInstall(String addon, String version, String type, String user) {
+        store.logInstall(addon, version, type, user);
+    }
+
+    public @Nonnull List<@Nonnull String> getAddonInstalls(String addon, String user) {
+        return store.getAddonInstalls(addon, user);
     }
 
 }
