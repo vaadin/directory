@@ -88,8 +88,11 @@ public class Store {
 
     public int getUserRating(String urlIdentifier, String user) {
         AddonRatingInfo a = readAddonRating(urlIdentifier, false);
-        RatingInfo r = a.getRatings().stream().filter(e -> user.equals(e.getUser())).findFirst().orElse(null);
-        return r != null ? r.getRating() : 0;
+        if (a != null) {
+            RatingInfo r = a.getRatings().stream().filter(e -> user.equals(e.getUser())).findFirst().orElse(null);
+            return r != null ? r.getRating() : 0;
+        }
+        return -1;
     }
 
     public void setUserRating(String urlIdentifier, int rating, String user) {
