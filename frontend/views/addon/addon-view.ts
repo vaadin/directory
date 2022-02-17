@@ -30,7 +30,6 @@ import { router } from '../../index';
 import { disqusReset } from "../disqus";
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
-import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
@@ -40,9 +39,6 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   @state()
   private version?: AddonVersion;
-
-  @state()
-  private compatibility?: Matrix;
 
   constructor() {
     super();
@@ -131,7 +127,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         </ul>
 
         <h3>Compatibility</h3>
-        <feature-matrix .matrix="${this.compatibility}" class="compatibility-matrix"></feature-matrix>
+        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
 
         <section class="footer">
           ${this.addon.tags.map((tag) => html`
@@ -283,7 +279,6 @@ export class AddonView extends View implements BeforeEnterObserver {
       disqusReset(this.addon.urlIdentifier,
         "https://directory4.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
         this.addon.name, true);
-      this.fetchCompatibility();
       this.updateUserRating();
     }
   }
@@ -330,10 +325,5 @@ export class AddonView extends View implements BeforeEnterObserver {
       this.version = this.getLatestVersion();
     }
   }
-
-    async fetchCompatibility() {
-      this.compatibility =
-        await SearchEndpoint.getCompatibility(this.addon?.urlIdentifier);
-   }
 
 }
