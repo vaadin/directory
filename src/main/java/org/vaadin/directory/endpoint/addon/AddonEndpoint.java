@@ -1,6 +1,5 @@
 package org.vaadin.directory.endpoint.addon;
 
-import java.util.Optional;
 import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.Component;
@@ -8,6 +7,9 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.directory.store.Store;
+
+import java.util.Optional;
 
 @Endpoint
 @AnonymousAllowed
@@ -15,11 +17,14 @@ public class AddonEndpoint {
 
     private final UserInfoService userNameService;
     private final ComponentService service;
+    private final Store store;
 
     AddonEndpoint(@Autowired ComponentService service,
-                  @Autowired UserInfoService userNameService) {
+                  @Autowired UserInfoService userNameService,
+                  @Autowired Store store) {
         this.service = service;
         this.userNameService = userNameService;
+        this.store = store;
     }
 
     @Transactional(readOnly = true)
@@ -32,6 +37,18 @@ public class AddonEndpoint {
         Addon a = new Addon(c);
         a.setAuthor(userNameService.getNameforId(c.getOwner().getId()));
         return a;
+    }
+
+    public Double getAverageRating(String addon) {
+        return store.getAverageRating(addon);
+    }
+
+    public int getUserRating(String urlIdentifier, String user) {
+        return store.getUserRating(urlIdentifier, user);
+    }
+
+    public void setUserRating(String addon, int rating, String user) {
+        store.setUserRating(addon, rating, user);
     }
 
 }

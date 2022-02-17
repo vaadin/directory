@@ -7,7 +7,7 @@ import './feature-matrix';
 import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
-import { getAddon } from 'Frontend/generated/AddonEndpoint';
+import { getAddon, getUserRating, setUserRating } from 'Frontend/generated/AddonEndpoint';
 import '@vaadin/vaadin-select/src/vaadin-select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
@@ -92,7 +92,9 @@ export class AddonView extends View implements BeforeEnterObserver {
           <section class="rating">
             <h3>Rating</h3>
             <rating-stars
+              id="rating-stars"
               @rating=${this.addRating}
+              .userRating="false"
               .rating="${this.addon.rating}"
               .ratingCount="${this.addon.ratingCount}">
             </rating-stars>
@@ -282,6 +284,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         "https://directory4.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
         this.addon.name, true);
       this.fetchCompatibility();
+      this.updateUserRating();
     }
   }
 
@@ -304,8 +307,17 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   addRating(e: RatingEvent) {
-     (e.target as RatingStars).userRating = true;
-     //TODO: store rating
+    (e.target as RatingStars).userRating = true;
+    setUserRating(this.addon?.urlIdentifier, e.rating, this.getCurrentUserId());
+  }
+
+  async updateUserRating() {
+    const rating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
+    const stars = this.renderRoot.querySelector('#rating-stars') as RatingStars;
+    if (stars && rating > 0) {
+      stars.userRating = true;
+      stars.rating = rating;
+    }
   }
 
   versionChange(e: CustomEvent) {
