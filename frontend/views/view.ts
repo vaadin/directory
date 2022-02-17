@@ -1,10 +1,51 @@
 import { MobxLitElement } from '@adobe/lit-mobx';
 import { autorun, IAutorunOptions, IReactionDisposer, IReactionOptions, IReactionPublic, reaction } from 'mobx';
 
+export interface HaasUserInfo {
+  authenticated: boolean;
+  username: string;
+}
+
+export interface Haas {
+  isAuthenticated: boolean;
+  userInfo: HaasUserInfo;
+}
+
 declare global { interface Window { searchScroll : number; } }
+declare global { interface Window { haas : Haas; } }
 
 export class MobxElement extends MobxLitElement {
   private disposers: IReactionDisposer[] = [];
+
+  /**
+   * Find the current user id. Either logged in or generated.
+   */
+   protected getCurrentUserId(): string {
+
+      // Use the userid provided by authenticated
+      if (window.haas
+        && window.haas.isAuthenticated
+        && window.haas.userInfo) {
+          return window.haas.userInfo.username;
+      }
+
+      //TODO: this is used just for testing
+      const userId = document.cookie.split('; ').find(row => row.startsWith('_hjSessionUser'));
+      if (userId) { return userId.split('=')[1]; }
+
+      return "(unset)";
+   }
+
+   private hash(str: string): number {
+      var hash = 0, i, chr;
+      if (str.length === 0) return hash;
+      for (i = 0; i < str.length; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0;
+      }
+      return hash;
+   }
 
   /**
    * Creates a MobX reaction using the given parameters and disposes it when this element is detached.
