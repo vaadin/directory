@@ -3,7 +3,10 @@ import { autorun, IAutorunOptions, IReactionDisposer, IReactionOptions, IReactio
 
 export interface HaasUserInfo {
   authenticated: boolean;
-  username: string;
+  screenname: string;
+  firstname: string;
+  lastname: string;
+  portraitUrl: string;
 }
 
 export interface Haas {
