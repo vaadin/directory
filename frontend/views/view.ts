@@ -35,17 +35,6 @@ export class MobxElement extends MobxLitElement {
       return "(not logged in)";
    }
 
-   private hash(str: string): number {
-      var hash = 0, i, chr;
-      if (str.length === 0) return hash;
-      for (i = 0; i < str.length; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0;
-      }
-      return hash;
-   }
-
   /**
    * Creates a MobX reaction using the given parameters and disposes it when this element is detached.
    *
