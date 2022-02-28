@@ -29,14 +29,10 @@ export class MobxElement extends MobxLitElement {
       if (window.haas
         && window.haas.isAuthenticated
         && window.haas.userInfo) {
-          return window.haas.userInfo.username;
+          return window.haas.userInfo.screenname;
       }
 
-      //TODO: this is used just for testing
-      const userId = document.cookie.split('; ').find(row => row.startsWith('_hjSessionUser'));
-      if (userId) { return userId.split('=')[1]; }
-
-      return "(unset)";
+      return "(not logged in)";
    }
 
    private hash(str: string): number {
