@@ -46,6 +46,7 @@ export class RatingStars extends LitElement {
     .user-score {
       font-weight: var(--text-weight-regular);
       margin-left: .5em;
+      width: 100%;
     }
 
     .select .user-score {
