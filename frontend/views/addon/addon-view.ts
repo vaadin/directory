@@ -307,12 +307,21 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   async updateUserRating() {
-    const rating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
     const stars = this.renderRoot.querySelector('#rating-stars') as RatingStars;
-    if (stars && rating > 0) {
+    if (!stars) { return; }
+
+    if (!window.haas.isAuthenticated) {
+      stars.tooltip = "Login to rate this addon";
+      stars.readonly = true;
+      return;
+    }
+
+    const rating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
+    if (rating > 0) {
       stars.userRating = true;
       stars.rating = rating;
     }
+
   }
 
   versionChange(e: CustomEvent) {
