@@ -15,6 +15,8 @@ public class AddonRatingInfo {
 
     private Double avg;
 
+    private Double avg180;
+
     private List<RatingInfo> ratings;
 
     public AddonRatingInfo() {
@@ -50,5 +52,13 @@ public class AddonRatingInfo {
 
     public void setRatings(List<RatingInfo> ratings) {
         this.ratings = ratings;
+    }
+
+    public Double getAvg180() {
+        return avg180;
+    }
+
+    public void setAvg180(Double avg180) {
+        this.avg180 = avg180;
     }
 }

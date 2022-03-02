@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.Instant;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -165,6 +169,7 @@ public class Store {
 
     public void setUserRating(String urlIdentifier, int rating, String user) {
         AddonRatingInfo a = readAddonRating(urlIdentifier, true);
+        LocalDateTime now = LocalDateTime.now();
 
         ArrayList<RatingInfo> rl = new ArrayList<>();
         if (a.getRatings() != null) {
@@ -182,16 +187,21 @@ public class Store {
 
         // User rating and date
         r.setRating(rating);
-        r.setTimestamp(Date.from(Instant.now()));
+        r.setTimestamp(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
 
         // Rating count
         a.setRatings(rl);
-        a.setRatingCount(a.getRatingCount() + 1);
+        a.setRatingCount(rl.size());
 
-        //  Incremental mean value ('previous mean' * '(count -1)') + 'new value') / 'count'
-        if (a.getRatingCount() > 1)
-            a.setAvg((a.getAvg() * (double) (a.getRatingCount() - 1) + rating) / (double) a.getRatingCount());
-        else a.setAvg((double) rating);
+        //  Store averages for all-time / 180 days
+        Double avg = rl.stream().collect(Collectors.averagingInt(RatingInfo::getRating));
+        Double avg180 = rl.stream().filter(ratingInfo ->
+                    ChronoUnit.DAYS.between(now, ratingInfo.getTimestamp().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()) < 180)
+                .collect(Collectors.averagingInt(RatingInfo::getRating));
+        a.setAvg(avg);
+        a.setAvg180(avg180);
 
         writeAddonRating(a);
     }
