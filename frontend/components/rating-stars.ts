@@ -11,6 +11,9 @@ export class RatingStars extends LitElement {
   userRating: boolean = false;
 
   @property({ attribute: false })
+  tooltip: string = "";
+
+  @property({ attribute: false })
   rating: number = 0;
 
   @property({ attribute: false })
@@ -130,7 +133,7 @@ export class RatingStars extends LitElement {
             <input ?checked=${Math.round(this.rating) === 2} @click="${this._handleClick}" class="rating" type="radio" name="stars" id="star-2" value="2"/><label for="star-2"></label>
             <input ?checked=${Math.round(this.rating) === 1} @click="${this._handleClick}" class="rating" type="radio" name="stars" id="star-1" value="1"/><label for="star-1"></label>
           </div>
-          <div class="no-rating ${this.hasEnoughRatings() || this.userRating?'hidden':''}">Not enough ratings</div>
+          <div title="${this.tooltip}" class="no-rating ${this.hasEnoughRatings() || this.userRating?'hidden':''}">Not enough ratings</div>
       `;
   }
 
