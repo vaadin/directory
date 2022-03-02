@@ -17,6 +17,8 @@ export interface Haas {
 declare global { interface Window { searchScroll : number; } }
 declare global { interface Window { haas : Haas; } }
 
+const USER_NOT_LOGGED_IN = "(not logged in)";
+
 export class MobxElement extends MobxLitElement {
   private disposers: IReactionDisposer[] = [];
 
@@ -32,7 +34,7 @@ export class MobxElement extends MobxLitElement {
           return window.haas.userInfo.screenname;
       }
 
-      return "(not logged in)";
+      return USER_NOT_LOGGED_IN;
    }
 
   /**

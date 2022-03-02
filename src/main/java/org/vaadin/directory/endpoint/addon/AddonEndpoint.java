@@ -17,6 +17,7 @@ import java.util.Optional;
 @AnonymousAllowed
 public class AddonEndpoint {
 
+    private static final String USER_NOT_LOGGED_IN = "(not logged in)";
     private final UserInfoService userNameService;
     private final ComponentService service;
     private final Store store;
@@ -50,7 +51,9 @@ public class AddonEndpoint {
     }
 
     public void setUserRating(String addon, int rating, String user) {
-        store.setUserRating(addon, rating, user);
+        if (!USER_NOT_LOGGED_IN.equals(user)) {
+            store.setUserRating(addon, rating, user);
+        }
     }
 
     public void logAddonInstall(String addon, String version, String type, String user) {
