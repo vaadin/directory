@@ -31,13 +31,19 @@ public class AddonEndpoint {
     }
 
     @Transactional(readOnly = true)
-    public Addon getAddon(String urlIdentifier) {
+    public Addon getAddon(String urlIdentifier, String currentUser) {
         Optional<Component> maybeComponent = service.getComponentByUrl(urlIdentifier);
-        return maybeComponent.isPresent() ? createAddon(maybeComponent.get()) : null;
+        long id = userNameService.findByScreenName(currentUser).stream().findFirst().orElse(-1L);
+        return maybeComponent.isPresent() ? createAddon(maybeComponent.get(), id == maybeComponent.get().getOwner().getId()) : null;
     }
 
-    private Addon createAddon(Component c) {
+    private Addon createAddon(Component c, boolean addEditLink) {
         Addon a = new Addon(c);
+        if (addEditLink) {
+            a.getLinks().add(new Link("Edit",
+                    Addon.EDIT_URL_BASE + c.getUrlIdentifier(),
+                    null));
+        }
         a.setAuthor(userNameService.getNameforId(c.getOwner().getId()));
         return a;
     }

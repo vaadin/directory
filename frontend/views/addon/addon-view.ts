@@ -91,6 +91,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               id="rating-stars"
               @rating=${this.addRating}
               .userRating="false"
+              ?readonly="${!window.haas.isAuthenticated}"
               .rating="${this.addon.rating}"
               .ratingCount="${this.addon.ratingCount}">
             </rating-stars>
@@ -236,6 +237,9 @@ export class AddonView extends View implements BeforeEnterObserver {
     const kofiLink = this.addon?.links.find((link) =>
       link.href.match(/http(s)?:\/\/ko-fi.com\/[-_\w\d]+/)
     );
+    const editLink = this.addon?.links.find((link) =>
+      link.href.match(/http(s)?:\/\/vaadin.com\/directory\/component\/edit\/[-_\w\d]+/)
+    );
 
     return html` <ul>
       ${demoLink
@@ -253,13 +257,18 @@ export class AddonView extends View implements BeforeEnterObserver {
             <a href="${kofiLink.href}" target="_blank" noopener>Tip me</a>
           </li>`
         : nothing}
+      ${editLink
+          ? html` <li>
+              <a class="edit" href="${editLink.href}" target="_blank" noopener>Edit</a>
+            </li>`
+          : nothing}
     </ul>`;
   }
 
   async onBeforeEnter(location: RouterLocation) {
     const urlIdentifier = location.params.addon as string;
     const urlVersion = location.params.version as string;
-    this.addon = await getAddon(urlIdentifier);
+    this.addon = await getAddon(urlIdentifier, this.getCurrentUserId());
     if (this.addon) {
       if (urlVersion) {
         const found = this.addon?.versions.find(
@@ -303,6 +312,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   addRating(e: RatingEvent) {
     (e.target as RatingStars).userRating = true;
+    (e.target as RatingStars).tooltip = 'Click to rate again';
     setUserRating(this.addon?.urlIdentifier, e.rating, this.getCurrentUserId());
   }
 

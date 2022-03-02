@@ -111,6 +111,14 @@ addon-view .meta .links a {
   font-weight: inherit;
 }
 
+addon-view .meta .links a.edit {
+    font-weight: var(--text-weight-semibold);
+    color: #fff;
+    background-color: var(--blue-500);
+    border-radius: var(--roundness-md);
+    padding: 0.5em 0.75em;
+}
+
 addon-view vaadin-avatar,
 addon-view vaadin-avatar-group::part(avatar) {
   --vaadin-avatar-size: 24px;

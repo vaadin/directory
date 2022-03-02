@@ -16,6 +16,7 @@ public class Addon {
 
     public static final String IMAGE_LOCATION_URL = "https://static.vaadin.com/directory/";
     public static final String DEFAULT_ICON_URL = "https://vaadin.com/images/directory/addon-icon-default.png";
+    public static final String EDIT_URL_BASE = "https://vaadin.com/directory/component/edit/";
 
     @NotBlank
     @Nonnull
