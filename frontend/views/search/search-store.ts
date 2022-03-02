@@ -16,6 +16,7 @@ class SearchStore {
   version = 'all'
   private page = 1;
   private pageSize = 12;
+  currentUser = '';
 
   // Init
   constructor() {
@@ -40,7 +41,7 @@ class SearchStore {
    this.setLoading(true);
     try {
       const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
-      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , this.page, this.pageSize, this.sort, this.page == 1);
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , this.page, this.pageSize, this.sort, this.page == 1, this.currentUser);
       if (this.page === 1) {
           this.setTotalCount(res.totalCount ? res.totalCount : 0);
       }
@@ -109,6 +110,10 @@ class SearchStore {
     this.addons = [];
     this.writeQueryToURL();
     this.fetchPage();
+  }
+
+  setCurrentUser(user: string) {
+    this.currentUser = user;
   }
 
   addFilter(filter: Filter) {

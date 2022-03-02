@@ -91,23 +91,18 @@ public class SearchEndpoint {
 
     @Transactional(readOnly = true)
     public @Nonnull SearchListResult search(
-            String searchString, int page, int pageSize, String sort, boolean includeCount) {
+            String searchString, int page, int pageSize, String sort, boolean includeCount, String currentUser) {
         QueryParser qp = QueryParser.parse(searchString);
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
         if (qp.getAuthor() != null || qp.isAuthorMe()) {
-            // TODO: We need to get the user names somehow. Not in current DB model.
-            String user = qp.getAuthor();
-            if (qp.isAuthorMe()) {
-                user = "User_16"; // TODO: We should get this from login
-            }
             List<Long> ids = List.of(-1L);
-            if (user.startsWith("User_")) {
-                ids = List.of(Long.parseLong(user.substring(5)));
+            String searchForUser = qp.getAuthor();
+            if (qp.isAuthorMe()) {
+                ids = userNameService.findByScreenName(currentUser);
             } else {
-                ids = userNameService.findByName(user);
+                ids = userNameService.findByName(searchForUser);
             }
-
             owners = ids.stream().map(id -> userService.findById(id)).collect(Collectors.toList());
             if (owners.isEmpty()) { return new SearchListResult(); };
         }

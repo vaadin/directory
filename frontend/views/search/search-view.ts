@@ -131,6 +131,7 @@ export class SearchView extends View {
   }
 
   updateQuery(e: { target: HTMLInputElement }) {
+    searchStore.setCurrentUser(this.getCurrentUserId());
     searchStore.setQuery(e.target.value);
   }
 
