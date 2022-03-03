@@ -177,7 +177,7 @@ addon-view .highlights .item-open-start {
 
 addon-view .highlights .item-open {
   position: fixed;
-  z-index: 2;
+  z-index: 11;
   inset: 0;
   height: 100%;
   width: 100%;
