@@ -65,8 +65,6 @@ export class SearchView extends View {
         </select>
         <p>
           <b>${searchStore.totalCount >=0 ? searchStore.totalCount : '0'}</b> add-ons found.
-          ${searchStore.totalCount > 50 ? html`<i class="text-2xs">Want to narrow down? Try filters like <a href="?q=v%3A8">v:8</a> or
-          <a href="?q=author%3Ame">author:me</a></i>` : html``}
         </p>
       </form>
 
