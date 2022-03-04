@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 class StoreSettings extends GoogleSheet {
 
-    @Value("${gapi.user.spreadsheet.id}")
+    @Value("${gapi.application.settings}")
     private String settingsId;
 
     public StoreSettings() {

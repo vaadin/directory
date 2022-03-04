@@ -15,14 +15,15 @@ public class FeaturedAddons extends GoogleSheet {
 
     private static final long EXPIRE_TIME_MS = 1000*60*10; // 10 minutes
 
-    @Value("${gapi.user.spreadsheet.id}")
-    private String sheetId;
+    @Value("${gapi.application.settings}")
+    private String settingsId;
+
     private List<String> featuredCache;
     private long storedAt;
 
     @Override
     protected String getSheetId() {
-        return sheetId;
+        return settingsId;
     }
 
     private boolean cacheTimeExpired() {
