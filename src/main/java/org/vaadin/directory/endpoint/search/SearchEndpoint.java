@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.Util;
+import org.vaadin.directory.store.FeaturedAddons;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,6 +34,7 @@ public class SearchEndpoint {
     private final List<ComponentFramework> vaadinMajorVersions;
     private final List<List<ComponentFrameworkVersion>> vaadinMinorVersions;
     private final UserInfoService userNameService;
+    private final FeaturedAddons featured;
     private ComponentFrameworkRepository frameworkRepository;
     private ComponentDirectoryUserService userService;
     private ComponentService service;
@@ -43,13 +45,15 @@ public class SearchEndpoint {
                           @Autowired ComponentFrameworkRepository frameworkRepository,
                           @Autowired ComponentFrameworkVersionRepository frameworkVersionRepository,
                           @Autowired ComponentDirectoryUserService userService,
-                          @Autowired UserInfoService userNameService) {
+                          @Autowired UserInfoService userNameService,
+                          @Autowired FeaturedAddons featured) {
         this.service = service;
         this.tagService = tagService;
         this.userService = userService;
         this.userNameService = userNameService;
         this.frameworkRepository = frameworkRepository;
         this.frameworkVersionRepository = frameworkVersionRepository;
+        this.featured = featured;
 
         // Warm up
         polymer1 = frameworkRepository.findByName("Polymer 1");
@@ -77,7 +81,8 @@ public class SearchEndpoint {
     }
 
     public @Nonnull List<@Nonnull String> getFeatured() {
-        return List.of("fluent-vaadin-flow","app-layout-add-on","filteringtable");
+        List<String> list = featured.listFeatured();
+        return list != null ? list : List.of();
     }
 
     public @Nonnull List<@Nonnull SearchResult> getFeaturedAddons() {
