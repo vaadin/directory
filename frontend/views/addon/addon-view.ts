@@ -283,11 +283,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   firstUpdated() {
-    // Reset discuss thread
     if (this.addon) {
-      disqusReset(this.addon.urlIdentifier,
-        "https://directory.demo.vaadin.com"+router.urlForPath('addon/:addon/:version?', {addon: this.addon.urlIdentifier }),
-        this.addon.name, true);
       this.updateUserRating();
     }
   }
