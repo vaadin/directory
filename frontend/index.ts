@@ -9,10 +9,14 @@ export const router = new Router(document.querySelector('#outlet'));
 router.setRoutes(routes);
 
 autorun(
-  () =>
-    (document.title =
+  () => {
+    document.title =
       (appStore.currentViewTitle ? appStore.currentViewTitle + ' | ' : '') +
-      appStore.applicationName)
+      appStore.applicationName;
+      // Copy title to description
+      const descEl = document.querySelector('head meta[name="description"]');
+      if (descEl) descEl.setAttribute('content', document.title);
+  }
 );
 
 function sendPageview() {
