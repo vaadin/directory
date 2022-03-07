@@ -123,7 +123,7 @@ export class RatingStars extends LitElement {
 
   render() {
     return html`
-          <div class="ratings ${this.userRating?'user-rating':''} ${this.hasEnoughRatings() || this.userRating?'':'hidden'}">
+          <div title="${this.tooltip}"  class="ratings ${this.userRating?'user-rating':''} ${this.hasEnoughRatings() || this.userRating?'':'hidden'}">
             ${this.hasEnoughRatings() && !this.userRating ?
                 html`<span class="count">${this.ratingCount}</span>` :
                 html`<span class="user-score">${this.userRating ? this.rating : '-'}/5</span>`}
