@@ -143,6 +143,7 @@ export class RatingStars extends LitElement {
   }
 
   _handleClick(e : PointerEvent) {
+      if (this.readonly) return;
       const currentRating = this.rating;
       const newRating = e.target ? parseInt((e.target as HTMLInputElement).value) : currentRating;
       if (currentRating != newRating) {
