@@ -130,7 +130,13 @@ addon-view vaadin-avatar-group::part(avatar) {
   cursor: pointer;
 }
 
-addon-view .highlights {
+addon-view .highlights.open  {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+addon-view .highlights #slider {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   border: 1px solid var(--divider-color1);
@@ -145,14 +151,26 @@ addon-view .highlights.empty {
   display: none;
 }
 
+addon-view .highlights.open #slider {
+  display: flex;
+  position: fixed;
+  z-index: 11;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  background-color: var(--surface-color);
+}
+
 addon-view .highlights .item {
   padding: var(--space-sm);
   position: relative;
   height: 10rem;
   box-sizing: border-box;
   background-color: var(--background-color);
-  --x: 400px;
-  --y: 500px;
 }
 
 addon-view .highlights .item img {
@@ -161,30 +179,43 @@ addon-view .highlights .item img {
   object-fit: contain;
 }
 
-addon-view .highlights .item:not(.item-open) .btn-close,
-addon-view .highlights .item-open .btn-open {
+addon-view .highlights:not(.open) .btn-close,
+addon-view .highlights.open .btn-open {
   display: none;
 }
 
-addon-view .highlights .item-open-start {
-  position: absolute;
-  left:  var(--x);
-  top: var(--y);
-  width: 0;
-  height: 0;
-  transition: all .3s ease-in-out;
+addon-view .highlights.open .arrow {
+  z-index: 11;
 }
 
-addon-view .highlights .item-open {
-  position: fixed;
-  z-index: 11;
-  inset: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
-  display: flex;
-  background-color: var(--surface-color);
+addon-view .highlights:not(.open) .arrow {
+  display: none;
+}
+
+addon-view .highlights .arrow {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  fill: #fff;
+  cursor: pointer;
+}
+
+addon-view .highlights .arrow.disabled {
+  display: none;
+}
+
+addon-view .highlights #arrow-left {
+  left: 5px;
+  fill: "#fff";
+  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' %3E%3Cpath d='M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z' %3E%3C/path%3E%3C/svg%3E");
+}
+
+addon-view .highlights #arrow-right {
+  left: auto;
+  right: 5px;
+  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 24 24' %3E%3Cpath d='M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 addon-view .highlights .btn-open {
@@ -201,6 +232,10 @@ addon-view .highlights .btn-open {
   cursor: pointer;
 }
 
+addon-view .highlights.open .item {
+    height: 100%;
+    width: 100%;
+}
 addon-view .highlights .btn-close {
   position: fixed;
   z-index: 1;
