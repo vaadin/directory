@@ -91,7 +91,7 @@ export class AddonView extends View implements BeforeEnterObserver {
               id="rating-stars"
               @rating=${this.addRating}
               .userRating="false"
-              ?readonly="${!window.haas.isAuthenticated}"
+              ?readonly="${!this.isAuthenticated()}"
               .rating="${this.addon.rating}"
               .ratingCount="${this.addon.ratingCount}">
             </rating-stars>
