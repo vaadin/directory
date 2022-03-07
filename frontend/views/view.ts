@@ -28,14 +28,21 @@ export class MobxElement extends MobxLitElement {
    protected getCurrentUserId(): string {
 
       // Use the userid provided by authenticated
-      if (window.haas
-        && window.haas.isAuthenticated
-        && window.haas.userInfo) {
+      if (this.isAuthenticated() && window.haas.userInfo) {
           return window.haas.userInfo.screenname;
       }
 
       return USER_NOT_LOGGED_IN;
    }
+
+
+  /**
+   * Check if user has been authenticated.
+   */
+   protected isAuthenticated(): boolean {
+      return (window.haas
+        && window.haas.isAuthenticated);
+  }
 
   /**
    * Creates a MobX reaction using the given parameters and disposes it when this element is detached.
