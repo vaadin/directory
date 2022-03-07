@@ -475,7 +475,8 @@ addon-view .main pre {
   width: 100%;
 }
 
-.compatibility-matrix .not-supported-fw {
+.compatibility-matrix .not-supported-fw,
+.compatibility-matrix .collapsed {
   display: none;
 }
 
