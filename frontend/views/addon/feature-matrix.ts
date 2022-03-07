@@ -23,7 +23,6 @@ export class FeatureMatrix extends View {
 
   connectedCallback() {
     super.connectedCallback();
-    // initialize IntersectionObserver
     this.initIntersectionObserver();
   }
 
