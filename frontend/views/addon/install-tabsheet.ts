@@ -83,7 +83,7 @@ export class InstallTabSheet extends View {
     }
 
     const menuItems = Object.keys(this.version.installs);
-    menuItems.push("Create");
+    if (menuItems.indexOf('Maven') >=0) menuItems.push("Create");
     menuItems.push("Previous");
     const options: MenuBarItem[] = [
       {
