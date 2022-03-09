@@ -3,13 +3,13 @@ package org.vaadin.directory.endpoint.addon;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import dev.hilla.Nonnull;
 import javax.validation.constraints.NotBlank;
 
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentVersion;
 import com.vaadin.directory.entity.directory.HighlightScreenShot;
 import com.vaadin.directory.entity.directory.HighlightVideo;
-import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.Util;
 
 public class Addon {

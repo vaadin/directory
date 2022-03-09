@@ -3,7 +3,7 @@ package org.vaadin.directory.endpoint.search;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.directory.entity.directory.Component;
-import com.vaadin.fusion.Nonnull;
+import dev.hilla.Nonnull;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.endpoint.addon.Addon;
 
