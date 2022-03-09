@@ -35,9 +35,9 @@ export class HighlightCarousel extends View {
           </div>
           <button class="btn-close" @click="${this.close}">Close</button>
         `)}
-      </div>
       <div class="arrow" id="arrow-left" @click="${this.prev}"></div>
       <div class="arrow" id="arrow-right" @click="${this.next}"></div>
+      </div>
     `;
   }
 

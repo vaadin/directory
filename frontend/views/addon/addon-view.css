@@ -196,8 +196,7 @@ addon-view .highlights .arrow {
   width: 30px;
   height: 30px;
   position: absolute;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
+  top: 50%;
   fill: #fff;
   cursor: pointer;
 }
