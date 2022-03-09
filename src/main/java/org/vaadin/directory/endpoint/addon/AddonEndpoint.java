@@ -3,6 +3,7 @@ package org.vaadin.directory.endpoint.addon;
 import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.Component;
+import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.fusion.Endpoint;
 import com.vaadin.fusion.Nonnull;
@@ -44,7 +45,9 @@ public class AddonEndpoint {
                     Addon.EDIT_URL_BASE + c.getUrlIdentifier(),
                     null));
         }
-        a.setAuthor(userNameService.getNameforId(c.getOwner().getId()));
+        ComponentDirectoryUser owner = c.getOwner();
+        String name = owner.getGitHubLogin() != null ? owner.getGitHubLogin() :  userNameService.getNameforId(owner.getId());
+        a.setAuthor(name);
         return a;
     }
 
