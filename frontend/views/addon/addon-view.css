@@ -340,13 +340,13 @@ addon-view .versions h4 {
 }
 
 addon-view .versions vaadin-select,
-addon-view .versions vaadin-select vaadin-item {
+addon-view .versions vaadin-select vaadin-select-value-button {
   display: flex;
   width: min-content;
   --vaadin-field-default-width: auto;
 }
 
-addon-view .versions vaadin-select vaadin-item::after {
+addon-view .versions vaadin-select vaadin-select-item::after {
   content: "";
   width: 0;
   height: 0;
@@ -356,8 +356,12 @@ addon-view .versions vaadin-select vaadin-item::after {
   display: inline-block;
 }
 
-addon-view .versions vaadin-select vaadin-item {
+addon-view .versions vaadin-select vaadin-select-item {
   padding: 0 0.3em;
+}
+
+addon-view .versions vaadin-select[focus-ring] {
+  box-shadow: 0 0 0 2px var(--blue-500);
 }
 
 [theme~="version-select"] vaadin-item {
