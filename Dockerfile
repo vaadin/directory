@@ -13,7 +13,7 @@ RUN mvn dependency:go-offline -Pproduction
 
 COPY --chown=myuser:myuser src src
 COPY --chown=myuser:myuser frontend frontend
-COPY --chown=myuser package.json pnpm-lock.yaml webpack.config.js ./
+COPY --chown=myuser package.json pnpmfile.js webpack.config.js ./
 RUN mvn clean package -DskipTests -Pproduction
 
 # Run stage
