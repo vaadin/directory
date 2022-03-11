@@ -502,6 +502,7 @@ table.matrix th {
 }
 
 table.matrix th.rowh {
+  white-space: nowrap;
   position: sticky;
   left: 0;
   z-index: 2;
