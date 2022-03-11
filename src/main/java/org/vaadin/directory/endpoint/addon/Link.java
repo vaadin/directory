@@ -1,6 +1,6 @@
 package org.vaadin.directory.endpoint.addon;
 
-import com.vaadin.fusion.Nonnull;
+import dev.hilla.Nonnull;
 
 import javax.validation.constraints.NotBlank;
 

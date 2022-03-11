@@ -2,9 +2,9 @@ package org.vaadin.directory.endpoint.addon;
 
 import com.vaadin.directory.backend.maven.PomXmlUtil;
 import com.vaadin.directory.entity.directory.ComponentVersion;
-import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.Util;
 
+import dev.hilla.Nonnull;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.HashMap;

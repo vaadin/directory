@@ -1,8 +1,8 @@
 package org.vaadin.directory.endpoint.app;
 
-import com.vaadin.fusion.Nonnull;
 import org.vaadin.directory.BuildVersions;
 
+import dev.hilla.Nonnull;
 import javax.validation.constraints.NotBlank;
 
 public class VersionInfo {
