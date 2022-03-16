@@ -303,7 +303,12 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   searchByUser(user: string) {
-    window.location.href = router.baseUrl + '?q=author:' + user;
+    if (user) {
+      window.location.href = router.baseUrl + '?q=author:' + user.replace(' ','_');
+    } else {
+      window.location.href = router.baseUrl;
+    }
+
   }
 
   addRating(e: RatingEvent) {
