@@ -9,6 +9,7 @@ import dev.hilla.Endpoint;
 import dev.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.directory.Util;
 import org.vaadin.directory.store.Store;
 
 import java.util.List;
@@ -45,8 +46,7 @@ public class AddonEndpoint {
                     Addon.EDIT_URL_BASE + c.getUrlIdentifier(),
                     null));
         }
-        ComponentDirectoryUser owner = c.getOwner();
-        String name = owner.getGitHubLogin() != null ? owner.getGitHubLogin() :  userNameService.getNameforId(owner.getId());
+        String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         a.setAuthor(name);
         return a;
     }

@@ -304,7 +304,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   searchByUser(user: string) {
     if (user) {
-      window.location.href = router.baseUrl + '?q=author:' + user.replace(' ','_');
+      window.location.href = router.baseUrl + '?q=author:' + user.replace(/ /g,'_');
     } else {
       window.location.href = router.baseUrl;
     }

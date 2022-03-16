@@ -294,8 +294,7 @@ public class SearchEndpoint {
 
     private SearchResult createSearchResult(Component c) {
         SearchResult r = new SearchResult(c);
-        ComponentDirectoryUser owner = c.getOwner();
-        String name = owner.getGitHubLogin() != null ? owner.getGitHubLogin() :  userNameService.getNameforId(owner.getId());
+        String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         r.setAuthor(name);
         return r;
     }

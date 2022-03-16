@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.vaadin.directory.backend.service.UserInfoService;
+import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
 import com.vaadin.directory.entity.directory.TagGroup;
 import io.swagger.codegen.utils.SemVer;
@@ -70,5 +72,14 @@ public class Util {
     return reverse ? sv1.compareTo(sv0) : sv0.compareTo(sv1);
 
   }
+
+  public static String getNameOrGitHubId(ComponentDirectoryUser owner, UserInfoService userNameService) {
+    String name = userNameService.getNameforId(owner.getId());
+    String ghLogin = owner.getGitHubLogin();
+    // Fallback to use GitHub name if no username found
+    name = name.indexOf(""+ owner.getId()) >= 0 && ghLogin != null ? ghLogin : name;
+    return name;
+  }
+
 }
 
