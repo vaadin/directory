@@ -21,7 +21,8 @@ mvn install
 
 Build Docker image:
 ```
-docker build -t vaadin/directory .
+export DOCKER_BUILDKIT=0
+docker build --progress plain -t vaadin/directory . > docker.build.log
 ```
 
 Run Docker image:

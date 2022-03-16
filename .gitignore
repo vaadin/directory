@@ -24,3 +24,4 @@ frontend/ts-routes.ts
 # Local configuration
 config/local/
 settings.json
+docker.build.log
