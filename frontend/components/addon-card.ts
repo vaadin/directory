@@ -32,9 +32,7 @@ export class AddonCard extends View {
           </a>
         </h3>
 
-        <button class="author" @click=${this.addAuthorFilter}>
-          ${this.addon.author}
-        </button>
+        <div class="author">${this.addon.author}</div>
 
         <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
 
