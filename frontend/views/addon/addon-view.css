@@ -507,3 +507,12 @@ table.matrix th.rowh {
   left: 0;
   z-index: 2;
 }
+
+body.addon article.discussion iframe {
+  width: 100%;
+  border: 0;
+}
+
+body.addon article.discussion {
+  display: block;
+}

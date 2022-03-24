@@ -9,18 +9,21 @@ export type ViewRoute = Route & {
 
 export const routes: ViewRoute[] = [
   {
-    path: '',
+    path: '/',
     component: 'search-view',
     title: 'Search',
+    action: (context, commands) => { document.body.className = 'search';}
   },
   {
     path: 'addon/:addon/:version?',
     component: 'addon-view',
     title: 'Addon',
+    action: (context, commands) => {document.body.className = 'addon';}
   },
   {
     path: 'component/:addon/:version?',
     component: 'addon-view',
     title: 'Addon',
+    action: (context, commands) => { document.body.className = 'addon';}
   },
 ];
