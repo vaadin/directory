@@ -25,3 +25,4 @@ frontend/ts-routes.ts
 config/local/
 settings.json
 docker.build.log
+vite.generated.ts
