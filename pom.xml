@@ -109,6 +109,12 @@
             <version>1.2.8.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.vaadin</groupId>
