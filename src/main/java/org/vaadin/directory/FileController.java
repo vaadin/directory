@@ -39,7 +39,9 @@ public class FileController {
     @RequestMapping(path = "/robots.txt", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getRobotsFile() {
         return ResponseEntity.ok("User-agent: *\n" +
-                "Disallow: /\n" + // TODO: Disable indexing for the time being
+                "Disallow: /\n\n" + // TODO: Disable indexing for the time being
+                "User-agent: Twitterbot\n" +
+                "Disallow:\n\n" +
                 "Sitemap: "+this.baseUrl+"sitemap.xml\n");
     }
 
