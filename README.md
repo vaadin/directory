@@ -1,6 +1,6 @@
 # Vaadin Directory project
 
-Visit at [directory.demo.vaadin.com](https://directory.demo.vaadin.com)
+Visit at [vaadin.com/directory-beta/](https://vaadin.com/directory-beta/)
 
 This project is a public beta version and the next development iteration of the [Vaadin Directory](https://vaadin.com/directory). It is still missing many features, but the project shares the data with the production system, and you can use it to search and install add-ons. It is here for your feedback and ideas -  please report issues, create pull requests, or propose new features at https://github.com/vaadin/directory/issues. Also, positive feedback is welcome :)
 
