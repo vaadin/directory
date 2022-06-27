@@ -94,7 +94,7 @@ export class SearchView extends View {
     // Reset discuss thread
     disqusReset(
       'search',
-      'https://directory.demo.vaadin.com',
+      'https://vaadin.com/directory-beta/',
       'Vaadin Directory Search',
       false
     );
