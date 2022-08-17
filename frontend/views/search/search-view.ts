@@ -10,7 +10,6 @@ import { disqusReset } from '../disqus';
 
 @customElement('search-view')
 export class SearchView extends View {
-
   constructor() {
     super();
     appStore.currentViewTitle = 'Search';
@@ -28,7 +27,10 @@ export class SearchView extends View {
 
   render() {
     return html`
-      <form role="search" id="search" onsubmit="event.preventDefault(); document.activeElement.blur();">
+      <form
+        role="search"
+        id="search"
+        onsubmit="event.preventDefault(); document.activeElement.blur();">
         <div class="search-input">
           <input
             autofocus
@@ -61,18 +63,23 @@ export class SearchView extends View {
           .value="${searchStore.sort}"
           @change="${this.updateSort}"
           aria-label="Sorting">
-            <option value="recent">New &amp; noteworthy</option>
-            <option value="rating">Popular</option>
+          <option value="recent">New &amp; noteworthy</option>
+          <option value="rating">Popular</option>
         </select>
         <p>
-          <b>${searchStore.totalCount >=0 ? searchStore.totalCount : '0'}</b> add-ons found.
+          <b>${searchStore.totalCount >= 0 ? searchStore.totalCount : '0'}</b>
+          add-ons found.
         </p>
       </form>
 
       <section class="results" @filter-added="${this.filterAdded}">
-        ${searchStore.addons.map(
-          (addon) => addon ? html`
-            <addon-card .addon=${addon} .featured=${searchStore.featured.includes(addon.urlIdentifier)}></addon-card>`
+        ${searchStore.addons.map((addon) =>
+          addon
+            ? html` <addon-card
+                .addon=${addon}
+                .featured=${searchStore.featured.includes(
+                  addon.urlIdentifier
+                )}></addon-card>`
             : html`<i>no addons found</i>`
         )}
       </section>
@@ -81,7 +88,7 @@ export class SearchView extends View {
         id="load-more-button"
         @click="${searchStore.fetchPage}"
         ?disabled="${searchStore.loading}"
-        ?hidden="${searchStore.addons.length === 0 || !searchStore.hasMore }">
+        ?hidden="${searchStore.addons.length === 0 || !searchStore.hasMore}">
         Load more
       </button>
     `;
@@ -114,11 +121,14 @@ export class SearchView extends View {
   }
 
   setupIntersectionObserver() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) searchStore.fetchPage();
-      });
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) searchStore.fetchPage();
+        });
+      },
+      { rootMargin: '300px' }
+    );
     const button = this.renderRoot.querySelector('#load-more-button');
     if (button) {
       observer.observe(button);
@@ -142,11 +152,13 @@ export class SearchView extends View {
     searchStore.setVersion(e.target.value);
   }
 
-  debounce(func : Function, timeout = 500){
+  debounce(func: Function, timeout = 500) {
     let timer: any;
     return (...args: any[]) => {
       clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
     };
   }
 }
