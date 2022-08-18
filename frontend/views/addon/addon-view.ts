@@ -207,13 +207,11 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   getDiscussionLink() {
 
-    let discussionId = this.addon?.urlIdentifier;
-
     let iframeSrc = window.location.hostname == 'preview.vaadin.com'
       ? 'https://preview.vaadin.com'
       : 'https://vaadin.com';
 
-      iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
+      iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${this.addon?.discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
         ''+this.addon?.name)}&description=${encodeURI(''+this.addon?.summary)}`;  
 
     return iframeSrc;

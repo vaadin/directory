@@ -65,6 +65,11 @@ public class Addon {
     @Nonnull
     private Long ratingCount;
 
+    @NotBlank
+    @Nonnull
+    private String discussionId;
+
+
     public Addon() {}
 
     public Addon(Component component) {
@@ -104,6 +109,8 @@ public class Addon {
         this.codeSamples = component.getCodeHighlights().stream()
                 .map(highlight -> new CodeSample(highlight))
                 .collect(Collectors.toList());
+
+        this.discussionId = Long.toString(component.getId());
 
     }
 
@@ -188,4 +195,9 @@ public class Addon {
     public List<CodeSample> getCodeSamples() { return codeSamples; }
 
     public void setCodeSamples(List<CodeSample> codeSamples) { this.codeSamples = codeSamples; }
+
+    public String getDiscussionId() { return discussionId; }
+
+    public void setDiscussionId(String discussionId) { this.discussionId = discussionId;}
+
 }
