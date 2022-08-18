@@ -27,7 +27,7 @@ import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { searchStore } from 'Frontend/views/search/search-store';
 import { router } from '../../index';
-import { disqusReset } from "../disqus";
+import { iframeResizer } from 'iframe-resizer';
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 
@@ -130,6 +130,15 @@ export class AddonView extends View implements BeforeEnterObserver {
         <h3>Compatibility</h3>
         <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
 
+        <section class="discussion">
+          <p>
+            <b>Was this helpful? Need more help?</b><br />Leave a comment or a question below. You can also join
+            the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
+            <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">ask questions on StackOverflow</a>.
+          </p>
+          <iframe id="discussion-iframe" src="${this.getDiscussionLink()}"></iframe>
+        </section>
+
         <section class="footer">
           ${this.addon.tags.map((tag) => html`
             <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
@@ -194,6 +203,21 @@ export class AddonView extends View implements BeforeEnterObserver {
         </dl>
       </section>
     `;
+  }
+
+  getDiscussionLink() {
+
+    let discussionId = this.addon?.urlIdentifier;
+
+    let iframeSrc = window.location.hostname == 'preview.vaadin.com'
+      ? 'https://preview.vaadin.com'
+      : 'https://vaadin.com';
+
+      iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
+        ''+this.addon?.name)}&description=${encodeURI(''+this.addon?.summary)}`;  
+
+    return iframeSrc;
+
   }
 
   versionOrder(a: AddonVersion, b: AddonVersion): number {
@@ -285,6 +309,15 @@ export class AddonView extends View implements BeforeEnterObserver {
   firstUpdated() {
     if (this.addon) {
       this.updateUserRating();
+    }
+
+    const queryString = window.location.search;
+    const parameters = new URLSearchParams(queryString);
+    if ("true" === parameters.get('discussion')) {
+      iframeResizer({ log: true }, '#discussion-iframe');
+    } else {
+      const discussion = this.renderRoot.querySelector('section.discussion') as HTMLElement;
+      discussion ? discussion.classList.add("hidden") : nothing;
     }
   }
 

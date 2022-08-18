@@ -250,6 +250,29 @@ addon-view .highlights .btn-close {
   cursor: pointer;
 }
 
+addon-view section.discussion {
+  margin-top: 3rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--heading-text-color);
+}
+
+addon-view section.discussion.hidden {
+  display: none;
+}
+
+addon-view section.discussion p b {
+  color: var(--heading-text-color);
+}
+
+addon-view section.discussion iframe {
+  color-scheme: normal;
+  border: 0;
+  margin: 0 -8px;
+  width: calc(100% + 16px);
+  max-width: none;
+}
+
+
 addon-view .footer {
   margin: var(--space-lg) 0;
   display: flex;
