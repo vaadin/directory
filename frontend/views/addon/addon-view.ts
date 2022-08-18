@@ -308,15 +308,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     if (this.addon) {
       this.updateUserRating();
     }
-
-    const queryString = window.location.search;
-    const parameters = new URLSearchParams(queryString);
-    if ("true" === parameters.get('discussion')) {
-      iframeResizer({ log: true }, '#discussion-iframe');
-    } else {
-      const discussion = this.renderRoot.querySelector('section.discussion') as HTMLElement;
-      discussion ? discussion.classList.add("hidden") : nothing;
-    }
+    iframeResizer({ log: true }, '#discussion-iframe');
   }
 
   searchByAuthor() {
