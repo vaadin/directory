@@ -130,6 +130,13 @@ export class AddonView extends View implements BeforeEnterObserver {
         <h3>Compatibility</h3>
         <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
 
+        <section class="footer">
+          ${this.addon.tags.map((tag) => html`
+            <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
+          `)}
+          <p class="updated">Last updated: ${this.addon.lastUpdated}</p>
+        </section>
+
         <section class="discussion">
           <p>
             <b>Was this helpful? Need more help?</b><br />Leave a comment or a question below. You can also join
@@ -139,12 +146,6 @@ export class AddonView extends View implements BeforeEnterObserver {
           <iframe id="discussion-iframe" src="${this.getDiscussionLink()}"></iframe>
         </section>
 
-        <section class="footer">
-          ${this.addon.tags.map((tag) => html`
-            <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
-          `)}
-          <p class="updated">Last updated: ${this.addon.lastUpdated}</p>
-        </section>
       </section>
 
       <section class="versions">
