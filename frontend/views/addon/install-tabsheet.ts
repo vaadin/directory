@@ -56,7 +56,7 @@ export class InstallTabSheet extends View {
     mavenText.innerText = this.version.installs['Maven'] || '';
 
     const linkToVersion = document.createElement('a');
-    linkToVersion.href = router.urlForPath('addon/:addon/:version?', { addon: this.addon.urlIdentifier, version: this.version?.name });
+    linkToVersion.href = router.urlForPath('component/:addon/:version?', { addon: this.addon.urlIdentifier, version: this.version?.name });
     linkToVersion.innerText = 'Link to this version';
 
     const compatibilityIssues = document.createElement('a');
@@ -71,7 +71,7 @@ export class InstallTabSheet extends View {
     if (this.installs.length > 0) {
       this.installs.forEach((s) => {
         const linkToVersion = document.createElement('a');
-        linkToVersion.href = router.urlForPath('addon/:addon/:version?', { addon: ''+this.addon?.urlIdentifier, version: s.split('/')[0] });
+        linkToVersion.href = router.urlForPath('component/:addon/:version?', { addon: ''+this.addon?.urlIdentifier, version: s.split('/')[0] });
         linkToVersion.innerText = s.split('/')[0]+' ('+s.split('/')[1]+')';
         linkToVersion.title = 'Installed at '+s.split('/')[2]+'';
         previousInstalls.appendChild(linkToVersion);

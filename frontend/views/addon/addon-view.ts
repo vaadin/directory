@@ -240,7 +240,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     const versions = Array.from(supportedByOthers.keys());
     if (versions.length > 0) {
       return versions.reverse().map((c) => html`
-        <dd>${c} in <a href="${router.urlForPath('addon/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}">${supportedByOthers.get(c)}</a></dd>
+        <dd>${c} in <a href="${router.urlForPath('component/:addon/:version?', {addon: addon.urlIdentifier, version: supportedByOthers.get(c)+'' })}">${supportedByOthers.get(c)}</a></dd>
       `);
     } else {
       return nothing;

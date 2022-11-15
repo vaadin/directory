@@ -27,7 +27,7 @@ export class AddonCard extends View {
 
       <section class="content">
         <h3>
-          <a href="addon/${this.addon.urlIdentifier}" class="text-body">
+          <a href="component/${this.addon.urlIdentifier}" class="text-body">
             ${this.addon.name}
           </a>
         </h3>
