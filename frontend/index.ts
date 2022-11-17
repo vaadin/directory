@@ -7,6 +7,9 @@ import { registerStyles, css } from '@vaadin/vaadin-themable-mixin';
 import './styles/global.css';
 
 getAppUrl().then(url => appStore.appUrl = url);
+window.addEventListener('vaadin-router-error', e => {
+    window.location.href = appStore.appUrl;
+});
 export const router = new Router(document.querySelector('#outlet'));
 router.setRoutes(routes);
 

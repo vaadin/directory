@@ -55,7 +55,8 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   render() {
     if (!this.addon || !this.version) {
-      return html`Loading...`;
+      return html`<section class="main"><h3>Hmm... That add-on was not found.</h3>
+      <div>${appStore.appUrl? html`<a href="${appStore.appUrl}">Try search for it instead.</a>`:''}</div></section>`;
     }
 
     const params = new URLSearchParams();
