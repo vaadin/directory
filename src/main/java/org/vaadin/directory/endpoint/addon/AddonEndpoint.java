@@ -9,6 +9,7 @@ import dev.hilla.Endpoint;
 import dev.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.store.Store;
 
@@ -23,13 +24,16 @@ public class AddonEndpoint {
     private final UserInfoService userNameService;
     private final ComponentService service;
     private final Store store;
+    private UrlConfig urlConfig;
 
     AddonEndpoint(@Autowired ComponentService service,
                   @Autowired UserInfoService userNameService,
-                  @Autowired Store store) {
+                  @Autowired Store store,
+                  @Autowired UrlConfig urlConfig) {
         this.service = service;
         this.userNameService = userNameService;
         this.store = store;
+        this.urlConfig = urlConfig;
     }
 
     @Transactional(readOnly = true)
@@ -40,10 +44,10 @@ public class AddonEndpoint {
     }
 
     private Addon createAddon(Component c, boolean addEditLink) {
-        Addon a = new Addon(c);
+        Addon a = new Addon(c, urlConfig);
         if (addEditLink) {
             a.getLinks().add(new Link("Edit",
-                    Addon.EDIT_URL_BASE + c.getUrlIdentifier(),
+                    urlConfig.getComponentEditBaseUrl() + c.getUrlIdentifier(),
                     null));
         }
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);

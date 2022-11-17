@@ -15,6 +15,7 @@ import dev.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.store.FeaturedAddons;
 
@@ -39,6 +40,7 @@ public class SearchEndpoint {
     private ComponentDirectoryUserService userService;
     private ComponentService service;
     private TagGroupService tagService;
+    private UrlConfig urlConfig;
 
     public SearchEndpoint(@Autowired ComponentService service,
                           @Autowired TagGroupService tagService,
@@ -46,7 +48,8 @@ public class SearchEndpoint {
                           @Autowired ComponentFrameworkVersionRepository frameworkVersionRepository,
                           @Autowired ComponentDirectoryUserService userService,
                           @Autowired UserInfoService userNameService,
-                          @Autowired FeaturedAddons featured) {
+                          @Autowired FeaturedAddons featured,
+                          @Autowired UrlConfig urlConfig) {
         this.service = service;
         this.tagService = tagService;
         this.userService = userService;
@@ -54,6 +57,7 @@ public class SearchEndpoint {
         this.frameworkRepository = frameworkRepository;
         this.frameworkVersionRepository = frameworkVersionRepository;
         this.featured = featured;
+        this.urlConfig = urlConfig;
 
         // Warm up
         polymer1 = frameworkRepository.findByName("Polymer 1");
@@ -293,7 +297,7 @@ public class SearchEndpoint {
     }
 
     private SearchResult createSearchResult(Component c) {
-        SearchResult r = new SearchResult(c);
+        SearchResult r = new SearchResult(c, urlConfig);
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         r.setAuthor(name);
         return r;

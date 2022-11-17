@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import com.vaadin.directory.entity.directory.Component;
 import dev.hilla.Nonnull;
+import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.endpoint.addon.Addon;
 
@@ -35,14 +36,14 @@ public class SearchResult {
 
     public SearchResult() {}
 
-    public SearchResult(Component component) {
+    public SearchResult(Component component, UrlConfig urlConfig) {
         this.urlIdentifier = component.getUrlIdentifier();
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
                 (component.getIcon().getLocalFileName().startsWith("http") ?
                         component.getIcon().getLocalFileName() :
-                        Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName()):
-                Addon.DEFAULT_ICON_URL;
+                        urlConfig.getImageBaseUrl() + component.getIcon().getLocalFileName()):
+                urlConfig.getDefaultIconUrl();
         this.summary = component.getSummary();
         this.ratingCount = component.getRatingCount();
         this.author = "User " + component.getOwner().getId().toString();

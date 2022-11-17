@@ -10,13 +10,10 @@ import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentVersion;
 import com.vaadin.directory.entity.directory.HighlightScreenShot;
 import com.vaadin.directory.entity.directory.HighlightVideo;
+import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 
 public class Addon {
-
-    public static final String IMAGE_LOCATION_URL = "https://static.vaadin.com/directory/";
-    public static final String DEFAULT_ICON_URL = "https://vaadin.com/images/directory/addon-icon-default.png";
-    public static final String EDIT_URL_BASE = "https://vaadin.com/directory/component/edit/";
 
     @NotBlank
     @Nonnull
@@ -69,17 +66,16 @@ public class Addon {
     @Nonnull
     private String discussionId;
 
-
     public Addon() {}
 
-    public Addon(Component component) {
+    public Addon(Component component, UrlConfig urlConfig) {
         this.urlIdentifier = component.getUrlIdentifier();
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
                 (component.getIcon().getLocalFileName().startsWith("http") ?
                         component.getIcon().getLocalFileName() :
-                        Addon.IMAGE_LOCATION_URL + component.getIcon().getLocalFileName()):
-                Addon.DEFAULT_ICON_URL;
+                        urlConfig.getImageBaseUrl() + component.getIcon().getLocalFileName()):
+                urlConfig.getDefaultIconUrl();
         this.summary = component.getSummary();
         this.description = component.getDescription();
         this.downloadCount = component.getDownloadCountAsLong();
@@ -103,7 +99,7 @@ public class Addon {
                 .filter(highlight ->
                         highlight instanceof HighlightScreenShot
                                 || highlight instanceof HighlightVideo)
-                .map(highlight -> new MediaHighlight(highlight))
+                .map(highlight -> new MediaHighlight(highlight, urlConfig))
                 .collect(Collectors.toList());
 
         this.codeSamples = component.getCodeHighlights().stream()
