@@ -30,13 +30,13 @@ export class InstallTabSheet extends View {
     }
 
     const download = document.createElement('a');
-    download.href = `https://static.vaadin.com/directory/${this.version.installs['Zip']}`;
+    download.href = `${this.version.installs['Zip']}`;
     download.onclick = () => { logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "zip", this.getCurrentUserId()); }
 
     download.textContent = 'Download ZIP';
 
     const create = document.createElement('a');
-    create.href = `https://start.stg.vaadin.com/dl?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
+    create.href = `${this.addon.addonProjectDownloadBaseUrl}?addons=${this.addon.urlIdentifier}/${this.version?.name}`;
     create.onclick = () => { logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "create", this.getCurrentUserId()); }
     create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
 

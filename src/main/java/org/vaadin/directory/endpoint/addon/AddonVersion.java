@@ -2,6 +2,7 @@ package org.vaadin.directory.endpoint.addon;
 
 import com.vaadin.directory.backend.maven.PomXmlUtil;
 import com.vaadin.directory.entity.directory.ComponentVersion;
+import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 
 import dev.hilla.Nonnull;
@@ -45,7 +46,7 @@ public class AddonVersion {
 
     public AddonVersion() { }
 
-    public AddonVersion(ComponentVersion cv) {
+    public AddonVersion(ComponentVersion cv, UrlConfig urlConfig) {
         this.name = cv.getName();
         this.date = Util.dateToLocalDate(cv.getPublicationDate());
         this.maturity = cv.getMaturity().name();
@@ -65,7 +66,7 @@ public class AddonVersion {
             this.installs.put("Bower", PomXmlUtil.getWebJarDependencyPomSnippet(cv));
         }
         if (cv.isDownloadable()) {
-            this.installs.put("Zip", cv.getContentForLicense(cv.getLicenses().iterator().next()).getLocalFileName());
+            this.installs.put("Zip", urlConfig.getAddonZipDownloadBaseUrl() + cv.getContentForLicense(cv.getLicenses().iterator().next()).getLocalFileName());
         }
 
         this.releaseNotes = cv.getReleaseNotes();

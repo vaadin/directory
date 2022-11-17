@@ -30,6 +30,12 @@ public class UrlConfig {
     @Value("${app.defaultIconUrl}")
     private String defaultIconUrl;
 
+    @Value("${app.addonProjectDownloadBaseUrl}")
+    private String addonProjectDownloadBaseUrl;
+
+    @Value("${app.addonZipDownloadBaseUrl}")
+    private String addonZipDownloadBaseUrl;
+
     public String getAppUrl() {
         return appUrl;
     }
@@ -50,4 +56,11 @@ public class UrlConfig {
         return defaultIconUrl;
     }
 
+    public String getAddonProjectDownloadBaseUrl() {
+        return addonProjectDownloadBaseUrl;
+    }
+
+    public String getAddonZipDownloadBaseUrl() {
+        return addonZipDownloadBaseUrl;
+    }
 }

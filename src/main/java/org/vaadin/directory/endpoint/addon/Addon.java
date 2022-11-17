@@ -66,10 +66,15 @@ public class Addon {
     @Nonnull
     private String discussionId;
 
+    @NotBlank
+    @Nonnull
+    private String addonProjectDownloadBaseUrl;
+
     public Addon() {}
 
     public Addon(Component component, UrlConfig urlConfig) {
         this.urlIdentifier = component.getUrlIdentifier();
+        this.addonProjectDownloadBaseUrl = urlConfig.getAddonProjectDownloadBaseUrl();
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
                 (component.getIcon().getLocalFileName().startsWith("http") ?
@@ -86,7 +91,7 @@ public class Addon {
         this.tags = Util.tagsToStrings(component.getTagGroups());
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
-                .map(cv -> new AddonVersion(cv))
+                .map(cv -> new AddonVersion(cv, urlConfig))
                 .sorted((v1,v2) -> v1.getDate().compareTo(v2.getDate()))
                 .collect(Collectors.toList());
         //TODO: Generate icons
@@ -196,4 +201,5 @@ public class Addon {
 
     public void setDiscussionId(String discussionId) { this.discussionId = discussionId;}
 
+    public String getAddonProjectDownloadBaseUrl() { return addonProjectDownloadBaseUrl; }
 }
