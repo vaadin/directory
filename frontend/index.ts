@@ -1,10 +1,12 @@
 import { Router } from '@vaadin/router';
 import { routes } from './routes';
 import { appStore } from './stores/app-store';
+import { getAppUrl } from 'Frontend/generated/SearchEndpoint';
 import { autorun } from 'mobx';
 import { registerStyles, css } from '@vaadin/vaadin-themable-mixin';
 import './styles/global.css';
 
+getAppUrl().then(url => appStore.appUrl = url);
 export const router = new Router(document.querySelector('#outlet'));
 router.setRoutes(routes);
 

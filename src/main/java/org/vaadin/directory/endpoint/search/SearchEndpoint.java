@@ -199,6 +199,10 @@ public class SearchEndpoint {
     }
 
     @Transactional(readOnly = true)
+    public @Nonnull String getAppUrl() {
+        return urlConfig.getAppUrl();
+    }
+    @Transactional(readOnly = true)
     public @Nonnull Matrix getCompatibility(String urlIdentifier) {
 
         Optional<Component> maybveComponent = this.service.getComponentByUrl(urlIdentifier);
