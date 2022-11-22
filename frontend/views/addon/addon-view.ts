@@ -11,7 +11,7 @@ import { getAddon, getUserRating, setUserRating } from 'Frontend/generated/Addon
 import '@vaadin/vaadin-select/src/vaadin-select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { View } from '../view';
+import { View, AddonJsonLd } from '../view';
 import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { guard } from 'lit/directives/guard.js';
@@ -303,6 +303,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         this.version = this.getLatestVersion();
       }
       appStore.currentViewTitle = this.addon.name;
+      this.updatePageMetadata();
     }
   }
 
@@ -361,6 +362,30 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   }
 
+  updatePageMetadata(): void {
+    // Create search metadata
+    const addonMetadata = new AddonJsonLd(
+      this.addon!.name,
+      router.location.baseUrl,
+      this.addon!.author,
+      this.addon!.icon,
+      null, // TODO: Support screenshots
+      this.addon!.lastUpdated,
+      this.addon!.rating,
+      this.addon!.ratingCount
+    );
+    addonMetadata.appendOrReplaceToHead();
+
+    // Update Twitter metadata
+    const title = document.head.querySelector('meta[name="twitter:title"]') as HTMLElement; 
+    const summary = document.head.querySelector('meta[name="twitter:description"]') as HTMLElement; 
+    const icon = document.head.querySelector('meta[name="twitter:image"]') as HTMLElement; 
+    if (title) title.setAttribute("content",this.addon!.name);
+    if (summary) summary.setAttribute("content",this.addon!.summary);
+    if (icon) icon.setAttribute("content",this.addon!.icon ? this.addon!.icon : "https://vaadin.com/images/directory/addon-icon-default.png");
+  }
+
+
   versionChange(e: CustomEvent) {
     if (e && e.detail && e.detail && e.detail.value) {
       const found = this.addon?.versions.find(
@@ -373,3 +398,4 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
 }
+

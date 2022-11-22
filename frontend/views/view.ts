@@ -1,5 +1,6 @@
 import { MobxLitElement } from '@adobe/lit-mobx';
 import { autorun, IAutorunOptions, IReactionDisposer, IReactionOptions, IReactionPublic, reaction } from 'mobx';
+import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
 
 export interface HaasUserInfo {
   authenticated: boolean;
@@ -86,11 +87,19 @@ export class MobxElement extends MobxLitElement {
  *
  * The view class also brings the MobX dependency for state management.
  */
-export class View extends MobxElement {
+export abstract class View extends MobxElement  implements BeforeEnterObserver {
   createRenderRoot(): Element | ShadowRoot {
     // Do not use a shadow root
     return this;
   }
+
+  async onBeforeEnter(location: RouterLocation) { 
+    this.updatePageMetadata();
+  }
+
+  /** Abstract method to update the page metadata when navigating. */
+  abstract updatePageMetadata(): void;
+
 }
 
 /**
@@ -108,4 +117,107 @@ export class Layout extends MobxElement {
   connectedCallback(): void {
     super.connectedCallback();
   }
+}
+
+class JsonLd extends Object {
+
+  serializeJson(): string {
+    return "";
+  };
+
+  appendOrReplaceToHead() { 
+    var script = document.head.querySelector("#search-meta") as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement("script");
+      script.id='search-meta'
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+    script.innerText = this.serializeJson();
+  }
+}
+
+export class PageJsonLd extends JsonLd {
+  readonly title: string;
+  readonly description: string;
+
+
+  constructor(title: string,
+    description: string) {
+    super();
+    this.title = title;
+    this.description = description;
+  }
+
+  serializeJson(): string {
+    const json = {
+      "@context": "http://schema.org",
+      "@type": "Webpage",
+      "name": this.title,
+      "description": this.description,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Vaadin",
+        "legalName": "Vaadin Ltd",
+        "url": "https://vaadin.com",
+    }
+    }
+    return JSON.stringify(json);
+  }
+}
+
+export class AddonJsonLd extends JsonLd {
+
+  readonly name: string;
+  readonly url: string;
+  readonly author: string;
+  readonly icon: string;
+  readonly screenshot: string | null;
+  readonly updated: string;
+  readonly ratingValue: number | null;
+  readonly ratingCount: number | null;
+
+  constructor(
+      name: string,
+      url: string,
+      author: string,
+      icon: string,
+      screenshot: string | null,
+      updated: string,
+      ratingValue: number,
+      ratingCount: number) {
+        super();
+        this.name = name;
+        this.url = url;
+        this.author = author;
+        this.icon = icon;
+        this.screenshot = screenshot;
+        this.updated = updated;
+        this.ratingValue = ratingValue;
+        this.ratingCount = ratingCount;
+    }
+
+    serializeJson(): string {
+      const json = {
+        "@context": "http://schema.org",
+        "@type": "SoftwareApplication",
+        "name": this.name,
+        "downloadUrl": this.url,
+        "image": this.icon,
+        "author": {
+          "@type": "Person",
+          "name": this.author
+        },
+        "datePublished": this.updated,
+        "applicationCategory": "BrowserApplication",
+        "screenshot": this.screenshot ? this.screenshot: undefined,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": this.ratingValue? this.ratingValue : undefined,
+          "ratingCount": this.ratingCount? this.ratingCount : undefined
+        }      
+      };
+      return JSON.stringify(json);
+    }
+
 }

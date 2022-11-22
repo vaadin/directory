@@ -2,7 +2,7 @@ import './search-view.css';
 import '../../components/addon-card';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { View } from '../view';
+import { View, PageJsonLd } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
 import { appStore } from 'Frontend/stores/app-store';
@@ -22,6 +22,21 @@ export class SearchView extends View {
   disconnectedCallback() {
     this.removeEventListener('click', this._clickListener);
     super.disconnectedCallback();
+  }
+
+  updatePageMetadata(): void {
+    // Update search metadata
+    const metadata = new PageJsonLd(appStore.applicationName, appStore.appDescription);
+    metadata.appendOrReplaceToHead();
+
+    // Update Twitter metadata
+    const title = document.head.querySelector('meta[name="twitter:title"]') as HTMLElement; 
+    const summary = document.head.querySelector('meta[name="twitter:description"]') as HTMLElement; 
+    const icon = document.head.querySelector('meta[name="twitter:image"]') as HTMLElement; 
+    if (title) title.setAttribute("content","Vaadin Add-on Directory");
+    if (summary) summary.setAttribute("content","Find open-source widgets and components for your Vaadin application.");
+    if (icon) icon.setAttribute("content","https://vaadin.com/images/trademark/PNG/VaadinLogomark_RGB_500x500.png");
+
   }
 
   render() {
