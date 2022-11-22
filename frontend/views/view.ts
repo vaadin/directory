@@ -100,6 +100,11 @@ export class View extends MobxElement {
  * The layout class also bring the MobX dependency for state management.
  */
 export class Layout extends MobxElement {
+  createRenderRoot(): Element | ShadowRoot {
+    // Do not use a shadow root
+    return this;
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
   }
