@@ -6,7 +6,6 @@ import { View } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
 import { appStore } from 'Frontend/stores/app-store';
-import { disqusReset } from '../disqus';
 
 @customElement('search-view')
 export class SearchView extends View {
@@ -97,15 +96,6 @@ export class SearchView extends View {
   async firstUpdated() {
     searchStore.init();
     this.setupIntersectionObserver();
-
-    // Reset discuss thread
-    disqusReset(
-      'search',
-      'https://vaadin.com/directory-beta/',
-      'Vaadin Directory Search',
-      false
-    );
-
     this.restoreScrollIfNeeded();
   }
 
