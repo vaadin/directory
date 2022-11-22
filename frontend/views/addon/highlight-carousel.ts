@@ -1,13 +1,13 @@
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { View } from '../view';
+import { Layout } from '../view';
 import 'keen-slider/keen-slider.min.css';
 import KeenSlider from 'keen-slider';
 import type { KeenSliderInstance } from 'keen-slider';
 
 @customElement('highlight-carousel')
-export class HighlightCarousel extends View {
+export class HighlightCarousel extends Layout {
 
   @property({ attribute: false })
   addon?: Addon;

@@ -1,10 +1,10 @@
 import { html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { View } from '../view';
+import { Layout } from '../view';
 import '@vaadin/avatar-group/src/vaadin-avatar-group';
 
 @customElement('github-contributors')
-export class GitHubContributors extends View {
+export class GitHubContributors extends Layout {
 
   @property({ attribute: true })
   repositoryUrl?:  string;

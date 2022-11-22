@@ -1,5 +1,5 @@
 import './addon-card.css';
-import { View } from '../views/view';
+import { Layout } from '../views/view';
 import { FilterAddedEvent } from '../views/search/filter-added-event';
 import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
 import { html } from 'lit';
@@ -8,7 +8,7 @@ import './addon-icon';
 import './rating-stars';
 
 @customElement('addon-card')
-export class AddonCard extends View {
+export class AddonCard extends Layout {
 
   @property({ attribute: false })
   addon?: SearchResult;

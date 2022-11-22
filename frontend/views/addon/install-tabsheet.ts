@@ -3,13 +3,13 @@ import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon
 import { logAddonInstall, getAddonInstalls } from 'Frontend/generated/AddonEndpoint';
 import { html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { View } from '../view';
+import { Layout } from '../view';
 import '@vaadin/menu-bar/src/vaadin-menu-bar';
 import {MenuBarItem}  from '@vaadin/menu-bar/src/vaadin-menu-bar';
 import { router } from '../../index';
 
 @customElement('install-tabsheet')
-export class InstallTabSheet extends View {
+export class InstallTabSheet extends Layout {
 
   @property({ attribute: false })
   addon?: Addon;

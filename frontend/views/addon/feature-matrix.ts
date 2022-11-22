@@ -1,11 +1,11 @@
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { View } from '../view';
+import { Layout } from '../view';
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
 
 @customElement('feature-matrix')
-export class FeatureMatrix extends View {
+export class FeatureMatrix extends Layout {
 
   @property({ attribute: false })
   addon?:  string;
