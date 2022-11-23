@@ -311,7 +311,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     if (this.addon) {
       this.updateUserRating();
     }
-    iframeResizer({ log: true }, '#discussion-iframe');
+    iframeResizer({ log: false }, '#discussion-iframe');
   }
 
   searchByAuthor() {
