@@ -98,6 +98,11 @@ public class SearchEndpoint {
         return result;
     }
 
+    public @Nonnull SearchResult getAddon(String urlIdentifier) {
+        Optional<Component> oc = service.getComponentByUrl(urlIdentifier);
+        return oc.isPresent() ? new SearchResult(oc.get(), urlConfig) : new SearchResult();
+    }
+
     @Transactional(readOnly = true)
     public @Nonnull SearchListResult search(
             String searchString, int page, int pageSize, String sort, boolean includeCount, String currentUser) {
