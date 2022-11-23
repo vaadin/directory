@@ -18,6 +18,9 @@ public class UrlConfig {
     @Value("${app.url}")
     private String appUrl;
 
+    @Value("${app.iconUrl}")
+    private String iconUrl;
+
     @Value("${app.componentUrl}")
     private String componentUrl;
 
@@ -40,6 +43,9 @@ public class UrlConfig {
         return appUrl;
     }
 
+    public String getAppIconUrl() {
+        return iconUrl;
+    }
     public String getComponentUrl() {
         return componentUrl;
     }
