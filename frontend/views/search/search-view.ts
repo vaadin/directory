@@ -11,7 +11,7 @@ import { appStore } from 'Frontend/stores/app-store';
 export class SearchView extends View {
   constructor() {
     super();
-    appStore.currentViewTitle = 'Search';
+    appStore.currentViewTitle = 'Vaadin Directory Search';
   }
 
   connectedCallback() {
