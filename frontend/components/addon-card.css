@@ -75,3 +75,8 @@ addon-card .badge {
   padding: 0.25em 0.5em;
   background-color: var(--blue-50);
 }
+
+card-view addon-card {
+  width: 405px;
+  height: 250px
+}
