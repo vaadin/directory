@@ -40,8 +40,9 @@ public class HtmlHeaderController implements Filter {
             FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
-        if (req.getRequestURI().startsWith(ROUTE_COMPONENT)) {
-            String urlIdentifier = req.getRequestURI().substring(ROUTE_COMPONENT.length());
+        String uri = req.getRequestURI();
+        if (uri.contains(ROUTE_COMPONENT)) {
+            String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT)+ROUTE_COMPONENT.length());
             Optional<com.vaadin.directory.entity.directory.Component> oc = service.getComponentByUrl(urlIdentifier);
             if (oc.isPresent()) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
