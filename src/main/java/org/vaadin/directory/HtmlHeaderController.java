@@ -46,12 +46,13 @@ public class HtmlHeaderController implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI();
         if (uri.contains(ROUTE_COMPONENT)) {
+            // Addon metadata
             String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT)+ROUTE_COMPONENT.length());
             Addon oc = service.getAddon(urlIdentifier, "");
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, capturingResponseWrapper);
-                String content = capturingResponseWrapper.getCaptureAsString(); // This uses response character encoding.
+                String content = capturingResponseWrapper.getCaptureAsString();
                 String replacedContent = content.replaceAll(TITLE, ""+oc.getName() + " - "+TITLE);
                 replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl()+urlIdentifier);
                 replacedContent = replacedContent.replaceAll(DESCRIPTION, ""+oc.getSummary());
@@ -62,7 +63,15 @@ public class HtmlHeaderController implements Filter {
                 // Requested addon was not found
                 ((HttpServletResponse)response).sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+        } else if (uri.equals("/")) {
+            // Inject searchbox metadata
+            CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
+            chain.doFilter(request, capturingResponseWrapper);
+            String content = capturingResponseWrapper.getCaptureAsString();
+            String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl())+"</head>");
+            response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else {
+            // No metadata injected for other pages
             chain.doFilter(request, response);
         }
     }
@@ -165,6 +174,21 @@ public class HtmlHeaderController implements Filter {
             ready = false;
             super.close();
         }
+    }
+    private static String getJsonLd(String directoryUrl) {
+        return "<script type=\"application/ld+json\">{\n" +
+                "\"@context\": \"https://schema.org\",\n" +
+                "\"@type\": \"WebSite\",\n" +
+                "\"url\": \""+directoryUrl+"\",\n" +
+                "\"potentialAction\": {\n" +
+                "  \"@type\": \"SearchAction\",\n" +
+                "  \"target\": {\n" +
+                "    \"@type\": \"EntryPoint\",\n" +
+                "    \"urlTemplate\": \""+directoryUrl+"?q={search_term_string}\"\n" +
+                "    },\n" +
+                "  \"query-input\": \"required name=search_term_string\"\n" +
+                "  }\n" +
+                "}</script>";
     }
 
     private static String getJsonLd(String name,
