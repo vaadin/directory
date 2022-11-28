@@ -1,8 +1,9 @@
 package org.vaadin.directory;
 
-import com.vaadin.directory.backend.service.ComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.vaadin.directory.endpoint.addon.Addon;
+import org.vaadin.directory.endpoint.addon.AddonEndpoint;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +26,10 @@ public class HtmlHeaderController implements Filter {
     public static final String DESCRIPTION = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application\\.";
     public static final String IMAGE = "https://vaadin\\.com/images/trademark/PNG/VaadinLogomark_RGB_500x500\\.png";
     private final UrlConfig urlConfig;
-    private final ComponentService service;
+    private final AddonEndpoint service;
 
     HtmlHeaderController(@Autowired UrlConfig urlConfig,
-                         @Autowired ComponentService service) {
+                         @Autowired AddonEndpoint service) {
         this.urlConfig = urlConfig;
         this.service = service;
     }
@@ -43,14 +44,14 @@ public class HtmlHeaderController implements Filter {
         String uri = req.getRequestURI();
         if (uri.contains(ROUTE_COMPONENT)) {
             String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT)+ROUTE_COMPONENT.length());
-            Optional<com.vaadin.directory.entity.directory.Component> oc = service.getComponentByUrl(urlIdentifier);
-            if (oc.isPresent()) {
+            Addon oc = service.getAddon(urlIdentifier, "");
+            if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, capturingResponseWrapper);
                 String content = capturingResponseWrapper.getCaptureAsString(); // This uses response character encoding.
-                String replacedContent = content.replaceAll(TITLE, ""+oc.get().getName() + " - "+TITLE);
+                String replacedContent = content.replaceAll(TITLE, ""+oc.getName() + " - "+TITLE);
                 replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl()+urlIdentifier);
-                replacedContent = replacedContent.replaceAll(DESCRIPTION, ""+oc.get().getSummary());
+                replacedContent = replacedContent.replaceAll(DESCRIPTION, ""+oc.getSummary());
                 replacedContent = replacedContent.replaceAll(IMAGE, urlConfig.getAppUrl()+"images/social/"+urlIdentifier);
                 response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
             } else {
