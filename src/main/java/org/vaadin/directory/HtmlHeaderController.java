@@ -9,9 +9,12 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.*;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /** Handle the static HTML requests by injecting metadata based on routes.
  *
@@ -53,6 +56,7 @@ public class HtmlHeaderController implements Filter {
                 replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl()+urlIdentifier);
                 replacedContent = replacedContent.replaceAll(DESCRIPTION, ""+oc.getSummary());
                 replacedContent = replacedContent.replaceAll(IMAGE, urlConfig.getAppUrl()+"images/social/"+urlIdentifier);
+                replacedContent = replacedContent.replaceAll("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(),urlConfig.getComponentUrl()+urlIdentifier,oc.getLastUpdated(),null,oc.getRating(), oc.getRatingCount() )+"\n</head>");
                 response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
             } else {
                 // Requested addon was not found
@@ -161,5 +165,35 @@ public class HtmlHeaderController implements Filter {
             ready = false;
             super.close();
         }
+    }
+
+    private static String getJsonLd(String name,
+                                    String description,
+                                    String iconUrl,
+                                    String author,
+                                    String url,
+                                    LocalDate lastUpdated,
+                                    String screenshotUrl,
+                                    double rating,
+                                    long ratingCount) {
+        return "<script type=\"application/ld+json\">{\n" +
+                "\"@context\": \"https://schema.org\",\n" +
+                "\"@type\": \"SoftwareApplication\",\n" +
+                "\"name\": \""+name+"\",\n" +
+                "\"downloadUrl\": \""+url+"\",\n" +
+                "\"image\": \""+iconUrl+"\",\n" +
+                "\"author\": {\n" +
+                "  \"@type\": \"Person\",\n" +
+                "  \"name\": \""+author+"\"\n" +
+                "  },\n" +
+                "\"datePublished\": \""+ DateTimeFormatter.ISO_DATE.format(lastUpdated) +"\",\n" +
+                "\"applicationCategory\": \"BrowserApplication\",\n" +
+                (screenshotUrl != null ? "\"screenshot\": \""+screenshotUrl+"\",\n":"") +
+                "\"aggregateRating\": {\n" +
+                "  \"@type\": \"AggregateRating\",\n" +
+                "  \"ratingValue\": \""+(rating > 0 ? rating : 0)+"\",\n" +
+                "  \"ratingCount\": \""+ (ratingCount > 0 ? ratingCount:0)+"\"\n" +
+                "  }      \n" +
+                "}</script>";
     }
 }
