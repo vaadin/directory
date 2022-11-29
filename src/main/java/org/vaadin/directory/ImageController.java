@@ -91,10 +91,9 @@ public class ImageController {
             // Reset
             BufferedImage image = new BufferedImage(800, 418, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = image.createGraphics();
-            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);            graphics.setBackground(new Color(0, true));
+            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            graphics.setBackground(new Color(0, true));
 
             graphics.clearRect(0, 0, 800, 418);
 
