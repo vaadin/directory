@@ -47,28 +47,27 @@ public class HtmlHeaderController implements Filter {
         String uri = req.getRequestURI();
         if (uri.contains(ROUTE_COMPONENT)) {
             // Addon metadata
-            String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT)+ROUTE_COMPONENT.length());
+            String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT) + ROUTE_COMPONENT.length());
             Addon oc = service.getAddon(urlIdentifier, "");
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, capturingResponseWrapper);
                 String content = capturingResponseWrapper.getCaptureAsString();
-                String replacedContent = content.replaceAll(TITLE, ""+oc.getName() + " - "+TITLE);
-                replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl()+urlIdentifier);
-                replacedContent = replacedContent.replaceAll(DESCRIPTION, ""+oc.getSummary());
-                replacedContent = replacedContent.replaceAll(IMAGE, urlConfig.getAppUrl()+"images/social/"+urlIdentifier);
-                replacedContent = replacedContent.replaceAll("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(),urlConfig.getComponentUrl()+urlIdentifier,oc.getLastUpdated(),null,oc.getRating(), oc.getRatingCount() )+"\n</head>");
+                String replacedContent = content.replaceAll(TITLE, "" + oc.getName() + " - " + TITLE);
+                replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl() + urlIdentifier);
+                replacedContent = replacedContent.replaceAll(DESCRIPTION, "" + oc.getSummary());
+                replacedContent = replacedContent.replaceAll(IMAGE, urlConfig.getAppUrl() + "images/social/" + urlIdentifier);
+                replacedContent = replacedContent.replaceAll("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(), urlConfig.getComponentUrl() + urlIdentifier, oc.getLastUpdated(), null, oc.getRating(), oc.getRatingCount()) + "\n</head>");
                 response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
             } else {
-                // Requested addon was not found
-                ((HttpServletResponse)response).sendError(HttpServletResponse.SC_NOT_FOUND);
+                chain.doFilter(request, response);
             }
         } else if (uri.equals("/")) {
             // Inject searchbox metadata
             CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
             chain.doFilter(request, capturingResponseWrapper);
             String content = capturingResponseWrapper.getCaptureAsString();
-            String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl())+"</head>");
+            String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl()) + "</head>");
             response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else {
             // No metadata injected for other pages
