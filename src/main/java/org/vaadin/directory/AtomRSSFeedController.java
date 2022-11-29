@@ -9,7 +9,6 @@ import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.directory.entity.directory.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,22 +24,22 @@ import java.util.stream.Collectors;
 @RestController
 public class AtomRSSFeedController {
 
-    private String baseUrl;
+    private UrlConfig urlConfig;
 
 
     private ComponentService service;
 
-    AtomRSSFeedController(@Value("${app.url}") String appUrl,
+    AtomRSSFeedController(@Autowired UrlConfig urlConfig,
                           @Autowired ComponentService service){
         this.service = service;
-        this.baseUrl = appUrl;
+        this.urlConfig = urlConfig;
     }
 
     @RequestMapping(path = "/feed", method = RequestMethod.GET, produces = MediaType.APPLICATION_ATOM_XML_VALUE)
     public ResponseEntity<String> getFeed() {
 
-        ComponentSyndFeed feed = new ComponentSyndFeed(null, this.service, this.baseUrl);
-        feed.setAuthor(this.baseUrl);
+        ComponentSyndFeed feed = new ComponentSyndFeed(null, this.service, this.urlConfig);
+        feed.setAuthor(this.urlConfig.getAppUrl());
         SyndFeedOutput output = new SyndFeedOutput();
 
         try {
@@ -57,17 +56,17 @@ public class AtomRSSFeedController {
 
         private final ComponentService componentService;
         private final ComponentDirectoryUser user;
-        private final String baseUrl;
+        private final UrlConfig urlConfig;
 
-        public ComponentSyndFeed(ComponentDirectoryUser user, ComponentService componentService, String baseUrl) {
+        public ComponentSyndFeed(ComponentDirectoryUser user, ComponentService componentService, UrlConfig urlConfig) {
             this.componentService = componentService;
             this.user = user;
-            this.baseUrl = baseUrl;
+            this.urlConfig = urlConfig;
             setTitle("Add-ons | Vaadin Directory | Vaadin");
             setDescription(getTitle());
             setFeedType("atom_1.0");
             setEncoding("utf-8");
-            setLink(baseUrl);
+            setLink(this.urlConfig.getAppUrl());
             setEntries(getAddonSyndEntries());
         }
 
@@ -93,7 +92,7 @@ public class AtomRSSFeedController {
         }
 
         private ComponentSyndEntry createEntry(Component c) {
-            return new ComponentSyndEntry(c, baseUrl);
+            return new ComponentSyndEntry(c, this.urlConfig);
         }
     }
 
@@ -101,12 +100,12 @@ public class AtomRSSFeedController {
 
         private final Component addon;
 
-        public ComponentSyndEntry(Component component, String baseUrl) {
+        public ComponentSyndEntry(Component component, UrlConfig urlConfig) {
             this.addon = component;
 
             setTitle(component.getName());
             setDescription(getAddonDescription());
-            setLink(baseUrl+ "addon/" + component.getUrlIdentifier());
+            setLink(urlConfig.getAppUrl()+"addon/" + component.getUrlIdentifier());
             setPublishedDate(component.getModificationDate());
             setAuthor(component.getOwner().getName());
         }
