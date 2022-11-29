@@ -99,19 +99,16 @@ public class ImageController {
 
             // White background
             graphics.setPaint(Color.WHITE);
-            //RoundRectangle2D bg = new RoundRectangle2D.Float(1, 1, 800-2, 418-2, 32, 32);
-            //graphics.draw(bg);
-            //graphics.fill(bg);
             graphics.fillRect(0,0,800,418);
 
             // Name
             graphics.setColor(VAADIN_DARK_GREY);
-            Font font = new Font("Poppins", Font.BOLD, 48);
+            Font font = new Font("Arial", Font.BOLD, 48);
             graphics.setFont(font);
             graphics.drawString(name, 32, 80);
 
             // Description
-            font = new Font("Poppins", Font.PLAIN, 24);
+            font = new Font("Arial", Font.PLAIN, 24);
             graphics.setFont(font);
             int yCursor = 100;
             List<String> descLines = wrap(desc, graphics.getFontMetrics(), 500);
@@ -122,7 +119,7 @@ public class ImageController {
             yCursor += 50;
 
             // Stars
-            font = new Font("Poppins", Font.PLAIN, 36);
+            font = new Font("Arial", Font.PLAIN, 36);
             graphics.setColor(VAADIN_DARK_GREY);
             graphics.setFont(font);
             graphics.drawString(rating,  32, yCursor);
@@ -151,7 +148,7 @@ public class ImageController {
             graphics.drawImage(logo,800-32-22, 418-8-22, null);
 
             // Author
-            font = new Font("Poppins", Font.PLAIN, 18);
+            font = new Font("Arial", Font.PLAIN, 18);
             graphics.setColor(VAADIN_DARK_GREY);
             graphics.setFont(font);
             graphics.drawString(author + " published on " + updated, 32, 418-14);
