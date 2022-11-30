@@ -48,7 +48,12 @@ public class HtmlHeaderController implements Filter {
         String uri = req.getRequestURI();
         if (uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) {
             // Addon metadata
-            String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT) + ROUTE_COMPONENT.length());
+            String urlIdentifier;
+            if (uri.contains(ROUTE_COMPONENT)) {
+                urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT) + ROUTE_COMPONENT.length());
+            } else {
+                urlIdentifier = uri.substring(uri.indexOf(ROUTE_ADDON) + ROUTE_ADDON.length());
+            }
             Addon oc = service.getAddon(urlIdentifier, "");
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
