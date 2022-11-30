@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 public class HtmlHeaderController implements Filter {
 
     public static final String ROUTE_COMPONENT = "/component/";
+    public static final String ROUTE_ADDON = "/addon/";
 
     private static final String URL = "https://vaadin.com/directory";
     public static final String TITLE = "Vaadin Add-on Directory";
@@ -45,7 +46,7 @@ public class HtmlHeaderController implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI();
-        if (uri.contains(ROUTE_COMPONENT)) {
+        if (uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) {
             // Addon metadata
             String urlIdentifier = uri.substring(uri.indexOf(ROUTE_COMPONENT) + ROUTE_COMPONENT.length());
             Addon oc = service.getAddon(urlIdentifier, "");
