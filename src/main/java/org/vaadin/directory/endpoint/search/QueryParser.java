@@ -45,7 +45,7 @@ public class QueryParser {
     private static final List<String> vaadin10plusVersions;
     static {
         vaadin10plusVersions =
-                IntStream.range(10,24)
+                IntStream.range(10,25)
                         .mapToObj(i -> Integer.toString(i))
                         .collect(Collectors.toList());
     }
