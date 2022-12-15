@@ -39,6 +39,9 @@ public class UrlConfig {
     @Value("${app.addonZipDownloadBaseUrl}")
     private String addonZipDownloadBaseUrl;
 
+    @Value("${app.profileImageBaseUrl}")
+    private String profileImageBaseUrl;
+
     public String getAppUrl() {
         return appUrl;
     }
@@ -69,4 +72,13 @@ public class UrlConfig {
     public String getAddonZipDownloadBaseUrl() {
         return addonZipDownloadBaseUrl;
     }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public String getProfileImageBaseUrl() {
+        return profileImageBaseUrl;
+    }
+
 }
