@@ -52,6 +52,8 @@ public class AddonEndpoint {
         }
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         a.setAuthor(name);
+        String image = this.userNameService.getImageforId(c.getOwner().getId());
+        a.setAuthorImage(urlConfig.getProfileImageBaseUrl()+image);
         return a;
     }
 

@@ -57,6 +57,8 @@ public class Addon {
 
     private @Nonnull String author;
 
+    private @Nonnull String authorImage;
+
     private @Nonnull Double rating;
 
     @Nonnull
@@ -86,6 +88,7 @@ public class Addon {
         this.downloadCount = component.getDownloadCountAsLong();
         this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
         this.author = "User " + component.getOwner().getId().toString();
+        this.authorImage = urlConfig.getProfileImageBaseUrl()+"0";
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
         this.ratingCount = component.getRatingCount();
         this.tags = Util.tagsToStrings(component.getTagGroups());
@@ -177,8 +180,16 @@ public class Addon {
         return author;
     }
 
+    public String getAuthorImage() {
+        return authorImage;
+    }
+
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public void setAuthorImage(String imageUrl) {
+        this.authorImage = imageUrl;
     }
 
     public Double getRating() {
@@ -202,4 +213,5 @@ public class Addon {
     public void setDiscussionId(String discussionId) { this.discussionId = discussionId;}
 
     public String getAddonProjectDownloadBaseUrl() { return addonProjectDownloadBaseUrl; }
+
 }
