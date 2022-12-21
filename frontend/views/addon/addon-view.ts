@@ -15,7 +15,7 @@ import { View, AddonJsonLd } from '../view';
 import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { guard } from 'lit/directives/guard.js';
-import * as DomPurify from 'dompurify';
+import DomPurify from 'dompurify';
 import { marked } from 'marked';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/themes/prism.css';
