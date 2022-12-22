@@ -90,7 +90,7 @@ public class Addon {
         this.author = "User " + component.getOwner().getId().toString();
         this.authorImage = urlConfig.getProfileImageBaseUrl()+"0";
         this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
-        this.ratingCount = component.getRatingCount();
+        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount();
         this.tags = Util.tagsToStrings(component.getTagGroups());
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
