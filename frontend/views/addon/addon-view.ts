@@ -124,7 +124,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         <h3>Links</h3>
         <ul>
           ${this.addon.links.map((l) => html`
-            <li><a href="${l.href}">${l.name}</a></li>
+            <li><a href="${l.href}" router-ignore>${l.name}</a></li>
           `)}
         </ul>
 
@@ -268,22 +268,22 @@ export class AddonView extends View implements BeforeEnterObserver {
     return html` <ul>
       ${demoLink
         ? html` <li>
-            <a href="${demoLink.href}" target="_blank" noopener>Demo</a>
+            <a href="${demoLink.href}" target="_blank" router-ignore noopener>Demo</a>
           </li>`
         : nothing}
       ${gitHubLink
         ? html` <li>
-            <a href="${gitHubLink}" target="_blank" noopener>GitHub</a>
+            <a href="${gitHubLink}" target="_blank" router-ignore noopener>GitHub</a>
           </li>`
         : nothing}
       ${kofiLink
         ? html` <li>
-            <a href="${kofiLink.href}" target="_blank" noopener>Tip me</a>
+            <a href="${kofiLink.href}" target="_blank" router-ignore noopener>Tip me</a>
           </li>`
         : nothing}
       ${editLink
           ? html` <li>
-              <a class="edit" href="${editLink.href}" target="_blank" noopener>Edit</a>
+              <a class="edit" href="${editLink.href}" target="_blank" router-ignore noopener>Edit</a>
             </li>`
           : nothing}
     </ul>`;
