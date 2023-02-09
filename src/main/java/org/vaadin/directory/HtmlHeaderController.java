@@ -203,8 +203,8 @@ public class HtmlHeaderController implements Filter {
                                     String url,
                                     LocalDate lastUpdated,
                                     String screenshotUrl,
-                                    double rating,
-                                    long ratingCount) {
+                                    Double rating,
+                                    Long ratingCount) {
         return "<script type=\"application/ld+json\">{\n" +
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"SoftwareApplication\",\n" +
@@ -220,8 +220,8 @@ public class HtmlHeaderController implements Filter {
                 (screenshotUrl != null ? "\"screenshot\": \""+screenshotUrl+"\",\n":"") +
                 "\"aggregateRating\": {\n" +
                 "  \"@type\": \"AggregateRating\",\n" +
-                "  \"ratingValue\": \""+(rating > 0 ? rating : 0)+"\",\n" +
-                "  \"ratingCount\": \""+ (ratingCount > 0 ? ratingCount:0)+"\"\n" +
+                "  \"ratingValue\": \""+(rating != null && rating > 0 ? rating : 0)+"\",\n" +
+                "  \"ratingCount\": \""+ (ratingCount != null && ratingCount > 0 ? ratingCount:0)+"\"\n" +
                 "  }      \n" +
                 "}</script>";
     }
