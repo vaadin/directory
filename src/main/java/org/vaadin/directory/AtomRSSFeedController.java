@@ -105,7 +105,7 @@ public class AtomRSSFeedController {
 
             setTitle(component.getName());
             setDescription(getAddonDescription());
-            setLink(urlConfig.getAppUrl()+"addon/" + component.getUrlIdentifier());
+            setLink(urlConfig.getComponentUrl() + component.getUrlIdentifier());
             setPublishedDate(component.getModificationDate());
             setAuthor(component.getOwner().getName());
         }
