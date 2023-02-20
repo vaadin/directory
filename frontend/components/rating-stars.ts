@@ -4,20 +4,20 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('rating-stars')
 export class RatingStars extends LitElement {
 
-  @property({ attribute: false })
+  @property({ attribute: true })
   readonly: boolean = false;
 
-  @property({ attribute: false })
-  userRating: boolean = false;
+  @property({ attribute: true })
+  userrating: boolean = false;
 
-  @property({ attribute: false })
+  @property({ attribute: true })
   tooltip: string = "";
 
-  @property({ attribute: false })
+  @property({ attribute: true })
   rating: number = 0;
 
-  @property({ attribute: false })
-  ratingCount: number = 0;
+  @property({ attribute: true })
+  ratingcount: number = 0;
 
   static styles = css`
     :host {
@@ -42,7 +42,7 @@ export class RatingStars extends LitElement {
 
     .no-rating {
       white-space: nowrap;
-      font-size: var(--text-size-s);
+      font-size: var(--text-size-xs);
     }
 
     .count,
@@ -112,38 +112,33 @@ export class RatingStars extends LitElement {
   async firstUpdated() {
     // Give the browser a chance to paint
     await new Promise((r) => setTimeout(r, 0));
-
-    this.classList.toggle("user-rating", this.userRating)
-
-    if (!this.readonly) {
-      this.addEventListener('mouseover', this._handleMouseOver);
-      this.addEventListener('mouseleave', this._handleMouseLeave);
-    }
+    this.addEventListener('mouseover', this._handleMouseOver);
+    this.addEventListener('mouseleave', this._handleMouseLeave);
   }
 
   render() {
     return html`
-          <div title="${this.tooltip}"  class="ratings ${this.userRating?'user-rating':''} ${this.hasEnoughRatings() || this.userRating?'':'hidden'}">
-            ${this.hasEnoughRatings() && !this.userRating ?
-                html`<span class="count">${this.ratingCount}</span>` :
-                html`<span class="user-score">${this.userRating ? this.rating : '-'}/5</span>`}
+          <div title="${this.tooltip}"  class="ratings ${this.userrating && this.rating > 0?'user-rating':''} ${this.hasEnoughRatings() || this.userrating && this.rating > 0?'':'hidden'}">
+            ${this.hasEnoughRatings() && !this.userrating ?
+                html`<span class="count">${this.ratingcount}</span>` :
+                html`<span class="user-score">${this.userrating  && this.rating > 0 ? this.rating : '-'}/5</span>`}
             <input ?checked=${Math.round(this.rating) === 5} @click="${this._handleClick}" class="rating" type="radio" ?disabled="${this.readonly}" name="stars" id="star-5" value="5"/><label for="star-5"></label>
             <input ?checked=${Math.round(this.rating) === 4} @click="${this._handleClick}" class="rating" type="radio" ?disabled="${this.readonly}" name="stars" id="star-4" value="4"/><label for="star-4"></label>
             <input ?checked=${Math.round(this.rating) === 3} @click="${this._handleClick}" class="rating" type="radio" ?disabled="${this.readonly}" name="stars" id="star-3" value="3"/><label for="star-3"></label>
             <input ?checked=${Math.round(this.rating) === 2} @click="${this._handleClick}" class="rating" type="radio" ?disabled="${this.readonly}" name="stars" id="star-2" value="2"/><label for="star-2"></label>
             <input ?checked=${Math.round(this.rating) === 1} @click="${this._handleClick}" class="rating" type="radio" ?disabled="${this.readonly}" name="stars" id="star-1" value="1"/><label for="star-1"></label>
           </div>
-          <div title="${this.tooltip}" class="no-rating ${this.hasEnoughRatings() || this.userRating?'hidden':''}">Not enough ratings</div>
+          <div title="${this.tooltip}" class="no-rating ${this.hasEnoughRatings() || this.userrating && this.rating > 0?'hidden':''}">Not enough ratings</div>
       `;
   }
 
 
   hasEnoughRatings(): boolean {
-    return this.ratingCount > 4;
+    return this.ratingcount > 4;
   }
 
   _handleClick(e : PointerEvent) {
-      if (this.readonly) return;
+      if (this.readonly || !this.userrating) return;
       const currentRating = this.rating;
       const newRating = e.target ? parseInt((e.target as HTMLInputElement).value) : currentRating;
       if (currentRating != newRating) {
@@ -153,6 +148,7 @@ export class RatingStars extends LitElement {
   }
 
   _handleMouseOver(e : MouseEvent) {
+    if (this.readonly || !this.userrating) return;
     const starsElem = this.renderRoot.querySelector<HTMLElement>(".ratings");
     const nrElem = this.renderRoot.querySelector<HTMLElement>(".no-rating");
     if (starsElem && nrElem) {
@@ -163,11 +159,12 @@ export class RatingStars extends LitElement {
   }
 
   _handleMouseLeave(e : MouseEvent) {
+    if (this.readonly || !this.userrating) return;
       const starsElem = this.renderRoot.querySelector<HTMLElement>(".ratings");
       const nrElem = this.renderRoot.querySelector<HTMLElement>(".no-rating");
       if (starsElem && nrElem) {
-          starsElem.classList.toggle("hidden", !this.hasEnoughRatings() && !this.userRating);
-          nrElem.classList.toggle("hidden", this.hasEnoughRatings() || this.userRating);
+          starsElem.classList.toggle("hidden", !this.hasEnoughRatings() && !this.userrating);
+          nrElem.classList.toggle("hidden", this.hasEnoughRatings() || this.userrating);
           starsElem.classList.remove("select");
       }
   }
