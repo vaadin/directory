@@ -63,7 +63,7 @@ public class AddonEndpoint {
 
     public int getUserRating(String urlIdentifier, String user) {
         if (urlIdentifier != null && !urlIdentifier.isEmpty() &&
-        user != null && !user.isEmpty() && user.contains("not logged")) {
+        user != null && !user.isEmpty() && !user.contains("not logged")) {
             return store.getUserRating(urlIdentifier, user);
         }
         return -1;

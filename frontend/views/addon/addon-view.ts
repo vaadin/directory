@@ -366,11 +366,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     stars.userrating = 0;
     stars.tooltip = "Click to rate this addon";
-    const rating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
-    if (rating > 0) {
-      stars.userrating = rating;
-    }
-
+    stars.userrating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
   }
 
   updatePageMetadata(): void {
