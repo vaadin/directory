@@ -93,7 +93,8 @@ export class AddonView extends View implements BeforeEnterObserver {
               @rating=${this.addRating}
               @mouseover=${this.checkUserStatus}
               ?readonly="${!this.isAuthenticated()}"
-              rating="${this.addon.rating}"
+              userrating="0"
+              avgrating="${this.addon.rating}"
               ratingcount="${this.addon.ratingCount}">
             </rating-stars>
           </section>
@@ -342,12 +343,13 @@ export class AddonView extends View implements BeforeEnterObserver {
     if (!stars) return;
     if (this.isAuthenticated() && stars.readonly) {
       // Login status has been changed since first render. Update user rating.
+      stars.readonly = false;
       this.updateUserRating();
     }
   }
 
   addRating(e: RatingEvent) {
-    (e.target as RatingStars).userrating = true;
+    (e.target as RatingStars).userrating = e.rating;
     (e.target as RatingStars).tooltip = 'Click to rate again';
     setUserRating(this.addon?.urlIdentifier, e.rating, this.getCurrentUserId());
   }
@@ -362,11 +364,11 @@ export class AddonView extends View implements BeforeEnterObserver {
       return;
     }
 
-    stars.userrating = true;
+    stars.userrating = 0;
     stars.tooltip = "Click to rate this addon";
     const rating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
     if (rating > 0) {
-      stars.rating = rating;
+      stars.userrating = rating;
     }
 
   }
