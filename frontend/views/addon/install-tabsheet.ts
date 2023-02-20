@@ -44,13 +44,19 @@ export class InstallTabSheet extends Layout {
     copyMaven.onclick = () => {
       logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "maven", this.getCurrentUserId());
       this.copyToClipboard(this.version?.installs['Maven']);
+
+      if (copyMaven.getElementsByTagName('pre').length == 0) {
+        const  snippet = document.createElement('pre');
+        snippet.innerText = this.version?.installs['Maven'] || '';
+        copyMaven.appendChild(snippet);
+      }
       copyMaven.firstElementChild!.textContent = 'Copied ✔';
       setTimeout(() => {
         copyMaven.firstElementChild!.textContent = 'Maven POM';
         this.updateInstallInfo();
       }, 10000);
     };
-    copyMaven.innerHTML = '<div>Maven POM</div><span>Copy Maven dependency XML to clipboard</span>';
+    copyMaven.innerHTML = '<div>Maven POM</div><span>View and copy Maven dependency XML to clipboard</span>';
 
     const mavenText = document.createElement('pre');
     mavenText.innerText = this.version.installs['Maven'] || '';
