@@ -93,7 +93,7 @@ export class InstallTabSheet extends Layout {
     menuItems.push("Previous");
     const options: MenuBarItem[] = [
       {
-        text: 'Install',
+        text: 'Install...',
         children: menuItems.map((key) => {
           if (key == 'Zip') {
             return { component: download };
@@ -110,7 +110,7 @@ export class InstallTabSheet extends Layout {
       }];
     const extraOptions: MenuBarItem[] = [
       {
-        text: '···',
+        text: '▼',
         children: [
           {
             component: linkToVersion
