@@ -48,7 +48,7 @@ export class InstallTabSheet extends Layout {
       setTimeout(() => {
         copyMaven.firstElementChild!.textContent = 'Maven POM';
         this.updateInstallInfo();
-      }, 3000);
+      }, 10000);
     };
     copyMaven.innerHTML = '<div>Maven POM</div><span>Copy Maven dependency XML to clipboard</span>';
 
