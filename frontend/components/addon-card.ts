@@ -34,7 +34,7 @@ export class AddonCard extends Layout {
 
         <div class="author">${this.addon.author}</div>
 
-        <rating-stars .rating="${this.addon.rating}" .ratingCount="${this.addon.ratingCount}"></rating-stars>
+        <rating-stars avgrating="${this.addon.rating}" ratingcount="${this.addon.ratingCount}" readonly="true"></rating-stars>
 
         <p class="summary">${this.addon.summary}</p>
       </section>
