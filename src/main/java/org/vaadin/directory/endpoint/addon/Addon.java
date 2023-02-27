@@ -1,6 +1,7 @@
 package org.vaadin.directory.endpoint.addon;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import dev.hilla.Nonnull;
@@ -95,7 +96,7 @@ public class Addon {
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
                 .map(cv -> new AddonVersion(cv, urlConfig))
-                .sorted((v1,v2) -> v1.getDate().compareTo(v2.getDate()))
+                .sorted(Comparator.comparing(AddonVersion::getDate).thenComparing(AddonVersion::getName))
                 .collect(Collectors.toList());
         //TODO: Generate icons
         this.links = component.getLinks().stream()
