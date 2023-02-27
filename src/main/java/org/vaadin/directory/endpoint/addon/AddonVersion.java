@@ -60,7 +60,13 @@ public class AddonVersion {
                             .collect(Collectors.toList());
         this.installs = new LinkedHashMap<>();
         if (cv.isMavenDeployed()) {
-            this.installs.put("Maven", PomXmlUtil.getDependencyPomSnippet(cv));
+            String snippet = PomXmlUtil.getDependencyPomSnippet(cv);
+            if (cv.getMavenGroupId().startsWith("org.vaadin.")) {
+                snippet += "\n\n<!-- Vaadin Maven repository -->\n";
+                snippet += PomXmlUtil.getRepositoryPomSnippet();
+            }
+
+            this.installs.put("Maven", snippet);
         }
         if (cv.isWebComponent()) {
             this.installs.put("Bower", PomXmlUtil.getWebJarDependencyPomSnippet(cv));
