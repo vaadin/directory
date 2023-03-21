@@ -370,10 +370,17 @@ export class AddonView extends View implements BeforeEnterObserver {
   }
 
   updatePageMetadata(): void {
+
+    // Construct canonical URL
+    var canonicalUrl = router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier});
+    canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
+          appStore.appUrl + canonicalUrl.substring(1) :
+          appStore.appUrl + canonicalUrl;
+
     // Create search metadata
     const addonMetadata = new AddonJsonLd(
       this.addon!.name,
-      router.location.baseUrl,
+      canonicalUrl,
       this.addon!.author,
       this.addon!.icon,
       null, // TODO: Support screenshots
@@ -382,6 +389,10 @@ export class AddonView extends View implements BeforeEnterObserver {
       this.addon!.ratingCount
     );
     addonMetadata.appendOrReplaceToHead();
+
+    // Update Canonical URL
+    const canonical = document.head.querySelector('link[rel="canonical"]') as HTMLElement; 
+    if (canonical) canonical.setAttribute("href",canonicalUrl);
 
     // Update Twitter metadata
     const title = document.head.querySelector('meta[name="twitter:title"]') as HTMLElement; 
