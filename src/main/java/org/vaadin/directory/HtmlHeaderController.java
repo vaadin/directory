@@ -218,11 +218,13 @@ public class HtmlHeaderController implements Filter {
                 "\"datePublished\": \""+ DateTimeFormatter.ISO_DATE.format(lastUpdated) +"\",\n" +
                 "\"applicationCategory\": \"BrowserApplication\",\n" +
                 (screenshotUrl != null ? "\"screenshot\": \""+screenshotUrl+"\",\n":"") +
-                "\"aggregateRating\": {\n" +
-                "  \"@type\": \"AggregateRating\",\n" +
-                "  \"ratingValue\": \""+(rating != null && rating > 0 ? rating : 0)+"\",\n" +
-                "  \"ratingCount\": \""+ (ratingCount != null && ratingCount > 0 ? ratingCount:0)+"\"\n" +
-                "  }      \n" +
-                "}</script>";
+                (ratingCount != null && ratingCount > 0 && rating != null && rating > 0 ?
+                        ("\"aggregateRating\": {\n" +
+                        "  \"@type\": \"AggregateRating\",\n" +
+                        "  \"ratingValue\": \""+rating+"\",\n" +
+                        "  \"ratingCount\": \""+ ratingCount +"\"\n" +
+                        "  }\n")
+                        : "")
+                + "}</script>";
     }
 }
