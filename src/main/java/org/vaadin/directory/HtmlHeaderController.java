@@ -205,7 +205,7 @@ public class HtmlHeaderController implements Filter {
                                     String screenshotUrl,
                                     Double rating,
                                     Long ratingCount) {
-        return "<script type=\"application/ld+json\">{\n" +
+        return "<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"SoftwareApplication\",\n" +
                 "\"name\": \""+name+"\",\n" +
