@@ -140,27 +140,38 @@ class JsonLd extends Object {
 export class PageJsonLd extends JsonLd {
   readonly title: string;
   readonly description: string;
-
+  readonly url: string;
 
   constructor(title: string,
-    description: string) {
-    super();
+    description: string,
+    url: string) {
+        super();
     this.title = title;
     this.description = description;
+    this.url = url;
   }
 
   serializeJson(): string {
     const json = {
       "@context": "http://schema.org",
-      "@type": "Webpage",
+      "@type": "WebSite",
       "name": this.title,
       "description": this.description,
+      "url": this.url,
       "publisher": {
         "@type": "Organization",
         "name": "Vaadin",
         "legalName": "Vaadin Ltd",
-        "url": "https://vaadin.com",
-    }
+        "url": "https://vaadin.com/directory",
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://vaadin.com/directory?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     }
     return JSON.stringify(json);
   }

@@ -26,7 +26,7 @@ export class SearchView extends View {
 
   updatePageMetadata(): void {
     // Update search metadata
-    const metadata = new PageJsonLd(appStore.applicationName, appStore.appDescription);
+    const metadata = new PageJsonLd(appStore.applicationName, appStore.appDescription, appStore.appUrl);
     metadata.appendOrReplaceToHead();
 
     // Update Canonical URL
