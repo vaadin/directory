@@ -68,7 +68,7 @@ public class HtmlHeaderController implements Filter {
             } else {
                 chain.doFilter(request, response);
             }
-        } else if (uri.equals("/")) {
+        } else if (uri.endsWith("directory/")) {
             // Inject searchbox metadata
             CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
             chain.doFilter(request, capturingResponseWrapper);
@@ -181,7 +181,7 @@ public class HtmlHeaderController implements Filter {
         }
     }
     private static String getJsonLd(String directoryUrl) {
-        return "<script type=\"application/ld+json\">{\n" +
+        return "<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"WebSite\",\n" +
                 "\"url\": \""+directoryUrl+"\",\n" +
