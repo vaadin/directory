@@ -373,6 +373,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     // Construct canonical URL
     var canonicalUrl = router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier});
+    canonicalUrl = canonicalUrl.startsWith("/directory/")? canonicalUrl.substring(11) : canonicalUrl;
     canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
           appStore.appUrl + canonicalUrl.substring(1) :
           appStore.appUrl + canonicalUrl;
