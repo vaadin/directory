@@ -209,7 +209,7 @@ export class AddonJsonLd extends JsonLd {
     }
 
     serializeJson(): string {
-      const json = {
+      const json : any = {
         "@context": "http://schema.org",
         "@type": "SoftwareApplication",
         "name": this.name,
@@ -222,12 +222,16 @@ export class AddonJsonLd extends JsonLd {
         "datePublished": this.updated,
         "applicationCategory": "BrowserApplication",
         "screenshot": this.screenshot ? this.screenshot: undefined,
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": this.ratingValue? this.ratingValue : undefined,
-          "ratingCount": this.ratingCount? this.ratingCount : undefined
-        }      
       };
+      if (this.ratingValue && this.ratingValue > 0 && this.ratingCount && this.ratingCount > 0) {
+        json.aggregateRating = 
+         {
+          "@type": "AggregateRating",
+          "ratingValue": this.ratingValue,
+          "ratingCount": this.ratingCount
+        }
+      }
+
       return JSON.stringify(json);
     }
 
