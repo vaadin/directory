@@ -29,6 +29,10 @@ export class SearchView extends View {
     const metadata = new PageJsonLd(appStore.applicationName, appStore.appDescription);
     metadata.appendOrReplaceToHead();
 
+    // Update Canonical URL
+    const canonical = document.head.querySelector('link[rel="canonical"]') as HTMLElement; 
+    if (canonical) canonical.setAttribute("href",appStore.appUrl);
+
     // Update Twitter metadata
     const title = document.head.querySelector('meta[name="twitter:title"]') as HTMLElement; 
     const summary = document.head.querySelector('meta[name="twitter:description"]') as HTMLElement; 
