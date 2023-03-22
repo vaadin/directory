@@ -162,13 +162,13 @@ export class PageJsonLd extends JsonLd {
         "@type": "Organization",
         "name": "Vaadin",
         "legalName": "Vaadin Ltd",
-        "url": "https://vaadin.com/directory",
+        "url": "https://vaadin.com/directory/",
       },
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://vaadin.com/directory?q={search_term_string}"
+          "urlTemplate": "https://vaadin.com/directory/?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }

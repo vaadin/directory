@@ -25,7 +25,7 @@ public class HtmlHeaderController implements Filter {
     public static final String ROUTE_COMPONENT = "/component/";
     public static final String ROUTE_ADDON = "/addon/";
 
-    private static final String URL = "https://vaadin.com/directory";
+    private static final String URL = "https://vaadin.com/directory/";
     public static final String TITLE = "Vaadin Add-on Directory";
     public static final String DESCRIPTION = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application\\.";
     public static final String IMAGE = "https://vaadin\\.com/images/trademark/PNG/VaadinLogomark_RGB_500x500\\.png";
