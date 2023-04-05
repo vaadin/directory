@@ -181,7 +181,7 @@ public class HtmlHeaderController implements Filter {
         }
     }
     private static String getJsonLd(String directoryUrl) {
-        return "<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
+        return "\n<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"WebSite\",\n" +
                 "\"url\": \""+directoryUrl+"\",\n" +
@@ -205,7 +205,7 @@ public class HtmlHeaderController implements Filter {
                                     String screenshotUrl,
                                     Double rating,
                                     Long ratingCount) {
-        return "<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
+        return "\n<script id=\"search-meta\" type=\"application/ld+json\">{\n" +
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"SoftwareApplication\",\n" +
                 "\"name\": \""+name+"\",\n" +
@@ -216,10 +216,10 @@ public class HtmlHeaderController implements Filter {
                 "  \"name\": \""+author+"\"\n" +
                 "  },\n" +
                 "\"datePublished\": \""+ DateTimeFormatter.ISO_DATE.format(lastUpdated) +"\",\n" +
-                "\"applicationCategory\": \"BrowserApplication\",\n" +
-                (screenshotUrl != null ? "\"screenshot\": \""+screenshotUrl+"\",\n":"") +
+                "\"applicationCategory\": \"BrowserApplication\"" +
+                (screenshotUrl != null ? ",\n\"screenshot\": \""+screenshotUrl+"\"":"") +
                 (ratingCount != null && ratingCount > 0 && rating != null && rating > 0 ?
-                        ("\"aggregateRating\": {\n" +
+                        (",\n\"aggregateRating\": {\n" +
                         "  \"@type\": \"AggregateRating\",\n" +
                         "  \"ratingValue\": \""+rating+"\",\n" +
                         "  \"ratingCount\": \""+ ratingCount +"\"\n" +
