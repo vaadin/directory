@@ -209,6 +209,7 @@ public class HtmlHeaderController implements Filter {
                 "\"@context\": \"https://schema.org\",\n" +
                 "\"@type\": \"SoftwareApplication\",\n" +
                 "\"name\": \""+name+"\",\n" +
+                "\"description\": \""+description+"\",\n" +
                 "\"downloadUrl\": \""+url+"\",\n" +
                 "\"image\": \""+iconUrl+"\",\n" +
                 "\"author\": {\n" +
