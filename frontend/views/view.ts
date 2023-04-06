@@ -220,6 +220,12 @@ export class AddonJsonLd extends JsonLd {
           "name": this.author
         },
         "datePublished": this.updated,
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "price": "0",
+          "priceCurrency": "USD"
+        },        
         "applicationCategory": "BrowserApplication",
         "screenshot": this.screenshot ? this.screenshot: undefined,
       };

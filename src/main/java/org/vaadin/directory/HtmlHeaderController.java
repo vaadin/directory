@@ -217,6 +217,12 @@ public class HtmlHeaderController implements Filter {
                 "  \"name\": \""+author+"\"\n" +
                 "  },\n" +
                 "\"datePublished\": \""+ DateTimeFormatter.ISO_DATE.format(lastUpdated) +"\",\n" +
+                "\"offers\": {\n" +
+                "    \"@type\": \"Offer\",\n" +
+                "    \"availability\": \"https://schema.org/InStock\",\n" +
+                "    \"price\": \"0\",\n" +
+                "    \"priceCurrency\": \"USD\"\n" +
+                "  },\n" +
                 "\"applicationCategory\": \"BrowserApplication\"" +
                 (screenshotUrl != null ? ",\n\"screenshot\": \""+screenshotUrl+"\"":"") +
                 (ratingCount != null && ratingCount > 0 && rating != null && rating > 0 ?
