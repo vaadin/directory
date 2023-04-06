@@ -8,7 +8,8 @@ import './styles/global.css';
 
 getAppUrl().then(url => appStore.appUrl = url);
 window.addEventListener('vaadin-router-error', e => {
-    window.location.href = appStore.appUrl;
+    // only log navigation error
+    console.error(`Routing failed at ${window.location.href} (appUrl=${appStore.appUrl})`);
 });
 export const router = new Router(document.querySelector('#outlet'));
 router.setRoutes(routes);
