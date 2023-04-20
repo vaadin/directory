@@ -40,17 +40,27 @@ export class InstallTabSheet extends Layout {
     create.onclick = () => { logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "create", this.getCurrentUserId()); }
     create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
 
-    const copyMaven = document.createElement('button');
+    const copyMaven = document.createElement('p');
     copyMaven.onclick = () => {
       logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "maven", this.getCurrentUserId());
-      this.copyToClipboard(this.version?.installs['Maven']);
+      const text = this.version?.installs['Maven'] || '';
+      const [textDep,textRepo] = text.split('\n<!-- Vaadin Maven repository -->\n') || '';
+      this.copyToClipboard(textDep);
 
       if (copyMaven.getElementsByTagName('pre').length == 0) {
         const  snippet = document.createElement('pre');
-        snippet.innerText = this.version?.installs['Maven'] || '';
-        copyMaven.appendChild(snippet);
+        snippet.textContent = textDep;
+        copyMaven.appendChild(snippet); 
+        if (textRepo) {
+          const repoInfo =  document.createElement('span');
+          const repoSnippet =  document.createElement('pre');
+          repoInfo.textContent = "Make sure you also have Vaadin Maven repository:"
+          repoSnippet.textContent = textRepo;
+          copyMaven.appendChild(repoInfo);
+          copyMaven.appendChild(repoSnippet);  
+        }
       }
-      copyMaven.firstElementChild!.textContent = 'Copied ✔';
+      copyMaven.firstElementChild!.textContent = 'Copied dependency to clipboard ✔';
       setTimeout(() => {
         copyMaven.firstElementChild!.textContent = 'Maven POM';
         this.updateInstallInfo();

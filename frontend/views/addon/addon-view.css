@@ -420,7 +420,7 @@ addon-view install-tabsheet {
   font-size: var(--text-size-md);
 }
 
-[theme~="addon-version-menu"] :is(a, button) {
+[theme~="addon-version-menu"] :is(a, button, p) {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
@@ -437,18 +437,18 @@ addon-view install-tabsheet {
   border-radius: var(--roundness-md);
 }
 
-[theme~="addon-version-menu"] :is(a, button):hover {
+[theme~="addon-version-menu"] :is(a, button, p):hover {
   background-color: var(--blue-100);
   color: var(--blue-600);
   text-decoration: none;
 }
 
-[theme~="addon-version-menu"] :is(a, button):focus {
+[theme~="addon-version-menu"] :is(a, button, p):focus {
   outline: none;
   box-shadow: inset 0 0 0 2px var(--blue-400);
 }
 
-[theme~="addon-version-menu"] :is(a, button) span {
+[theme~="addon-version-menu"] :is(a, button, p) span {
   display: block;
   font-size: 0.8em;
   color: var(--secondary-text-color);
