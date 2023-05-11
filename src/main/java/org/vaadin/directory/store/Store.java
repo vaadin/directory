@@ -210,6 +210,10 @@ public class Store {
         return a != null ? a.getAvg() : 0;
     }
 
+    public int getRatingCount(String urlIdentifier) {
+        AddonRatingInfo a = readAddonRating(urlIdentifier, false);
+        return a != null ? a.getRatingCount() : 0;
+    }
 
     public void logInstall(String addon, String version, String type, String userId) {
 
