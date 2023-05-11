@@ -13,6 +13,7 @@ import com.vaadin.directory.entity.directory.HighlightScreenShot;
 import com.vaadin.directory.entity.directory.HighlightVideo;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
+import org.vaadin.directory.store.Store;
 
 public class Addon {
 
@@ -75,7 +76,7 @@ public class Addon {
 
     public Addon() {}
 
-    public Addon(Component component, UrlConfig urlConfig) {
+    public Addon(Component component, UrlConfig urlConfig, Store store) {
         this.urlIdentifier = component.getUrlIdentifier();
         this.addonProjectDownloadBaseUrl = urlConfig.getAddonProjectDownloadBaseUrl();
         this.name = component.getDisplayName();
@@ -90,8 +91,12 @@ public class Addon {
         this.lastUpdated = Util.dateToLocalDate(component.getLatestPublicationDate());
         this.author = "User " + component.getOwner().getId().toString();
         this.authorImage = urlConfig.getProfileImageBaseUrl()+"0";
-        this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
-        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount();
+        this.rating = weightedAvg(component.getAverageRating() == null ? 0.0 : component.getAverageRating(),
+                component.getRatingCount() == null ? 0 : component.getRatingCount(),
+                store.getAverageRating(this.urlIdentifier),
+                store.getRatingCount(this.urlIdentifier)
+                );
+        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
         this.tags = Util.tagsToStrings(component.getTagGroups());
         this.versions = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
@@ -117,6 +122,11 @@ public class Addon {
 
         this.discussionId = Long.toString(component.getId());
 
+    }
+
+    private double weightedAvg(double avg1, long count1, double avg2, long count2) {
+        if (count1 == 0 && count2 == 0) return 0;
+        return (avg1 * count1 + avg2 * count2) / (count1+count2);
     }
 
     public String getUrlIdentifier() { return urlIdentifier; }

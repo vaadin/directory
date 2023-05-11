@@ -44,7 +44,7 @@ public class AddonEndpoint {
     }
 
     private Addon createAddon(Component c, boolean addEditLink) {
-        Addon a = new Addon(c, urlConfig);
+        Addon a = new Addon(c, this.urlConfig, this.store);
         if (addEditLink) {
             a.getLinks().add(new Link("Edit",
                     urlConfig.getComponentEditBaseUrl() + c.getUrlIdentifier(),
