@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.Instant;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -27,10 +26,10 @@ import java.util.stream.Collectors;
 @Component
 public class Store {
 
-    private StoreSettings settings;
+    private final StoreSettings settings;
     private Firestore dbInstance;
-    private WeakHashMap<String, AddonRatingInfo> ratingCache = new WeakHashMap<>();
-    private WeakHashMap<String, UserInstallInfo> installCache = new WeakHashMap<>();
+    private final WeakHashMap<String, AddonRatingInfo> ratingCache = new WeakHashMap<>();
+    private final WeakHashMap<String, UserInstallInfo> installCache = new WeakHashMap<>();
 
     public Store(@Autowired StoreSettings settings) {
         this.settings = settings;
