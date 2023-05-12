@@ -3,6 +3,7 @@ package org.vaadin.directory.endpoint.addon;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import dev.hilla.Nonnull;
 import javax.validation.constraints.NotBlank;
@@ -98,10 +99,22 @@ public class Addon {
                 );
         this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
         this.tags = Util.tagsToStrings(component.getTagGroups());
+        Comparator<AddonVersion> compareAddonDates = (o1, o2) -> {
+            if (o1 != null && o2 != null) {
+                return Comparator
+                        .comparing(AddonVersion::getDate)
+                        .thenComparing(AddonVersion::getName)
+                        .compare(o1,o2);
+            }
+            return 0;
+        };
+        Predicate<? super ComponentVersion> availableFilter = (Predicate<ComponentVersion>) componentVersion -> componentVersion != null &&
+                componentVersion.getAvailable() != null &&
+                componentVersion.getAvailable();
         this.versions = component.getVersions().stream()
-                .filter(ComponentVersion::getAvailable)
+                .filter(availableFilter)
                 .map(cv -> new AddonVersion(cv, urlConfig))
-                .sorted(Comparator.comparing(AddonVersion::getDate).thenComparing(AddonVersion::getName))
+                .sorted(compareAddonDates)
                 .collect(Collectors.toList());
         //TODO: Generate icons
         this.links = component.getLinks().stream()
