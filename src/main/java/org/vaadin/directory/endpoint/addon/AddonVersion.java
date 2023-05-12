@@ -2,6 +2,7 @@ package org.vaadin.directory.endpoint.addon;
 
 import com.vaadin.directory.backend.maven.PomXmlUtil;
 import com.vaadin.directory.entity.directory.ComponentVersion;
+import com.vaadin.directory.entity.directory.License;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 
@@ -50,8 +51,14 @@ public class AddonVersion {
         this.name = cv.getName();
         this.date = Util.dateToLocalDate(cv.getPublicationDate());
         this.maturity = cv.getMaturity().name();
-        // TODO: This needs to be more sophisticated for some addons
-        this.license = cv.getLicenses().iterator().next().getName();
+        if (cv.getLicenses() != null) {
+            cv.getLicenses().stream().findFirst().ifPresent( l -> {
+                this.license = l.getName();
+            });
+        }
+        if (this.license == null) {
+            this.license = License.OTHER_LICENSE;
+        }
         this.compatibility = cv.getFrameworkVersions().stream().sorted()
                 .map(Util::getVersionName)
                 .collect(Collectors.toList());
@@ -72,7 +79,8 @@ public class AddonVersion {
             this.installs.put("Bower", PomXmlUtil.getWebJarDependencyPomSnippet(cv));
         }
         if (cv.isDownloadable()) {
-            this.installs.put("Zip", urlConfig.getAddonZipDownloadBaseUrl() + cv.getContentForLicense(cv.getLicenses().iterator().next()).getLocalFileName());
+            License l = cv.getLicenses() != null && cv.getLicenses().size() > 0? cv.getLicenses().stream().findFirst().orElse(null): null;
+            this.installs.put("Zip", urlConfig.getAddonZipDownloadBaseUrl() + cv.getContentForLicense(l).getLocalFileName());
         }
 
         this.releaseNotes = cv.getReleaseNotes();
