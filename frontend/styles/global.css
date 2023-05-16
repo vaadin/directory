@@ -52,6 +52,7 @@ hr {
 
 code[class*="language-"],
 pre[class*="language-"] {
+  filter: contrast(1.4);
   text-shadow: none;
   color: var(--gray-200);
   background: var(--gray-700);
