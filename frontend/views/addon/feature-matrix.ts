@@ -1,6 +1,7 @@
 import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { Layout } from '../view';
+import {appStore} from '../../stores/app-store'
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import Matrix from 'Frontend/generated/org/vaadin/directory/endpoint/search/Matrix';
 
@@ -46,7 +47,7 @@ export class FeatureMatrix extends Layout {
           ${this.matrix.rows?.map((title,row) =>
             html`<tr class="row row-${row} ${title?.indexOf('-')==0?'collapsed':''} ${title?.indexOf('(')==0?'not-supported-fw':''}"><th class="rowh">${title}</th>${this.matrix?.data ?
                 (this.matrix.data[row] ? this.matrix.data[row]?.map((content:string|undefined,col:number|undefined) =>
-                    html`<td class="data row-${row} col-${col} ${content ? 'on':'off'}">${content}</td>`): html``) :
+                    html`<td class="data row-${row} col-${col} ${content ? 'on':'off'}"><a style="color:inherit; text-decoration: inherit;" href="${content? appStore.appUrl +'component/'+ this.addon! +'/'+ this.matrix!.cols[col!] :''}">${content}</a></td>`): html``) :
                 html`<td colspan="${this.matrix?.cols.length}"></td>`}</tr>`
           )}
       </table>
