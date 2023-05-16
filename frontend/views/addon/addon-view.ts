@@ -122,14 +122,14 @@ export class AddonView extends View implements BeforeEnterObserver {
           html``
         }
 
-        <h3>Links</h3>
+        <h3  id="links">Links</h3>
         <ul>
           ${this.addon.links.map((l) => html`
             <li><a href="${l.href}" router-ignore>${l.name}</a></li>
           `)}
         </ul>
 
-        <h3>Compatibility</h3>
+        <h3 id="compatibility">Compatibility</h3>
         <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
 
         <section class="footer">
@@ -139,7 +139,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           <p class="updated">Last updated: ${this.addon.lastUpdated}</p>
         </section>
 
-        <section class="discussion">
+        <section id="discussion" class="discussion">
           <p>
             <b>Was this helpful? Need more help?</b><br />Leave a comment or a question below. You can also join
             the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
