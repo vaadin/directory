@@ -222,7 +222,7 @@ public class SearchEndpoint {
         // Collect all component versions
         List<ComponentVersion> versionList = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
-                .sorted(Comparator.comparing(ComponentVersion::getName))
+                .sorted((v0,v1)-> Util.compareSemver(v0.getName(), v1.getName()))
                 .collect(Collectors.toList());
 
         // Collect all available framework versions
@@ -230,7 +230,7 @@ public class SearchEndpoint {
         Lists.reverse(this.vaadinMinorVersions).stream().forEach(fw -> {
              fw.stream()
                      .filter(fwv -> !fwv.getVersion().endsWith("+"))
-                     .sorted((v0,v1)-> {return Util.compareSemver(v0.getVersion(), v1.getVersion(), true);})
+                     .sorted((v0,v1)-> Util.compareSemver(v0.getVersion(), v1.getVersion(), true))
                      .forEach(fwv ->{
                  frameworkVersions.add(fwv);
              });
