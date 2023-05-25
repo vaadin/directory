@@ -59,6 +59,23 @@
         ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js'
         : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js';
     document.head.appendChild(script);
+
+    // Monitor
+    const haasEl = document.querySelector('#haas-container');
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length > 0) {
+          const addedNode = mutation.addedNodes[0];
+          debugger;
+        }
+      });
+    });
+    observer.observe(haasEl, {
+      childList: true,
+      subtree: true,
+      attributes: false,
+      characterData: false,
+    });
     </script>
     <!-- index.ts is included here automatically (either by the dev server or during the build) -->
   </head>
@@ -73,7 +90,7 @@
           <nav class="directory-support-nav" aria-label="support">
             <p id="myaddons"></p>
             <ul>
-              <li><a href="https://vaadin.com/directory/my-components" router-ignore>Publish component</a></li>
+              <li><a href="https://vaadin.com/directory-edit/my-components" router-ignore>Publish component</a></li>
               <li><a target="dgithub" href="https://github.com/vaadin/directory/issues">Report issues</a></li>
               <li><a href="https://vaadin.com/directory-help">Help</a></li>
               <li>
