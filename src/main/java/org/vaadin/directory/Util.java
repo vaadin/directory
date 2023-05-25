@@ -67,10 +67,13 @@ public class Util {
   }
 
   public static int compareSemver(String v0, String v1, boolean reverse) {
-    SemVer sv0 = new SemVer(v0);
-    SemVer sv1 = new SemVer(v1);
-    return reverse ? sv1.compareTo(sv0) : sv0.compareTo(sv1);
-
+    try {
+      SemVer sv0 = new SemVer(v0);
+      SemVer sv1 = new SemVer(v1);
+      return reverse ? sv1.compareTo(sv0) : sv0.compareTo(sv1);
+    } catch (NumberFormatException ignored) {
+    }
+    return v0.compareTo(v1);
   }
 
   public static String getNameOrGitHubId(ComponentDirectoryUser owner, UserInfoService userNameService) {
