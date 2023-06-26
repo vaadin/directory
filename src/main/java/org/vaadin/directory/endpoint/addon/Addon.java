@@ -137,7 +137,7 @@ public class Addon {
 
     }
 
-    private double weightedAvg(double avg1, long count1, double avg2, long count2) {
+    public static double weightedAvg(double avg1, long count1, double avg2, long count2) {
         if (count1 == 0 && count2 == 0) return 0;
         return (avg1 * count1 + avg2 * count2) / (count1+count2);
     }
