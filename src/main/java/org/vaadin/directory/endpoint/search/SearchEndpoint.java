@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.store.FeaturedAddons;
+import org.vaadin.directory.store.Store;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +37,8 @@ public class SearchEndpoint {
     private final List<List<ComponentFrameworkVersion>> vaadinMinorVersions;
     private final UserInfoService userNameService;
     private final FeaturedAddons featured;
+
+    private final Store store;
     private ComponentFrameworkRepository frameworkRepository;
     private ComponentDirectoryUserService userService;
     private ComponentService service;
@@ -49,7 +52,8 @@ public class SearchEndpoint {
                           @Autowired ComponentDirectoryUserService userService,
                           @Autowired UserInfoService userNameService,
                           @Autowired FeaturedAddons featured,
-                          @Autowired UrlConfig urlConfig) {
+                          @Autowired UrlConfig urlConfig,
+                          @Autowired Store store) {
         this.service = service;
         this.tagService = tagService;
         this.userService = userService;
@@ -58,6 +62,7 @@ public class SearchEndpoint {
         this.frameworkVersionRepository = frameworkVersionRepository;
         this.featured = featured;
         this.urlConfig = urlConfig;
+        this.store = store;
 
         // Warm up
         polymer1 = frameworkRepository.findByName("Polymer 1");
@@ -100,7 +105,7 @@ public class SearchEndpoint {
 
     public @Nonnull SearchResult getAddon(String urlIdentifier) {
         Optional<Component> oc = service.getComponentByUrl(urlIdentifier);
-        return oc.isPresent() ? new SearchResult(oc.get(), urlConfig) : new SearchResult();
+        return oc.isPresent() ? new SearchResult(oc.get(), urlConfig, store) : new SearchResult();
     }
 
     @Transactional(readOnly = true)
@@ -306,7 +311,7 @@ public class SearchEndpoint {
     }
 
     private SearchResult createSearchResult(Component c) {
-        SearchResult r = new SearchResult(c, urlConfig);
+        SearchResult r = new SearchResult(c, urlConfig, this.store);
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         r.setAuthor(name);
         return r;

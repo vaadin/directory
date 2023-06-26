@@ -7,6 +7,7 @@ import dev.hilla.Nonnull;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.endpoint.addon.Addon;
+import org.vaadin.directory.store.Store;
 
 public class SearchResult {
 
@@ -36,7 +37,7 @@ public class SearchResult {
 
     public SearchResult() {}
 
-    public SearchResult(Component component, UrlConfig urlConfig) {
+    public SearchResult(Component component, UrlConfig urlConfig, Store store) {
         this.urlIdentifier = component.getUrlIdentifier();
         this.name = component.getDisplayName();
         this.icon = component.getIcon() != null ?
@@ -45,9 +46,13 @@ public class SearchResult {
                         urlConfig.getImageBaseUrl() + component.getIcon().getLocalFileName()):
                 urlConfig.getDefaultIconUrl();
         this.summary = component.getSummary();
-        this.ratingCount = component.getRatingCount();
         this.author = "User " + component.getOwner().getId().toString();
-        this.rating = component.getAverageRating() == null ? 0.0 : component.getAverageRating();
+        this.rating = Addon.weightedAvg(component.getAverageRating() == null ? 0.0 : component.getAverageRating(),
+                component.getRatingCount() == null ? 0 : component.getRatingCount(),
+                store.getAverageRating(this.urlIdentifier),
+                store.getRatingCount(this.urlIdentifier)
+        );
+        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
         this.tags = Util.tagsToStrings(component.getTagGroups());
     }
 
