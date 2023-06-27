@@ -3,13 +3,13 @@ package org.vaadin.directory.endpoint.addon;
 import com.vaadin.directory.backend.maven.PomXmlUtil;
 import com.vaadin.directory.entity.directory.ComponentVersion;
 import com.vaadin.directory.entity.directory.License;
+import jakarta.validation.constraints.NotBlank;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 
 import dev.hilla.Nonnull;
-import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

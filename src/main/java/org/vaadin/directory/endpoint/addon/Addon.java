@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import dev.hilla.Nonnull;
-import javax.validation.constraints.NotBlank;
 
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentVersion;
 import com.vaadin.directory.entity.directory.HighlightScreenShot;
 import com.vaadin.directory.entity.directory.HighlightVideo;
+import jakarta.validation.constraints.NotBlank;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.store.Store;

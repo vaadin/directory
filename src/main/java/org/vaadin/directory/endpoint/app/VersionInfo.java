@@ -3,7 +3,7 @@ package org.vaadin.directory.endpoint.app;
 import org.vaadin.directory.BuildVersions;
 
 import dev.hilla.Nonnull;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class VersionInfo {
 
