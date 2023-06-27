@@ -1,15 +1,18 @@
 package org.vaadin.directory;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
 import com.vaadin.directory.entity.directory.TagGroup;
 import io.swagger.codegen.utils.SemVer;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Util {
 
