@@ -27,10 +27,10 @@ export class MobxElement extends MobxLitElement {
    * Find the current user id. Either logged in or generated.
    */
    protected getCurrentUserId(): string {
-
+      
       // Use the userid provided by authenticated
-      if (this.isAuthenticated() && window.haas.userInfo) {
-          return window.haas.userInfo.screenname;
+      if (this.isAuthenticated() && window.haas.userInfo && window.haas.userInfo.screenname) {    
+        return window.haas.userInfo.screenname;
       }
 
       return USER_NOT_LOGGED_IN;
