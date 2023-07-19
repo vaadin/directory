@@ -134,14 +134,37 @@ export class SearchView extends View {
         )}
       </section>
 
-      <button
-        id="load-more-button"
-        @click="${searchStore.fetchPage}"
-        ?disabled="${searchStore.loading}"
-        ?hidden="${searchStore.addons.length === 0 || !searchStore.hasMore}">
-        Load more
-      </button>
+      
+      <section id="paging">
+      ${this.requestedPage > 0 && searchStore.totalPages > 0? 
+      html`
+        <a router-ignore href="${searchStore.getPrevPageURL()}"
+          id="prev-button"
+          ?disabled="${searchStore.loading || searchStore.isFirst}"
+          ?hidden="${searchStore.addons.length === 0 && this.requestedPage < 1}">
+          Previous page
+        </a>`: nothing }
+
+      <section id="current-page" ?hidden="${this.requestedPage < 1 && searchStore.totalPages < 0}">
+        ${this.requestedPage > 0 && searchStore.totalPages > 0? 
+          html` ${searchStore.page}/${searchStore.totalPages} ` : nothing }
+      </section>
+
+      <section id="page-links" ?hidden="${this.requestedPage < 1 || searchStore.totalPages < 0}">
+        ${searchStore.totalPages > 0 ? 
+          html`Jump to page: 
+            ${Array.from({length: Math.min(searchStore.totalPages, 10)}, (x,i) => html` <a router-ignore href="${searchStore.getPageURL(i+1)}">${i+1}</a> `)}
+            ${searchStore.totalPages > 5? html` ... <a router-ignore href="${searchStore.getPageURL(searchStore.totalPages)}">${searchStore.totalPages}</a>`: nothing }
+            `: nothing }
+      </section>
+
+      <a router-ignore href="${searchStore.getNextPageURL()}"
+          id="next-button"
+          ?disabled="${searchStore.loading || !searchStore.hasMore || (searchStore.totalPages > 0 && searchStore.page === searchStore.totalPages)}"
+          ?hidden="${searchStore.addons.length === 0}">Next page</a>
+      </section>
     `;
+    
   }
 
   async firstUpdated() {
@@ -170,7 +193,7 @@ export class SearchView extends View {
       },
       { rootMargin: '300px' }
     );
-    const button = this.renderRoot.querySelector('#load-more-button');
+    const button = this.renderRoot.querySelector('#next-button');
     if (button) {
       observer.observe(button);
     }

@@ -61,3 +61,11 @@ pre[class*="language-"] {
 img {
   max-width: 100%;
 }
+
+#paging {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
