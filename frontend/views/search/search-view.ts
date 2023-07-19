@@ -44,6 +44,37 @@ export class SearchView extends View {
   }
 
   render() {
+
+    // Update prev and next links
+    if (this.requestedPage > 1) {
+      let linkPrev = document.head.querySelector('link[id="link-prev"]') as HTMLLinkElement || document.createElement("link");
+      linkPrev.id = "link-prev";
+      linkPrev.rel = "prev";
+      linkPrev.href= searchStore.getPrevPageURL();
+      document.head.appendChild(linkPrev);
+    } else {
+      let linkPrev = document.head.querySelector('link[id="link-prev"]') as HTMLLinkElement;
+      if (linkPrev) document.head.removeChild(linkPrev);
+    }
+    if (this.requestedPage < searchStore.totalPages && this.requestedPage > 0) {
+      let linkNext = document.head.querySelector('link[id="link-next"]') as HTMLLinkElement || document.createElement("link");
+      linkNext.id = "link-next";
+      linkNext.rel = "next";
+      linkNext.href= searchStore.getNextPageURL();
+      document.head.appendChild(linkNext);
+    } else if (this.requestedPage < 1) {
+      // no paging, show anyway with static page
+      let linkNext = document.head.querySelector('link[id="link-next"]') as HTMLLinkElement || document.createElement("link");
+      linkNext.id = "link-next";
+      linkNext.rel = "next";
+      linkNext.href= searchStore.getPageURL(1);
+      document.head.appendChild(linkNext);
+    } else {
+      // remove from last page
+      let linkNext = document.head.querySelector('link[id="link-next"]') as HTMLLinkElement;
+      if (linkNext) document.head.removeChild(linkNext);
+    }
+
     return html`
       <form
         role="search"
