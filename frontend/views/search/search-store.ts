@@ -6,16 +6,18 @@ import { Filter } from './Filter';
 
 class SearchStore {
   // State
+  isFirst = true;
   hasMore = true;
   loading = false;
   featured: string[] = [];
   addons: SearchResult[] = [];
   totalCount: number = -1;
+  totalPages: number = -1;
   query = '';
   sort = 'recent';
   version = 'all'
-  private page = 1;
-  private pageSize = 12;
+  page = 1;
+  pageSize = 12;
   currentUser = '';
 
   // Init
@@ -28,7 +30,8 @@ class SearchStore {
     if (this.addons.length === 0) {
       this.fetchFeatured();
       this.readQueryFromURL();
-      this.fetchPage();
+      this.readPageFromURL();
+      this.fetchCurrentPage();
     }
     if (this.totalCount < 0) {
       this.fetchTotalCount();
@@ -36,18 +39,15 @@ class SearchStore {
   }
 
   // Server calls
-  async fetchPage() {
+  async fetchPage(page: number) {
     if (this.loading) return;
    this.setLoading(true);
     try {
       const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
-      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , this.page, this.pageSize, this.sort, this.page == 1, this.currentUser);
-      if (this.page === 1) {
-          this.setTotalCount(res.totalCount ? res.totalCount : 0);
-      }
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, page == 1, this.currentUser);
       this.setHasMore(res.hasMore);
       this.setAddons(this.addons.concat(res.list));
-      this.setPage(this.page + 1);
+      this.page = page;
     } finally {
       this.setLoading(false);
     }
@@ -59,8 +59,9 @@ class SearchStore {
   }
 
   async fetchTotalCount() {
-    this.totalCount =
-      await SearchEndpoint.searchCount(this.query);
+    this.totalCount = await SearchEndpoint.searchCount(this.query);
+    this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+
   }
 
   // Actions
@@ -82,6 +83,9 @@ class SearchStore {
 
   setPage(page: number) {
     this.page = page;
+    this.isFirst = page === 1;
+    this.writePageToURL();
+    this.fetchCurrentPage();
   }
 
   setTotalCount(totalCount: number) {
@@ -91,25 +95,28 @@ class SearchStore {
   setQuery(query: string) {
     this.query = query;
     this.page = 1;
+    this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchPage();
+    this.fetchCurrentPage();
   }
 
   setSort(sort: string) {
     this.sort = sort;
     this.page = 1;
+    this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchPage();
+    this.fetchCurrentPage();
   }
 
   setVersion(version: string) {
     this.version = version;
     this.page = 1;
+    this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchPage();
+    this.fetchCurrentPage();
   }
 
   setCurrentUser(user: string) {
@@ -128,7 +135,28 @@ class SearchStore {
     const query = params.get('q') || '';
 
     if (query) {
-      this.setQuery(query);
+      this.query = query;
+    }
+  }
+
+  readPageFromURL() {
+    const params = new URLSearchParams(location.search);
+    const page = params.get('page') || null;
+
+    if (page) {
+      this.page = +page || 1;
+      this.isFirst = this.page === 1;
+    }
+  }
+
+  writePageToURL() {
+    const params = new URLSearchParams(location.search);
+    params.set('page', this.page.toString());
+
+    if (this.query) {
+      history.replaceState({}, '', `${location.pathname}?${params}${location.hash}`);
+    } else {
+      history.replaceState({}, '', `${location.pathname}${location.hash}`);
     }
   }
 
