@@ -124,7 +124,7 @@ export class SearchView extends View {
           aria-label="Sorting">
           <option value="recent">New &amp; noteworthy</option>
           <option value="rating">Popular</option>
-          <option value="alpha">Aplhabetic</option>
+          <option value="alphabetical">A to Z</option>
         </select>
         <p>
           <b>${searchStore.totalCount >= 0 ? searchStore.totalCount : '0'}</b>
