@@ -79,6 +79,12 @@ public class SearchEndpoint {
                 .collect(Collectors.toList());
     }
 
+    public @Nonnull List<@Nonnull SearchResult> search2(String searchFor, int page,
+                                                             int pageSize) {
+        List<SearchResult> result = new ArrayList<>();
+        return result;
+    }
+
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
             int pageSize) {
         List<SearchResult> result = new ArrayList<>();
@@ -115,17 +121,9 @@ public class SearchEndpoint {
 
         List<ComponentDirectoryUser> owners = List.of(); // All users
         if (qp.getAuthor() != null || qp.isAuthorMe()) {
-            List<Long> ids = List.of(-1L);
-            String searchForUser = qp.getAuthor();
-            if (qp.isAuthorMe()) {
-                ids = userNameService.findByScreenName(currentUser);
-            } else {
-                ids = userNameService.findByName(searchForUser);
-            }
-            owners = ids.stream().map(id -> userService.findById(id)).collect(Collectors.toList());
-            if (owners.isEmpty()) { return new SearchListResult(); };
+            owners = getDirectoryUsers(currentUser, qp, owners);
+            if (owners.isEmpty()) { return new SearchListResult(); }
         }
-
         // Resolve tag groups
         List<TagGroup> tagGroups = tagService.getTagGroups(qp.getTagGroups());
 
@@ -166,7 +164,7 @@ public class SearchEndpoint {
         Long count = null;
         if (includeCount) {
             if (results.size() < pageSize) {
-                count = Long.valueOf(results.size());
+                count = ((page-1)*pageSize) + Long.valueOf(results.size());
             } else {
                 count = service
                         .countAllComponentsBySearchCriteria(
@@ -197,13 +195,32 @@ public class SearchEndpoint {
         return new SearchListResult(results, count, hasMore);
     }
 
+    private List<ComponentDirectoryUser> getDirectoryUsers(String currentUser, QueryParser qp, List<ComponentDirectoryUser> owners) {
+        List<Long> ids = List.of(-1L);
+        String searchForUser = qp.getAuthor();
+        if (qp.isAuthorMe()) {
+            ids = userNameService.findByScreenName(currentUser);
+        } else {
+            ids = userNameService.findByName(searchForUser);
+        }
+        owners = ids.stream().map(id -> userService.findById(id)).collect(Collectors.toList());
+        return owners;
+    }
+
     @Transactional(readOnly = true)
-    public @Nonnull Long searchCount(String searchString) {
+    public @Nonnull Long searchCount(String searchString,String currentUser) {
+        QueryParser qp = QueryParser.parse(searchString);
+        List<ComponentDirectoryUser> owners = List.of(); // All users
+        if (qp.getAuthor() != null || qp.isAuthorMe()) {
+            owners = getDirectoryUsers(currentUser, qp, owners);
+            if (owners.isEmpty()) { return 0L; }
+        }
+
         return service.countAllComponentsBySearchCriteria(
                 List.of(Status.PUBLISHED),
+                qp.getKeywords(),
                 List.of(),
-                List.of(),
-                List.of(),
+                owners,
                 null,
                 Set.of());
     }

@@ -59,7 +59,7 @@ class SearchStore {
   }
 
   async fetchTotalCount() {
-    this.totalCount = await SearchEndpoint.searchCount(this.query);
+    this.totalCount = await SearchEndpoint.searchCount(this.query, this.currentUser);
     this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
 
   }
