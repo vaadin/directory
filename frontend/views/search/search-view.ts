@@ -1,17 +1,26 @@
 import './search-view.css';
 import '../../components/addon-card';
-import { html } from 'lit';
+import { html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { View, PageJsonLd } from '../view';
 import { FilterAddedEvent } from './filter-added-event';
 import { searchStore } from './search-store';
 import { appStore } from 'Frontend/stores/app-store';
+import { RouterLocation } from '@vaadin/router';
 
 @customElement('search-view')
 export class SearchView extends View {
+
+  requestedPage: number = -1;
+
   constructor() {
     super();
     appStore.currentViewTitle = 'Vaadin Directory Search';
+  }
+
+  async onBeforeEnter(location: RouterLocation) {
+    const params = new URLSearchParams(location.search);
+    this.requestedPage = +(params.get('page') || '-1');
   }
 
   connectedCallback() {
@@ -115,10 +124,14 @@ export class SearchView extends View {
           aria-label="Sorting">
           <option value="recent">New &amp; noteworthy</option>
           <option value="rating">Popular</option>
+          <option value="alpha">Aplhabetic</option>
         </select>
         <p>
           <b>${searchStore.totalCount >= 0 ? searchStore.totalCount : '0'}</b>
           add-ons found.
+          ${this.requestedPage > 0 && searchStore.totalPages > 0? 
+            html`(Showing page ${searchStore.page}/${searchStore.totalPages})`
+            : nothing }
         </p>
       </form>
 
@@ -188,7 +201,9 @@ export class SearchView extends View {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) searchStore.fetchPage();
+          if (entry.isIntersecting && this.requestedPage <= 1) {
+            searchStore.fetchNextPage(false);
+          }
         });
       },
       { rootMargin: '300px' }
