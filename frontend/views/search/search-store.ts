@@ -31,21 +31,37 @@ class SearchStore {
       this.fetchFeatured();
       this.readQueryFromURL();
       this.readPageFromURL();
-      this.fetchCurrentPage();
+      this.fetchCurrentPage(true);
     }
     if (this.totalCount < 0) {
-      this.fetchTotalCount();
+      //this.fetchTotalCount();
     }
   }
 
+
+  fetchNextPage(includeCount: boolean) {
+    this.fetchPage(this.page+1, includeCount);
+  }
+
+
+  fetchCurrentPage(includeCount: boolean) {
+    this.fetchPage(this.page, includeCount);
+  }
+
+
   // Server calls
-  async fetchPage(page: number) {
+  async fetchPage(page: number, includeCount: boolean) {
     if (this.loading) return;
-   this.setLoading(true);
+    this.setLoading(true);
     try {
       const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
-      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, page == 1, this.currentUser);
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser);
       this.setHasMore(res.hasMore);
+      if (res.totalCount) {
+        // Update count if we ended up here with direct page link
+        this.totalCount = res.totalCount;
+        this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+      }
       this.setAddons(this.addons.concat(res.list));
       this.page = page;
     } finally {
@@ -62,7 +78,7 @@ class SearchStore {
     this.totalCount = await SearchEndpoint.searchCount(this.query, this.currentUser);
     this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
 
-  }
+    }
 
   // Actions
   setLoading(loading: boolean) {
@@ -85,7 +101,7 @@ class SearchStore {
     this.page = page;
     this.isFirst = page === 1;
     this.writePageToURL();
-    this.fetchCurrentPage();
+    this.fetchCurrentPage(true);
   }
 
   setTotalCount(totalCount: number) {
@@ -98,7 +114,7 @@ class SearchStore {
     this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchCurrentPage();
+    this.fetchCurrentPage(true);
   }
 
   setSort(sort: string) {
@@ -107,7 +123,7 @@ class SearchStore {
     this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchCurrentPage();
+    this.fetchCurrentPage(true);
   }
 
   setVersion(version: string) {
@@ -116,7 +132,7 @@ class SearchStore {
     this.isFirst = true;
     this.addons = [];
     this.writeQueryToURL();
-    this.fetchCurrentPage();
+    this.fetchCurrentPage(true);
   }
 
   setCurrentUser(user: string) {
