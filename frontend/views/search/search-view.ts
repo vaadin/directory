@@ -201,7 +201,7 @@ export class SearchView extends View {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && this.requestedPage <= 1) {
+          if (entry.isIntersecting && this.requestedPage < 1) {
             searchStore.fetchNextPage(false);
           }
         });
