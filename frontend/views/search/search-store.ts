@@ -170,6 +170,35 @@ class SearchStore {
       history.replaceState({}, '', `${location.pathname}${location.hash}`);
     }
   }
+
+  // Paging methods
+
+
+  getPrevPageURL() {
+    return this.getURL(this.query, this.page > 1 ?this.page-1 : -1);
+  }
+
+  getPageURL(page: number) {
+    return this.getURL(this.query, page >= 1 && page <= this.totalPages ? page : -1);
+  }
+
+  getCurrentPageURL() {
+    return this.getPageURL(this.page);
+  }
+
+  getNextPageURL() {
+    return this.getURL(this.query, this.page < this.totalPages? this.page+1 : this.totalPages);
+  }
+
+  getURL(query: string = '', page:number = 1) {
+    const params = new URLSearchParams(location.search);
+    if (query.trim().length > 0) {
+      params.set('q', query);
+    }
+    params.set('page', page > 0 ? page.toString(): '1');
+    let path = `${location.pathname}?${params}${location.hash}`;
+    return path;
+  }
 }
 
 export const searchStore = new SearchStore();
