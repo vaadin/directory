@@ -66,3 +66,7 @@
   color: var(--gray-500) !important;
   font-size: var(--text-size-xs);
 }
+
+#placeholder {
+  display: none;
+}
