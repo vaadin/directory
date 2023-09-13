@@ -215,7 +215,7 @@ export class AddonView extends View implements BeforeEnterObserver {
       : 'https://vaadin.com';
 
       iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${this.addon?.discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
-        ''+this.addon?.name)}`;  
+        ''+this.addon?.name)}&description=`;  
 
     return iframeSrc;
 
