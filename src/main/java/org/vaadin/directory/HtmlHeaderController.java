@@ -27,9 +27,9 @@ public class HtmlHeaderController implements Filter {
 
     private static final String URL = "https://vaadin.com/directory/";
     public static final String TITLE = "Vaadin Add-on Directory";
-    public static final String SUMMARY = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application\\.";
+    public static final String SUMMARY = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application.";
     public static final String DESCRIPTION = "The channel for finding, promoting, and distributing Vaadin add-ons.";
-    public static final String IMAGE = "https://vaadin\\.com/images/trademark/PNG/VaadinLogomark_RGB_500x500\\.png";
+    public static final String IMAGE = "https://vaadin.com/images/trademark/PNG/VaadinLogomark_RGB_500x500.png";
     private final UrlConfig urlConfig;
     private final AddonEndpoint service;
 
@@ -60,12 +60,12 @@ public class HtmlHeaderController implements Filter {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, capturingResponseWrapper);
                 String content = capturingResponseWrapper.getCaptureAsString();
-                String replacedContent = content.replaceAll(TITLE, "" + oc.getName() + " - " + TITLE);
-                replacedContent = replacedContent.replaceAll(URL, urlConfig.getComponentUrl() + urlIdentifier);
-                replacedContent = replacedContent.replaceAll(SUMMARY, "" + oc.getSummary());
-                replacedContent = replacedContent.replaceAll(DESCRIPTION, "" + oc.getDescription());
-                replacedContent = replacedContent.replaceAll(IMAGE, urlConfig.getAppUrl() + "images/social/" + urlIdentifier);
-                replacedContent = replacedContent.replaceAll("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(), urlConfig.getComponentUrl() + urlIdentifier, oc.getLastUpdated(), null, oc.getRating(), oc.getRatingCount()) + "\n</head>");
+                String replacedContent = content.replace(TITLE, "" + oc.getName() + " - " + TITLE);
+                replacedContent = replacedContent.replace(URL, urlConfig.getComponentUrl() + urlIdentifier);
+                replacedContent = replacedContent.replace(SUMMARY, "" + oc.getSummary());
+                replacedContent = replacedContent.replace(DESCRIPTION, "" + oc.getDescription());
+                replacedContent = replacedContent.replace(IMAGE, urlConfig.getAppUrl() + "images/social/" + urlIdentifier);
+                replacedContent = replacedContent.replace("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(), urlConfig.getComponentUrl() + urlIdentifier, oc.getLastUpdated(), null, oc.getRating(), oc.getRatingCount()) + "\n</head>");
                 response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
             } else {
                 chain.doFilter(request, response);
