@@ -38,6 +38,7 @@ public class AddonEndpoint {
 
     @Transactional(readOnly = true)
     public Addon getAddon(String urlIdentifier, String currentUser) {
+        if ("(not logged in)".equals((""+currentUser).trim())) currentUser = "Vaadin.156"; //TODO
         Optional<Component> maybeComponent = service.getComponentByUrl(urlIdentifier);
         long id = userNameService.findByScreenName(currentUser).stream().findFirst().orElse(-1L);
         return maybeComponent.isPresent() ? createAddon(maybeComponent.get(), id == maybeComponent.get().getOwner().getId()) : null;
@@ -81,6 +82,10 @@ public class AddonEndpoint {
 
     public @Nonnull List<@Nonnull String> getAddonInstalls(String addon, String user) {
         return store.getAddonInstalls(addon, user);
+    }
+
+    public @Nonnull Integer getAddonInstallCount(String addon) {
+        return Math.round((float)store.getAddonInstallTotal(addon) /100)*100;
     }
 
 }

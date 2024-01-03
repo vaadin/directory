@@ -7,7 +7,7 @@ import './feature-matrix';
 import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
-import { getAddon, getUserRating, setUserRating } from 'Frontend/generated/AddonEndpoint';
+import { getAddon, getUserRating, setUserRating, getAddonInstallCount } from 'Frontend/generated/AddonEndpoint';
 import '@vaadin/vaadin-select/src/vaadin-select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
@@ -39,6 +39,9 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   @state()
   private version?: AddonVersion;
+
+  @state()
+  private installCount: number = 0;
 
   constructor() {
     super();
@@ -105,6 +108,10 @@ export class AddonView extends View implements BeforeEnterObserver {
               ${this.getHighlightLinks()}
             </section>
           `:nothing}
+          <section class="popularity">
+              <h3>Installs</h3>
+              ${this.installCount < 100? "<100": this.installCount+"+"}
+          </section>
         </section>
 
         <highlight-carousel class="highlights" .addon=${this.addon}></highlight-carousel>
@@ -311,6 +318,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   firstUpdated() {
     if (this.addon) {
       this.updateUserRating();
+      getAddonInstallCount(this.addon.urlIdentifier).then(v =>  {this.installCount = v;});
     }
     iframeResizer({ log: false }, '#discussion-iframe');
   }
