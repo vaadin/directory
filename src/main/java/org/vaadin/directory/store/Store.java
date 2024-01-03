@@ -31,6 +31,8 @@ public class Store {
     private final WeakHashMap<String, AddonRatingInfo> ratingCache = new WeakHashMap<>();
     private final WeakHashMap<String, UserInstallInfo> installCache = new WeakHashMap<>();
 
+    private final WeakHashMap<String, Integer> statsCache = new WeakHashMap<>();
+
     public Store(@Autowired StoreSettings settings) {
         this.settings = settings;
     }
@@ -223,6 +225,9 @@ public class Store {
             // Log
             log(addon,version,"COMPONENT_UI_"+type.toUpperCase()+"_INSTALL",userId);
 
+            // Update the total cache count
+            incrementCachedTotalInstallCount(addon);
+
             // User installs
             UserInstallInfo data = readUserInstalls(userId, true);
             ArrayList<InstallInfo> list = new ArrayList<>();
@@ -270,5 +275,35 @@ public class Store {
                     .collect(Collectors.toList());
         }
         return List.of();
+    }
+
+    public void incrementCachedTotalInstallCount(String addon) {
+        // This is for limiting the total count queries
+        Integer currentCount = getAddonInstallTotal(addon);
+        if (statsCache.containsKey(addon)) {
+            statsCache.put(addon, ++currentCount);
+        }
+    }
+
+    public Integer getAddonInstallTotal(String addon) {
+        try {
+            // Check statsCache first
+            if (statsCache.containsKey(addon)) {
+                return statsCache.get(addon);
+            }
+
+            // Count all documents in log with matching field "addon"
+            Query query = this.getDb().collection("log").whereEqualTo("addon", addon);
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            int size = querySnapshot.get().size();
+
+            // Cache results
+            statsCache.put(addon,size);
+            return size;
+
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: logging
+        }
+        return 0;
     }
 }
