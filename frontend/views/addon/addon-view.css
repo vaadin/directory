@@ -50,7 +50,7 @@ addon-view .meta {
   clear: both;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-md);
+  gap: var(--space-base);
   margin: var(--space-lg) 0;
   font-size: var(--text-size-sm);
   font-weight: var(--text-weight-semibold);
@@ -59,7 +59,6 @@ addon-view .meta {
 }
 
 addon-view .meta > section {
-  min-width: 6rem;
 }
 
 addon-view .meta h3 {

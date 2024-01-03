@@ -84,7 +84,6 @@ export class AddonView extends View implements BeforeEnterObserver {
 
           ${this.getGitHubLink() ? html`
             <section class="contributors">
-              <h3>Contributors</h3>
               <github-contributors repositoryUrl="${this.getGitHubLink()}"></github-contributors>
             </section>
           `:nothing}
@@ -108,8 +107,8 @@ export class AddonView extends View implements BeforeEnterObserver {
               ${this.getHighlightLinks()}
             </section>
           `:nothing}
-          <section class="popularity">
-              <h3>Installs</h3>
+          <section class="popularity" title="User installs during last 6 months">
+              <h3>Popularity</h3>
               ${this.installCount < 100? "<100": this.installCount+"+"}
           </section>
         </section>

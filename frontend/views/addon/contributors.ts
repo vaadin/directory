@@ -28,6 +28,7 @@ export class GitHubContributors extends Layout {
     });
 
     return html`
+      <h3>Contributors</h3>
       <vaadin-avatar-group
         .items="${contributors}"
         max-items-visible="6"
