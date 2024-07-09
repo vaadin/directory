@@ -55,6 +55,17 @@ public class HtmlHeaderController implements Filter {
             } else {
                 urlIdentifier = uri.substring(uri.indexOf(ROUTE_ADDON) + ROUTE_ADDON.length());
             }
+
+            // Check for special cases
+            if (urlIdentifier == null || urlIdentifier.isEmpty()) {
+                chain.doFilter(request, response);
+                return;
+            }
+
+            // Remove version number and anything trailing if present (e.g. "addonname/1.0.0")
+            int slashIndex = urlIdentifier.indexOf('/');
+            urlIdentifier = (slashIndex == -1) ? urlIdentifier : urlIdentifier.substring(0, slashIndex);
+
             Addon oc = service.getAddon(urlIdentifier, "");
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
