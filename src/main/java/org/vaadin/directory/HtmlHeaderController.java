@@ -109,7 +109,7 @@ public class HtmlHeaderController implements Filter {
                 .map(link -> "<a href=\"" + link.getHref() + "\">" + link.getName() + "</a><br />")
                 .collect(Collectors.joining("\n"));
         String versions = oc.getVersions().stream()
-                .map(v -> "<a href=\"" +componentUrl + oc.getUrlIdentifier()+"/"+ v.getName() + "\">" + oc.getName() + " version "+ v.getName()+"</a><br />")
+                .map(v -> "<p><a href=\"" +componentUrl + oc.getUrlIdentifier()+"/"+ v.getName() + "\">" + oc.getName() + " version "+ v.getName()+"</a><br />"+v.getReleaseNotes()+" </p>\n")
                 .collect(Collectors.joining("\n"));
         return links + "\n<br />\n" +versions;
     }
