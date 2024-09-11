@@ -25,7 +25,7 @@ public class HtmlHeaderController implements Filter {
     public static final String ROUTE_COMPONENT = "/component/";
     public static final String ROUTE_ADDON = "/addon/";
 
-    private static final String URL = "https://vaadin.com/directory/";
+    private static final String URL = "https://vaadin.com/directory";
     public static final String TITLE = "Vaadin Add-on Directory";
     public static final String SUMMARY = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application.";
     public static final String DESCRIPTION = "The channel for finding, promoting, and distributing Vaadin add-ons.";
@@ -77,7 +77,7 @@ public class HtmlHeaderController implements Filter {
             } else {
                 chain.doFilter(request, response);
             }
-        } else if (uri.endsWith("directory/")) {
+        } else if (uri.endsWith("directory")) {
             // Inject searchbox metadata
             CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
             chain.doFilter(request, capturingResponseWrapper);
