@@ -21,4 +21,14 @@ public class Link {
         this.icon = icon;
         this.href = href;
     }
+
+    @NotBlank @Nonnull
+    public String getHref() {
+        return href;
+    }
+
+    @NotBlank @Nonnull
+    public String getName() {
+        return name;
+    }
 }
