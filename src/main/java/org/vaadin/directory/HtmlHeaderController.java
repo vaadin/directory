@@ -55,7 +55,7 @@ public class HtmlHeaderController implements Filter {
             if (uri.endsWith("/") && uri.length() > 1) {
                 String newUri = uri.substring(0, uri.length() - 1);
                 res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                res.setHeader("Location", req.getContextPath() + newUri);
+                res.setHeader("Location", newUri);
                 return;  // Cancel everything else
             }
 
