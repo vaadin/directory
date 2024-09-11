@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 /** Handle the static HTML requests by injecting metadata based on routes.
  *
@@ -30,6 +31,7 @@ public class HtmlHeaderController implements Filter {
     public static final String SUMMARY = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application.";
     public static final String DESCRIPTION = "The channel for finding, promoting, and distributing Vaadin add-ons.";
     public static final String IMAGE = "https://vaadin.com/images/trademark/PNG/VaadinLogomark_RGB_500x500.png";
+    public static final String LINKS_SECTION="<section id=\"links\"></section>";
     private final UrlConfig urlConfig;
     private final AddonEndpoint service;
 
@@ -84,6 +86,7 @@ public class HtmlHeaderController implements Filter {
                 replacedContent = replacedContent.replace(DESCRIPTION, "" + oc.getDescription());
                 replacedContent = replacedContent.replace(IMAGE, urlConfig.getAppUrl() + "images/social/" + urlIdentifier);
                 replacedContent = replacedContent.replace("</head>", getJsonLd(oc.getName(), oc.getSummary(), oc.getIcon(), oc.getAuthor(), urlConfig.getComponentUrl() + urlIdentifier, oc.getLastUpdated(), null, oc.getRating(), oc.getRatingCount()) + "\n</head>");
+                replacedContent = replacedContent.replace(LINKS_SECTION, createLinks(urlConfig.getComponentUrl(),oc));
                 response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
             } else {
                 chain.doFilter(request, response);
@@ -99,6 +102,16 @@ public class HtmlHeaderController implements Filter {
             // No metadata injected for other pages
             chain.doFilter(request, response);
         }
+    }
+
+    private String createLinks(String componentUrl, Addon oc) {
+        String links =  oc.getLinks().stream()
+                .map(link -> "<a href=\"" + link.getHref() + "\">" + link.getName() + "</a><br />")
+                .collect(Collectors.joining("\n"));
+        String versions = oc.getVersions().stream()
+                .map(v -> "<a href=\"" +componentUrl + oc.getUrlIdentifier()+"/"+ v.getName() + "\">" + oc.getName() + " version "+ v.getName()+"</a><br />")
+                .collect(Collectors.joining("\n"));
+        return links + "\n<br />\n" +versions;
     }
 
     static class CapturingResponseWrapper extends HttpServletResponseWrapper {
