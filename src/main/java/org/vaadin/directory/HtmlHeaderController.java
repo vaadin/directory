@@ -46,8 +46,19 @@ public class HtmlHeaderController implements Filter {
             FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
         String uri = req.getRequestURI();
         if (uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) {
+
+            // Redirect trailing slash. We cannot do this universally for root.
+            if (uri.endsWith("/") && uri.length() > 1) {
+                String newUri = uri.substring(0, uri.length() - 1);
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                res.setHeader("Location", req.getContextPath() + newUri);
+                return;  // Cancel everything else
+            }
+
             // Addon metadata
             String urlIdentifier;
             if (uri.contains(ROUTE_COMPONENT)) {
