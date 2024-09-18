@@ -53,7 +53,33 @@ export class AddonView extends View implements BeforeEnterObserver {
           return code;
         }
       },
+      renderer: this.createRenderer()
     });
+  }
+
+  createRenderer() {
+    const thisView = this;
+    const renderer = new marked.Renderer();
+  
+    renderer.link = function(href, title, text) {
+      // Ensure href is a string
+      href = href || '';
+  
+      // Check if the href is a relative URL
+      const isRelative = !/^(?:[a-z]+:)?\/\//i.test(href) && !href.startsWith('#') && !href.startsWith('mailto:');
+  
+      if (isRelative) {
+        // Remove trailing slash from BASEURL and leading slash from href to avoid double slashes
+        const base = thisView.getGitHubLink();
+        const path = href.replace(/^\//, '');
+        href = `${base}/${path}`;
+      }
+  
+      // Use the default renderer's link method to maintain consistency
+      return marked.Renderer.prototype.link.call(this, href, title, text);
+    };
+  
+    return renderer;
   }
 
   render() {
