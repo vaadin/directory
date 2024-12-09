@@ -51,6 +51,7 @@ public class HtmlHeaderController implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String uri = req.getRequestURI();
+        String query =  req.getQueryString();
         if (uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) {
 
             // Redirect trailing slash. We cannot do this universally for root.
@@ -98,9 +99,17 @@ public class HtmlHeaderController implements Filter {
             String content = capturingResponseWrapper.getCaptureAsString();
             String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl()) + "</head>");
             response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
+        } else if (query != null  && query.indexOf("page=") >= 0) {
+            // Maintain canonical URL for paging
+            CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
+            chain.doFilter(request, capturingResponseWrapper);
+            String content = capturingResponseWrapper.getCaptureAsString();
+            String replacedContent = content.replace(URL, urlConfig.getAppUrl() + query);
+            response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else {
             // No metadata injected for other pages
             chain.doFilter(request, response);
+
         }
     }
 
