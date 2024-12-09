@@ -92,19 +92,19 @@ public class HtmlHeaderController implements Filter {
             } else {
                 chain.doFilter(request, response);
             }
-        } else if (uri.endsWith("directory/")) {
-            // Inject searchbox metadata
-            CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
-            chain.doFilter(request, capturingResponseWrapper);
-            String content = capturingResponseWrapper.getCaptureAsString();
-            String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl()) + "</head>");
-            response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else if (query != null  && query.indexOf("page=") >= 0) {
             // Maintain canonical URL for paging
             CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
             chain.doFilter(request, capturingResponseWrapper);
             String content = capturingResponseWrapper.getCaptureAsString();
             String replacedContent = content.replace(URL, urlConfig.getAppUrl() +"?"+query);
+            response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
+        } else if (uri.endsWith("directory/")) {
+            // Inject searchbox metadata
+            CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
+            chain.doFilter(request, capturingResponseWrapper);
+            String content = capturingResponseWrapper.getCaptureAsString();
+            String replacedContent = content.replace("</head>", getJsonLd(urlConfig.getAppUrl()) + "</head>");
             response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else {
             // No metadata injected for other pages
