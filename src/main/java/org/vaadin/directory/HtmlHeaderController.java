@@ -104,7 +104,7 @@ public class HtmlHeaderController implements Filter {
             CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
             chain.doFilter(request, capturingResponseWrapper);
             String content = capturingResponseWrapper.getCaptureAsString();
-            String replacedContent = content.replace(URL, urlConfig.getAppUrl() + query);
+            String replacedContent = content.replace(URL, urlConfig.getAppUrl() +"?"+query);
             response.getOutputStream().write(replacedContent.getBytes(response.getCharacterEncoding()));
         } else {
             // No metadata injected for other pages
