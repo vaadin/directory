@@ -8,7 +8,7 @@ import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon, getUserRating, setUserRating, getAddonInstallCount } from 'Frontend/generated/AddonEndpoint';
-import '@vaadin/vaadin-select/src/vaadin-select';
+import '@vaadin/select';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { View, AddonJsonLd } from '../view';
@@ -46,6 +46,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   constructor() {
     super();
     marked.setOptions({
+      useNewRenderer: true,
       highlight: (code, lang) => {
         if (languages[lang]) {
           return highlight(code, languages[lang], lang);
@@ -61,7 +62,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     const thisView = this;
     const renderer = new marked.Renderer();
   
-    renderer.link = function(href, title, text) {
+    renderer.link = function({ tokens, href }) {
       // Ensure href is a string
       href = href || '';
   
@@ -76,7 +77,8 @@ export class AddonView extends View implements BeforeEnterObserver {
       }
   
       // Use the default renderer's link method to maintain consistency
-      return marked.Renderer.prototype.link.call(this, href, title, text);
+      const text = this.parser.parseInline(tokens);
+      return `<a href="${href}">${text}</a>`;
     };
   
     return renderer;
