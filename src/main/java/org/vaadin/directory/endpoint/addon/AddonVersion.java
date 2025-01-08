@@ -6,8 +6,8 @@ import com.vaadin.directory.entity.directory.License;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 
-import dev.hilla.Nonnull;
-import javax.validation.constraints.NotBlank;
+import com.vaadin.hilla.Nonnull;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

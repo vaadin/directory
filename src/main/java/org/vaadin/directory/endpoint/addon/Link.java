@@ -1,8 +1,8 @@
 package org.vaadin.directory.endpoint.addon;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class Link {
 

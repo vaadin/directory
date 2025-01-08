@@ -1,8 +1,8 @@
 package org.vaadin.directory.endpoint.app;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.Endpoint;
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Endpoint;
+import com.vaadin.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.directory.BuildVersions;
 

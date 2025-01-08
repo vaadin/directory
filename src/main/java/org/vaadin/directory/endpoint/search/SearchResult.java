@@ -1,9 +1,9 @@
 package org.vaadin.directory.endpoint.search;
 
 import java.util.List;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import com.vaadin.directory.entity.directory.Component;
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.endpoint.addon.Addon;

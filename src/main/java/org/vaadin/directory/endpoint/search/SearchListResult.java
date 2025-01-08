@@ -1,6 +1,6 @@
 package org.vaadin.directory.endpoint.search;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 
 import java.util.List;
 

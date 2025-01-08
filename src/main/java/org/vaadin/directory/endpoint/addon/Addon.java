@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import dev.hilla.Nonnull;
-import javax.validation.constraints.NotBlank;
+import com.vaadin.hilla.Nonnull;
+import jakarta.validation.constraints.NotBlank;
 
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentVersion;
