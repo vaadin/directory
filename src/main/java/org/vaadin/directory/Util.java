@@ -9,7 +9,7 @@ import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.directory.entity.directory.ComponentFrameworkVersion;
 import com.vaadin.directory.entity.directory.TagGroup;
-import io.swagger.codegen.utils.SemVer;
+import org.semver4j.Semver;
 
 public class Util {
 
@@ -68,8 +68,8 @@ public class Util {
 
   public static int compareSemver(String v0, String v1, boolean reverse) {
     try {
-      SemVer sv0 = new SemVer(v0);
-      SemVer sv1 = new SemVer(v1);
+      Semver sv0 = Semver.coerce(v0);
+      Semver sv1 = Semver.coerce(v1);
       return reverse ? sv1.compareTo(sv0) : sv0.compareTo(sv1);
     } catch (NumberFormatException ignored) {
     }
