@@ -4,8 +4,7 @@ import { logAddonInstall, getAddonInstalls } from 'Frontend/generated/AddonEndpo
 import { html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Layout } from '../view';
-import '@vaadin/menu-bar/src/vaadin-menu-bar';
-import {MenuBarItem}  from '@vaadin/menu-bar/src/vaadin-menu-bar';
+import '@vaadin/menu-bar';
 import { router } from '../../index';
 
 @customElement('install-tabsheet')
