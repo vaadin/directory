@@ -360,29 +360,21 @@ addon-view .versions h4 {
   margin-top: var(--text-margin-lg);
 }
 
-addon-view .versions vaadin-select,
+addon-view .versions vaadin-select::part(input-field),
 addon-view .versions vaadin-select vaadin-select-value-button {
   display: flex;
   width: min-content;
   --vaadin-field-default-width: auto;
-}
-
-addon-view .versions vaadin-select vaadin-select-item::after {
-  content: "";
-  width: 0;
-  height: 0;
-  border: 5px solid;
-  border-color: var(--secondary-text-color) transparent transparent transparent;
-  margin: 7px 0 0 7px;
-  display: inline-block;
+  --vaadin-input-field-background: none;
 }
 
 addon-view .versions vaadin-select vaadin-select-item {
-  padding: 0 0.3em;
+    font-weight: var(--text-weight-semibold);
 }
 
-addon-view .versions vaadin-select[focus-ring] {
-  box-shadow: 0 0 0 2px var(--blue-500);
+addon-view .versions vaadin-select vaadin-select-item:after {
+  content: "";
+  padding: 0 0.3em;
 }
 
 [theme~="version-select"] vaadin-item {
@@ -419,47 +411,63 @@ addon-view install-tabsheet {
   font-size: var(--text-size-md);
 }
 
-[theme~="addon-version-menu"] :is(a, button, p) {
+[theme~="addon-version-menu"] vaadin-menu-bar-button {
   -webkit-appearance: none;
   appearance: none;
+  min-width: fit-content;
   margin: 0;
   padding: 0.5em 0.75em;
   display: block;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  text-align: start;
+  background-color: rgb(26 129 250);
+  color: #fff;
   font-weight: var(--text-weight-semibold);
   font-size: var(--text-size-sm);
   cursor: pointer;
-  border-radius: var(--roundness-md);
 }
 
-[theme~="addon-version-menu"] :is(a, button, p):hover {
+[theme~="addon-version-menu"] vaadin-menu-bar-button:hover {
+    background-color: rgb(0 88 192);
+}
+
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > p,
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > a,
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > div {
+  display: block;
+  font-weight: var(--text-weight-semibold);
+  font-size: var(--text-size-sm);
+  cursor: pointer;
+  background-color: inherit;
+  color: inherit;
+  margin: 0.3em;
+  padding: 0.2em 0.4em;
+}
+
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > p:hover,
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > a:hover {
   background-color: var(--blue-100);
-  color: var(--blue-600);
+  color: var(--blue-500);
   text-decoration: none;
 }
 
-[theme~="addon-version-menu"] :is(a, button, p):focus {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--blue-400);
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] span {
+    font-size: 0.8em;
+    color: var(--secondary-text-color);
+    font-weight: var(--text-weight-regular);
 }
 
-[theme~="addon-version-menu"] :is(a, button, p) span {
-  display: block;
-  font-size: 0.8em;
-  color: var(--secondary-text-color);
-  font-weight: var(--text-weight-regular);
+vaadin-menu-bar-list-box[theme~="addon-version-menu"] > div > a {
+    display: block;
+    color: var(--primary-text-color);
 }
 
-[theme~="addon-version-menu"] :is(hr) {
+[theme~="addon-version-menu"] hr {
   margin: var(--space-sm);
 }
 
-[theme~="addon-version-menu"] :is(i) {
-  font-size: var(--text-size-sm);
+[theme~="addon-version-menu"] i {
+  font-variant: all-small-caps;
+  font-style: normal;
+  font-size: var(--text-size-m);
   margin-top: var(--space-sm);
 }
 
