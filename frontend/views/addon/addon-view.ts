@@ -9,6 +9,8 @@ import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon'
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon, getUserRating, setUserRating, getAddonInstallCount } from 'Frontend/generated/AddonEndpoint';
 import '@vaadin/select';
+import '@vaadin/item';
+import '@vaadin/list-box';
 import { html, nothing, render } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { View, AddonJsonLd } from '../view';
