@@ -17,7 +17,7 @@ class SearchStore {
   sort = 'recent';
   version = 'all'
   page = 1;
-  pageSize = 60;
+  pageSize = 24;
   currentUser = '';
 
   // Init
