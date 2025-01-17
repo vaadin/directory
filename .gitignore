@@ -26,3 +26,4 @@ config/local/
 settings.json
 docker.build.log
 vite.generated.ts
+src/main/bundles/prod.bundle
