@@ -181,7 +181,7 @@ export class AddonView extends View implements BeforeEnterObserver {
             the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
             <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">ask questions on StackOverflow</a>.
           </p>
-          <iframe id="discussion-iframe" src="${this.getDiscussionLink()}"></iframe>
+          ${unsafeHTML(this.getDisourse())}
         </section>
 
       </section>
