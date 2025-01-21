@@ -101,7 +101,7 @@ export class SearchView extends View {
             autocorrect="off"
             spellcheck="false"
             .value="${searchStore.query}"
-            @input="${this.debounce((e: any) => this.updateQuery(e))}" />
+            @input="${this.debouncedUpdateQuery}" />
           <select
             class="vaadin-version-select"
             .value="${searchStore.version}"
@@ -218,9 +218,9 @@ export class SearchView extends View {
     searchStore.addFilter(filter);
   }
 
-  updateQuery(e: { target: HTMLInputElement }) {
+  updateQuery(query: string) {
     searchStore.setCurrentUser(this.getCurrentUserId());
-    searchStore.setQuery(e.target.value);
+    searchStore.setQuery(query);
   }
 
   updateSort(e: { target: HTMLInputElement }) {
@@ -231,13 +231,17 @@ export class SearchView extends View {
     searchStore.setVersion(e.target.value);
   }
 
-  debounce(func: Function, timeout = 500) {
-    let timer: any;
-    return (...args: any[]) => {
+  private debouncedUpdateQuery = this.debounce((e: Event) => {
+      const value = (e.target as HTMLInputElement).value;
+      this.updateQuery(value);
+  });
+
+  private debounce<F extends (...args: any[]) => void>(func: F, delay = 300) {
+    let timer: number;
+    return (...args: Parameters<F>) => {
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, timeout);
+      timer = window.setTimeout(() => func(...args), delay);
     };
   }
+
 }
