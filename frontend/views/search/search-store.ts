@@ -48,14 +48,29 @@ class SearchStore {
     this.fetchPage(this.page, includeCount);
   }
 
+  // Page cache
+   private pageCache = new Map<string, SearchListResult>();
 
   // Server calls
   async fetchPage(page: number, includeCount: boolean) {
+    const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
+    const cacheKey = `${effectiveQuery}_${page}`;
+
+    if (this.pageCache.has(cacheKey)) {
+      const cachedResult = this.pageCache.get(cacheKey)!;
+      this.setHasMore(cachedResult.hasMore);
+      this.totalCount = cachedResult.totalCount;
+      this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+      this.setAddons(this.addons.concat(cachedResult.list));
+      this.page = page;
+      return;
+    }
+
     if (this.loading) return;
     this.setLoading(true);
     try {
-      const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
       const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser);
+      this.pageCache.set(cacheKey, res);
       this.setHasMore(res.hasMore);
       if (res.totalCount) {
         // Update count if we ended up here with direct page link
