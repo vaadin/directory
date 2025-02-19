@@ -76,6 +76,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>6.6.1.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.10.8</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
             <version>2.1.0</version>
