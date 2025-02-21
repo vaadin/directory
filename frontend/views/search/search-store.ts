@@ -20,6 +20,8 @@ class SearchStore {
   pageSize = 24;
   currentUser = '';
 
+  abortController = null;
+
   // Init
   constructor() {
     makeAutoObservable(this, { init: false }, { autoBind: true });
@@ -56,6 +58,10 @@ class SearchStore {
     const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
     const cacheKey = `${effectiveQuery}_${page}`;
 
+    if (this.loading) {
+        this.abortPageFetch();
+    }
+
     if (this.pageCache.has(cacheKey)) {
       const cachedResult = this.pageCache.get(cacheKey)!;
       this.setHasMore(cachedResult.hasMore);
@@ -66,10 +72,9 @@ class SearchStore {
       return;
     }
 
-    if (this.loading) return;
     this.setLoading(true);
     try {
-      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser);
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser, { signal: this.abortController.signal });
       this.pageCache.set(cacheKey, res);
       this.setHasMore(res.hasMore);
       if (res.totalCount) {
@@ -79,6 +84,8 @@ class SearchStore {
       }
       this.setAddons(this.addons.concat(res.list));
       this.page = page;
+    } catch (ex) {
+      console.log(""+ex);
     } finally {
       this.setLoading(false);
     }
@@ -95,9 +102,20 @@ class SearchStore {
 
     }
 
+  abortPageFetch() {
+    if (this.abortController) {
+      this.abortController.abort("Page fetch aborted");
+        this.abortController = null;
+        console.log("aborted");
+      }
+  }
+
   // Actions
   setLoading(loading: boolean) {
     this.loading = loading;
+      if (this.loading) {
+          this.abortController = new AbortController();
+      }
   }
 
   setFeatured(featured: string[]) {
