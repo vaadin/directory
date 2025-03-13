@@ -74,7 +74,7 @@ class SearchStore {
 
     this.setLoading(true);
     try {
-      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser, { signal: this.abortController.signal });
+      const res: SearchListResult = await SearchEndpoint.search(effectiveQuery , page, this.pageSize, this.sort, includeCount, this.currentUser, { mute: true, signal: this.abortController.signal });
       this.pageCache.set(cacheKey, res);
       this.setHasMore(res.hasMore);
       if (res.totalCount) {
