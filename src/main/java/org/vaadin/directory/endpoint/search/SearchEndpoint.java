@@ -79,12 +79,6 @@ public class SearchEndpoint {
                 .collect(Collectors.toList());
     }
 
-    public @Nonnull List<@Nonnull SearchResult> search2(String searchFor, int page,
-                                                             int pageSize) {
-        List<SearchResult> result = new ArrayList<>();
-        return result;
-    }
-
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
             int pageSize) {
         List<SearchResult> result = new ArrayList<>();
