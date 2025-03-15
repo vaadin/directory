@@ -4,6 +4,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import com.vaadin.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.vaadin.directory.BuildVersions;
 
 
@@ -16,6 +17,8 @@ public class AppEndpoint {
     public AppEndpoint(@Autowired BuildVersions buildVersions)   {
         this.buildVersions = buildVersions;
     }
+
+    @Cacheable("applicationVersion")
     public @Nonnull VersionInfo getVersionInfo() {
         return new VersionInfo(buildVersions);
     }
