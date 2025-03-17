@@ -1,7 +1,7 @@
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
 import SearchListResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchListResult';
-import { autorun, makeAutoObservable } from 'mobx';
+import { autorun, makeAutoObservable, action } from 'mobx';
 import { Filter } from './Filter';
 
 class SearchStore {
@@ -68,7 +68,7 @@ class SearchStore {
       this.totalCount = cachedResult.totalCount;
       this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
       this.setAddons(this.addons.concat(cachedResult.list));
-      this.page = page;
+      action( e => this.page = page);
       return;
     }
 
@@ -79,11 +79,13 @@ class SearchStore {
       this.setHasMore(res.hasMore);
       if (res.totalCount) {
         // Update count if we ended up here with direct page link
-        this.totalCount = res.totalCount;
-        this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+        action( e => {
+            this.totalCount = res.totalCount;
+            this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+            });
       }
       this.setAddons(this.addons.concat(res.list));
-      this.page = page;
+      action( e => this.page = page );
     } catch (ex) {
       console.log(""+ex);
     } finally {
