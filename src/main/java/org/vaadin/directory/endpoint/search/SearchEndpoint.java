@@ -13,6 +13,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import com.vaadin.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
@@ -219,6 +220,7 @@ public class SearchEndpoint {
                 Set.of());
     }
 
+    @Cacheable("getAppUrl")
     @Transactional(readOnly = true)
     public @Nonnull String getAppUrl() {
         return urlConfig.getAppUrl();
