@@ -347,7 +347,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   firstUpdated() {
     if (this.addon) {
       this.updateUserRating();
-      getAddonInstallCount(this.addon.urlIdentifier).then(v =>  {this.installCount = v;});
+      getAddonInstallCount(this.addon.urlIdentifier, {mute: true}).then(v =>  {this.installCount = v;});
     }
     iframeResizer({ log: false }, '#discussion-iframe');
   }
@@ -403,7 +403,7 @@ export class AddonView extends View implements BeforeEnterObserver {
 
     stars.userrating = 0;
     stars.tooltip = "Click to rate this addon";
-    stars.userrating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId());
+    stars.userrating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId(), {mute:true});
   }
 
   updatePageMetadata(): void {
