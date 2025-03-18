@@ -12,5 +12,10 @@ export class AppStore {
   constructor() {
     makeAutoObservable(this);
   }
+
+  setCurrentViewTitle(title: string) {
+      this.currentViewTitle = title;
+  }
+
 }
 export const appStore = new AppStore();

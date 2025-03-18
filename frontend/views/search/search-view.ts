@@ -15,7 +15,7 @@ export class SearchView extends View {
 
   constructor() {
     super();
-    appStore.currentViewTitle = 'Vaadin Directory Search';
+    appStore.setCurrentViewTitle('Vaadin Directory Search');
   }
 
   async onBeforeEnter(location: RouterLocation) {
