@@ -53,7 +53,7 @@ public class SearchResult {
                 store.getRatingCount(this.urlIdentifier)
         );
         this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
-        this.tags = Util.tagsToStrings(component.getTagGroups());
+        this.tags = List.of(); //Util.tagsToStrings(component.getTagGroups());
     }
 
     public String getName() {
