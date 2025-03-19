@@ -65,10 +65,10 @@ class SearchStore {
     if (this.pageCache.has(cacheKey)) {
       const cachedResult = this.pageCache.get(cacheKey)!;
       this.setHasMore(cachedResult.hasMore);
-      this.totalCount = cachedResult.totalCount;
-      this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
+      this.setTotalCount(cachedResult.totalCount);
+      this.setTotalPages(Math.round(this.totalCount ? this.totalCount / this.pageSize : 0));
+      this.setPage(page);
       this.setAddons(this.addons.concat(cachedResult.list));
-      action( e => this.page = page);
       return;
     }
 
@@ -78,14 +78,12 @@ class SearchStore {
       this.pageCache.set(cacheKey, res);
       this.setHasMore(res.hasMore);
       if (res.totalCount) {
-        // Update count if we ended up here with direct page link
-        action( e => {
-            this.totalCount = res.totalCount;
-            this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
-            });
+          // Update count if we ended up here with direct page link
+          this.setTotalCount(res.totalCount);
+          this.setTotalPages(Math.round(this.totalCount ? this.totalCount / this.pageSize : 0));
       }
       this.setAddons(this.addons.concat(res.list));
-      action( e => this.page = page );
+      this.setPage(page);
     } catch (ex) {
       console.log(""+ex);
     } finally {
@@ -136,11 +134,14 @@ class SearchStore {
     this.page = page;
     this.isFirst = page === 1;
     this.writePageToURL();
-    this.fetchCurrentPage(true);
   }
 
   setTotalCount(totalCount: number) {
     this.totalCount = totalCount;
+  }
+
+  setTotalPages(totalPages: number) {
+    this.totalPages = totalPages;
   }
 
   setQuery(query: string) {
@@ -200,8 +201,13 @@ class SearchStore {
     }
   }
 
-  writePageToURL() {
+  writePageToURL(alwaysWrite: boolean = false) {
     const params = new URLSearchParams(location.search);
+    // Only write when param already present
+    if (!params.has('page') && !alwaysWrite) {
+        return;
+    }
+    if (!params.has('page'))
     params.set('page', this.page.toString());
 
     if (this.query) {
