@@ -81,6 +81,9 @@ public class AddonEndpoint {
     }
 
     public @Nonnull List<@Nonnull String> getAddonInstalls(String addon, String user) {
+        if (addon == null || user == null || user.contains("not logged")) {
+            return List.of();
+        }
         return store.getAddonInstalls(addon, user);
     }
 
