@@ -56,7 +56,7 @@ class SearchStore {
 
   // Server calls
   async fetchPage(page: number, includeCount: boolean) {
-    const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version);
+    const effectiveQuery = this.query + (this.version === 'all' ? '' : ' v:'+this.version) +  (this.sort === 'recent' ? '' : ' s:'+this.sort);
     const cacheKey = `${effectiveQuery}_${page}`;
 
     if (this.loading) {
@@ -216,6 +216,7 @@ class SearchStore {
   writeQueryToURL() {
     const params = new URLSearchParams(location.search);
     params.set('q', this.query);
+    params.set('s', this.sort);
 
     if (this.query) {
       history.replaceState({}, '', `${location.pathname}?${params}${location.hash}`);

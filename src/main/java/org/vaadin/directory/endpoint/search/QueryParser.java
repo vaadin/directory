@@ -56,12 +56,12 @@ public class QueryParser {
      */
     public void updateFromSearch(String searchString) {
 
-        if (searchString == null || searchString.length() == 0) {
+        if (searchString == null || searchString.isEmpty()) {
             return;
         }
 
         String[] words = searchString.split(" ");
-        if (words == null || words.length == 0) {
+        if (words.length == 0) {
             return;
         }
 
@@ -70,7 +70,7 @@ public class QueryParser {
         List<String> keywordParams = wordList.stream()
                 .filter(s -> !s.contains(":"))
                 .collect(Collectors.toList());
-        keywords = keywordParams != null && keywordParams.size() > 0 ? keywordParams : List.of();
+        keywords = !keywordParams.isEmpty() ? keywordParams : List.of();
 
         // Filter all token words
         Map<String, List<String>> searchTokens = wordList.stream()
@@ -85,14 +85,14 @@ public class QueryParser {
 
         List<String> tagGroupParams = searchTokens.get(Token.TAG.getToken());
         tagGroups =
-                tagGroupParams != null && tagGroupParams.size() > 0 ? tagGroupParams : List.of();
+                tagGroupParams != null && !tagGroupParams.isEmpty() ? tagGroupParams : List.of();
 
         List<String> authorParams = searchTokens.get(Token.OWNER.getToken());
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.USER.getToken());
         authorParams =
                 authorParams != null ? authorParams : searchTokens.get(Token.AUTHOR.getToken());
-        author = authorParams != null && authorParams.size() >= 1 ? authorParams.get(0) : null;
+        author = authorParams != null && !authorParams.isEmpty() ? authorParams.get(0) : null;
         if (author != null) {
             author = author.replace('_',' ').toLowerCase(); // Use underscore as space
         }
@@ -101,14 +101,14 @@ public class QueryParser {
 
         List<String> frameworkParams =
           searchTokens.get(Token.FRAMEWORK.getToken());
-        if (frameworkParams != null && frameworkParams.size() >= 1) {
+        if (frameworkParams != null && !frameworkParams.isEmpty()) {
             framework = new Framework(frameworkParams.get(0).replace('_', ' '), "none");
         }
 
 
         List<String> frameworkVersionParams =
                 searchTokens.get(Token.FRAMEWORK_VERSION.getToken());
-        this.frameworkVersion = frameworkVersionParams != null && frameworkVersionParams.size() >= 1 ?
+        this.frameworkVersion = frameworkVersionParams != null && !frameworkVersionParams.isEmpty() ?
                 frameworkVersionParams.get(0) : null;
 
         if (this.frameworkVersion != null && framework == null) {
