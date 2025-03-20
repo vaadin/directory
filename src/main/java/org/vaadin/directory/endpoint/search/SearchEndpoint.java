@@ -80,6 +80,7 @@ public class SearchEndpoint {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
             int pageSize) {
         List<SearchResult> result = new ArrayList<>();
@@ -95,6 +96,7 @@ public class SearchEndpoint {
         return list != null ? list : List.of();
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull SearchResult> getFeaturedAddons() {
         List<SearchResult> result = new ArrayList<>();
         getFeatured().forEach(urlId -> {
@@ -104,6 +106,7 @@ public class SearchEndpoint {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull SearchResult getAddon(String urlIdentifier) {
         Optional<Component> oc = service.getComponentByUrl(urlIdentifier);
         return oc.isPresent() ? new SearchResult(oc.get(), urlConfig, store) : new SearchResult();

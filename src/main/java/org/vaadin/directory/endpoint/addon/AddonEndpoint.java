@@ -80,6 +80,7 @@ public class AddonEndpoint {
         store.logInstall(addon, version, type, user);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull String> getAddonInstalls(String addon, String user) {
         if (addon == null || user == null || user.contains("not logged")) {
             return List.of();
@@ -87,6 +88,7 @@ public class AddonEndpoint {
         return store.getAddonInstalls(addon, user);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull Integer getAddonInstallCount(String addon) {
         return Math.round((float)store.getAddonInstallTotal(addon) /100)*100;
     }
