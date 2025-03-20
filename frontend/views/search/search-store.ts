@@ -6,6 +6,7 @@ import { Filter } from './Filter';
 
 class SearchStore {
   // State
+  pagedQuery = false;
   isFirst = true;
   hasMore = true;
   loading = false;
@@ -196,6 +197,7 @@ class SearchStore {
     const page = params.get('page') || null;
 
     if (page) {
+      this.pagedQuery = true;
       this.page = +page || 1;
       this.isFirst = this.page === 1;
     }
@@ -204,17 +206,11 @@ class SearchStore {
   writePageToURL(alwaysWrite: boolean = false) {
     const params = new URLSearchParams(location.search);
     // Only write when param already present
-    if (!params.has('page') && !alwaysWrite) {
+    if (!this.pagedQuery && !alwaysWrite) {
         return;
     }
-    if (!params.has('page'))
     params.set('page', this.page.toString());
-
-    if (this.query) {
-      history.replaceState({}, '', `${location.pathname}?${params}${location.hash}`);
-    } else {
-      history.replaceState({}, '', `${location.pathname}${location.hash}`);
-    }
+    history.replaceState({}, '', `${location.pathname}?${params}${location.hash}`);
   }
 
   writeQueryToURL() {
