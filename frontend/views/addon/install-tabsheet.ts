@@ -93,7 +93,7 @@ export class InstallTabSheet extends Layout {
       });
     } else {
         const na = document.createElement('div');
-        na.innerText = '(no previous installs)';
+        na.innerText = this.isAuthenticated() ? '(no previous installs)': '(log in to see previous installs)';
         previousInstalls.appendChild(na);
     }
 
@@ -159,6 +159,10 @@ export class InstallTabSheet extends Layout {
   }
 
   async updateInstallInfo() {
+    if (!this.isAuthenticated()) {
+        this.installs = [];
+        return;
+    }
     getAddonInstalls(this.addon?.urlIdentifier, this.getCurrentUserId())
       .then(installs => {
         this.installs = installs;
