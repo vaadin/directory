@@ -46,13 +46,18 @@ export class SearchView extends View {
     const title = document.head.querySelector('meta[name="twitter:title"]') as HTMLElement; 
     const summary = document.head.querySelector('meta[name="twitter:description"]') as HTMLElement; 
     const icon = document.head.querySelector('meta[name="twitter:image"]') as HTMLElement; 
-    if (title) title.setAttribute("content","Vaadin Add-on Directory");
-    if (summary) summary.setAttribute("content","Find open-source widgets and components for your Vaadin application.");
-    if (icon) icon.setAttribute("content","https://vaadin.com/images/trademark/PNG/VaadinLogomark_RGB_500x500.png");
+    if (title) title.setAttribute("content",appStore.applicationName);
+    if (summary) summary.setAttribute("content",appStore.appDescription);
+    if (icon) icon.setAttribute("content",appStore.appIcon);
 
   }
 
   render() {
+
+    // Update view title
+    if (searchStore.pagedQuery) {
+      appStore.setCurrentViewTitle("Vaadin Directory Search | Page "+searchStore.page);
+    }
 
     // Update prev and next links
     if (this.requestedPage > 1) {
