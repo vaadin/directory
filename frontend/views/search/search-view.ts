@@ -174,7 +174,7 @@ export class SearchView extends View {
       <a router-ignore href="${searchStore.getNextPageURL()}"
           id="next-button"
           ?disabled="${searchStore.loading || !searchStore.hasMore || (searchStore.totalPages > 0 && searchStore.page === searchStore.totalPages)}"
-          ?hidden="${!searchStore.hasMore }">Next page</a>
+          ?hidden="${!searchStore.hasMore || searchStore.loading }">Next page</a>
       </section>
     `;
     
