@@ -220,7 +220,7 @@ export class SearchView extends View {
 
   updateQuery(query: string) {
     searchStore.setCurrentUser(this.getCurrentUserId());
-    searchStore.setQuery(query);
+    if (query && query.length > 2) searchStore.setQuery(query);
   }
 
   updateSort(e: { target: HTMLInputElement }) {
