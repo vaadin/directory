@@ -30,7 +30,7 @@ public class SearchListResult {
 
     public List<SearchResult> getList() { return list; }
 
-    public boolean hasMore() { return hasMore; }
+    public boolean getHasMore() { return hasMore; }
 
 
 }
