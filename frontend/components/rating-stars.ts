@@ -19,6 +19,9 @@ export class RatingStars extends LitElement {
   @property({ attribute: true })
   ratingcount: number = 0;
 
+  @property({attribute: true})
+  minNumberOfRatings: number = 3;
+
   static styles = css`
     :host {
       display: flex;
@@ -32,6 +35,7 @@ export class RatingStars extends LitElement {
 
     .ratings {
       display: flex;
+      flex-grow: 1;
       width: 110px;
       align-items: center;
       flex-direction: row-reverse;
@@ -42,7 +46,8 @@ export class RatingStars extends LitElement {
 
     .no-rating {
       white-space: nowrap;
-      font-size: var(--text-size-xs);
+      font-size: var(--text-size-s);
+      font-weight: var(--text-weight-semibold);
     }
 
     .count,
@@ -135,7 +140,7 @@ export class RatingStars extends LitElement {
 
 
   hasEnoughRatings(): boolean {
-    return this.ratingcount > 2;
+    return this.ratingcount >= this.minNumberOfRatings;
   }
 
   _handleClick(e : PointerEvent) {
