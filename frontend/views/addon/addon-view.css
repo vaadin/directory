@@ -1,3 +1,6 @@
+
+author-stats-view,
+addon-stats-view,
 addon-view {
   display: flex;
   flex-wrap: wrap;
@@ -8,12 +11,17 @@ addon-view {
   box-sizing: border-box;
 }
 
+author-stats-view .main,
+addon-stats-view .main,
+addon-stats-view .versions,
 addon-view .main,
 addon-view .versions {
   flex: auto;
   max-width: 100%;
 }
 
+author-stats-view .main,
+addon-stats-view .main,
 addon-view .main {
   width: 40rem;
 }
@@ -21,12 +29,13 @@ addon-view .main {
 addon-view .versions {
   width: 20rem;
 }
-
+addon-stats-view .back-to-search,
 addon-view .back-to-search {
   font-weight: var(--text-weight-semibold);
   width: 100%;
 }
 
+addon-stats-view addon-icon,
 addon-view addon-icon {
   width: 5rem;
   height: 5rem;
@@ -35,17 +44,20 @@ addon-view addon-icon {
   margin-inline-end: 1.5rem;
 }
 
+addon-stats-view .addon-summary,
 addon-view .addon-summary {
   font-size: var(--text-size-xl);
   line-height: 1.4em;
   color: var(--secondary-text-color);
-  margin: 0.4em 0 2em;
+  margin: 0.4em 0 2em 5.2em;
 }
 
+addon-stats-view .addon-name,
 addon-view .addon-name {
   margin: 0;
 }
 
+addon-stats-view .meta,
 addon-view .meta {
   clear: both;
   display: flex;
@@ -61,6 +73,7 @@ addon-view .meta {
 addon-view .meta > section {
 }
 
+addon-stats-view .meta h3,
 addon-view .meta h3 {
   font-size: var(--text-size-xs);
   font-weight: var(--text-weight-semibold);
@@ -71,6 +84,7 @@ addon-view .meta h3 {
   letter-spacing: 0.03em;
 }
 
+addon-stats-view .meta button,
 addon-view .meta button {
   -webkit-appearance: none;
   appearance: none;
@@ -84,19 +98,23 @@ addon-view .meta button {
   text-align: start;
 }
 
+addon-stats-view .meta button:hover,
 addon-view .meta button:hover {
   color: var(--blue-500);
 }
 
+addon-stats-view .meta rating-stars,
 addon-view .meta rating-stars {
   font-size: var(--text-size-sm);
   color: inherit;
 }
 
+addon-stats-view .meta p,
 addon-view .meta p {
   margin: 0;
 }
 
+addon-stats-view .meta .links ul,
 addon-view .meta .links ul {
   list-style: none;
   margin: 0;
@@ -106,6 +124,7 @@ addon-view .meta .links ul {
   gap: 0.75em;
 }
 
+addon-stats-view .meta .links a,
 addon-view .meta .links a {
   font-weight: inherit;
 }
@@ -118,6 +137,8 @@ addon-view .meta .links a.edit {
     padding: 0.5em 0.75em;
 }
 
+addon-stats-view vaadin-avatar,
+addon-stats-view vaadin-avatar-group::part(avatar),
 addon-view vaadin-avatar,
 addon-view vaadin-avatar-group::part(avatar) {
   --vaadin-avatar-size: 24px;
@@ -545,4 +566,42 @@ body.addon article.discussion iframe {
 
 body.addon article.discussion {
   display: block;
+}
+
+/* Addon stats view styles */
+addon-stats-view .graph {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.1em;
+      height: 6em;
+      width: 100%;
+      border: 1pt solid #f4f4f4;
+      border-radius: 10px;
+      padding: 1em;
+      overflow-x: scroll;
+}
+addon-stats-view .dateRangeSelect {
+    margin-bottom: 0.5em;
+}
+
+addon-stats-view .legend {
+      display: flex;
+      align-items: even;
+      width: 100%;
+      height: 2em;
+      padding: 0.2em 1em 0 1em;
+      justify-content: space-between;
+      font-size: var(--text-size-xs);
+}
+
+addon-stats-view .legend span.total {
+}
+
+addon-stats-view .bar {
+      width: 100%;
+      max-width: 100em;
+      min-width: 0.1em;
+      min-height: 0.2em;
+      background: steelblue;
+      transition: height 0.3s ease;
 }

@@ -25,6 +25,7 @@ public class HtmlHeaderController implements Filter {
 
     public static final String ROUTE_COMPONENT = "/component/";
     public static final String ROUTE_ADDON = "/addon/";
+    public static final String ROUTE_SUFFIX_STATS = "/stats";
 
     private static final String URL = "https://vaadin.com/directory/";
     public static final String TITLE = "Vaadin Add-on Directory";
@@ -52,7 +53,7 @@ public class HtmlHeaderController implements Filter {
 
         String uri = req.getRequestURI();
         String query =  req.getQueryString();
-        if (uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) {
+        if ((uri.contains(ROUTE_COMPONENT) || uri.contains(ROUTE_ADDON)) && !uri.endsWith(ROUTE_SUFFIX_STATS) ) {
 
             // Redirect trailing slash. We cannot do this universally for root.
             if (uri.endsWith("/") && uri.length() > 1) {

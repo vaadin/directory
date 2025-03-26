@@ -2,6 +2,8 @@ import { Route } from '@vaadin/router';
 import './views/search/search-view';
 import './views/addon/addon-view';
 import './views/addon/card-view';
+import './views/addon/stats-view';
+import './views/addon/author-stats-view';
 
 export type ViewRoute = Route & {
   title?: string;
@@ -16,10 +18,28 @@ export const routes: ViewRoute[] = [
     action: (context, commands) => { document.body.className = 'search';}
   },
   {
+    path: 'trends/',
+    component: 'stats-view',
+    title: 'Directory Stats',
+    action: (context, commands) => { document.body.className = 'stats';}
+  },
+  {
     path: 'addon/:addon/:version?',
     component: 'addon-view',
     title: 'Addon',
     action: (context, commands) => {document.body.className = 'addon';}
+  },
+  {
+    path: 'component/:addon/stats',
+    component: 'addon-stats-view',
+    title: 'Addon Stats',
+    action: (context, commands) => { document.body.className = 'addon-stats';}
+  },
+  {
+    path: 'user-stats/:user',
+    component: 'author-stats-view',
+    title: 'Author Stats',
+    action: (context, commands) => { document.body.className = 'author-stats';}
   },
   {
     path: 'component/:addon/:version?',
@@ -27,6 +47,7 @@ export const routes: ViewRoute[] = [
     title: 'Addon',
     action: (context, commands) => { document.body.className = 'addon';}
   },
+
   {
     path: 'addon-card/:addon',
     component: 'card-view',
