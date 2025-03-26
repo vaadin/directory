@@ -1,19 +1,23 @@
 package org.vaadin.directory.endpoint.addon;
 
+import com.vaadin.directory.backend.service.AuditLogService;
 import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.directory.backend.service.UserInfoService;
+import com.vaadin.directory.backend.util.GoogleAnalytics;
 import com.vaadin.directory.entity.directory.Component;
 import com.vaadin.directory.entity.directory.ComponentDirectoryUser;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import com.vaadin.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
 import org.vaadin.directory.store.Store;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Endpoint
@@ -23,17 +27,23 @@ public class AddonEndpoint {
     private static final String USER_NOT_LOGGED_IN = "(not logged in)";
     private final UserInfoService userNameService;
     private final ComponentService service;
+    private final AuditLogService logService;
     private final Store store;
+    private final GoogleAnalytics analyticsService;
     private UrlConfig urlConfig;
 
     AddonEndpoint(@Autowired ComponentService service,
                   @Autowired UserInfoService userNameService,
                   @Autowired Store store,
+                  @Autowired AuditLogService logService,
+                  @Autowired GoogleAnalytics analyticsService,
                   @Autowired UrlConfig urlConfig) {
         this.service = service;
         this.userNameService = userNameService;
+        this.logService = logService;
         this.store = store;
         this.urlConfig = urlConfig;
+        this.analyticsService = analyticsService;
     }
 
     @Transactional(readOnly = true)
@@ -89,8 +99,39 @@ public class AddonEndpoint {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "cache1h", key = "'installs' + #addon")
     public @Nonnull Integer getAddonInstallCount(String addon) {
-        return Math.round((float)store.getAddonInstallTotal(addon) /100)*100;
+        return Math.round((float)getAddonInstallCountExact(addon) /100)*100;
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache24h", key = "'installsExact' + #addon")
+    public @Nonnull Integer getAddonInstallCountExact(String addon) {
+            return store.getAddonInstallTotal(addon);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache24h", key = "'maven' +#addonUrl")
+    public @Nonnull Long getAddonMavenDownloadCount(String addonUrl) {
+        Component c = service.getComponentByUrl(addonUrl).orElse(null);
+        if (c != null) return logService.getUIMavenInstallCount(c);
+        return 0L;
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache24h", key = "'visits' + #days + '_' + #addonUrl")
+    public @Nonnull List<Long> getVisits(int days, String addonUrl) {
+        Component c = service.getComponentByUrl(addonUrl).orElse(null);
+        if (c != null) return analyticsService.getDailyStats(days,"component/"+addonUrl);
+        return List.of();
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache24h", key = "'countries' + #days + '_' + #addonUrl")
+    public @Nonnull Map<String, Long> getCountries(int days, String addonUrl) {
+        Component c = service.getComponentByUrl(addonUrl).orElse(null);
+        if (c != null) return analyticsService.getTopCountries(days,"component/"+addonUrl);
+        return Map.of();
     }
 
 }

@@ -9,6 +9,7 @@ import com.vaadin.directory.backend.service.ComponentService;
 import com.vaadin.directory.backend.service.TagGroupService;
 import com.vaadin.directory.backend.service.UserInfoService;
 import com.vaadin.directory.entity.directory.*;
+import com.vaadin.directory.entity.liferay.LiferayUser;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import com.vaadin.hilla.Nonnull;
@@ -74,7 +75,7 @@ public class SearchEndpoint {
         vaadin7 = frameworkRepository.findByName("Vaadin 7");
         vaadin8 = frameworkRepository.findByName("Vaadin 8");
         vaadin10plus = frameworkRepository.findByName("Vaadin platform");
-        this.vaadinMajorVersions = List.of(vaadin6,vaadin7,vaadin8,vaadin10plus);
+        this.vaadinMajorVersions = List.of(vaadin6, vaadin7, vaadin8, vaadin10plus);
         this.vaadinMinorVersions = this.vaadinMajorVersions.stream()
                 .map(fw -> frameworkVersionRepository.findByFramework(fw))
                 .collect(Collectors.toList());
@@ -82,7 +83,7 @@ public class SearchEndpoint {
 
     @Transactional(readOnly = true)
     public @Nonnull List<@Nonnull SearchResult> getAllAddons(int page,
-            int pageSize) {
+                                                             int pageSize) {
         List<SearchResult> result = new ArrayList<>();
         result.addAll(getFeaturedAddons());
         result.addAll(service.findAllPublishedComponents(PageRequest.of(page, pageSize)).stream()
@@ -120,7 +121,9 @@ public class SearchEndpoint {
         List<ComponentDirectoryUser> owners = List.of(); // All users
         if (qp.getAuthor() != null || qp.isAuthorMe()) {
             owners = getDirectoryUsers(currentUser, qp, owners);
-            if (owners.isEmpty()) { return new SearchListResult(); }
+            if (owners.isEmpty()) {
+                return new SearchListResult();
+            }
         }
         // Resolve tag groups
         List<TagGroup> tagGroups = tagService.getTagGroups(qp.getTagGroups());
@@ -129,15 +132,20 @@ public class SearchEndpoint {
         ComponentFramework framework = null;  // All frameworks
         if (qp.getFramework() != null) {
             framework = frameworkRepository.findByName(qp.getFramework().getName());
-            if (framework == null) { return new SearchListResult(); }
+            if (framework == null) {
+                return new SearchListResult();
+            }
         }
 
         Set<ComponentFrameworkVersion> versions = Set.of();  // All versions
         if (framework != null) {
             if (qp.getFrameworkVersion() != null) {
                 ComponentFrameworkVersion v = frameworkVersionRepository.findByFrameworkAndVersion(framework, qp.getFrameworkVersion());
-                if (v != null) { versions = Set.of(v);
-                } else { return new SearchListResult();}
+                if (v != null) {
+                    versions = Set.of(v);
+                } else {
+                    return new SearchListResult();
+                }
             }
         } else if (qp.getFrameworkVersion() != null) {
             //TODO: Maybe instead try to match the first framework with the given version?
@@ -162,7 +170,7 @@ public class SearchEndpoint {
         Long count = null;
         if (includeCount) {
             if (results.size() < pageSize) {
-                count = ((page-1)*pageSize) + Long.valueOf(results.size());
+                count = ((page - 1) * pageSize) + Long.valueOf(results.size());
             } else {
                 count = service
                         .countAllComponentsBySearchCriteria(
@@ -206,12 +214,14 @@ public class SearchEndpoint {
     }
 
     @Transactional(readOnly = true)
-    public @Nonnull Long searchCount(String searchString,String currentUser) {
+    public @Nonnull Long searchCount(String searchString, String currentUser) {
         QueryParser qp = QueryParser.parse(searchString);
         List<ComponentDirectoryUser> owners = List.of(); // All users
         if (qp.getAuthor() != null || qp.isAuthorMe()) {
             owners = getDirectoryUsers(currentUser, qp, owners);
-            if (owners.isEmpty()) { return 0L; }
+            if (owners.isEmpty()) {
+                return 0L;
+            }
         }
 
         return service.countAllComponentsBySearchCriteria(
@@ -223,16 +233,18 @@ public class SearchEndpoint {
                 Set.of());
     }
 
-    @Cacheable("getAppUrl")
     @Transactional(readOnly = true)
     public @Nonnull String getAppUrl() {
         return urlConfig.getAppUrl();
     }
+
     @Transactional(readOnly = true)
     public @Nonnull Matrix getCompatibility(String urlIdentifier) {
 
         Optional<Component> maybveComponent = this.service.getComponentByUrl(urlIdentifier);
-        if (!maybveComponent.isPresent()) { return new Matrix(List.of(),List.of(),List.of()); }
+        if (!maybveComponent.isPresent()) {
+            return new Matrix(List.of(), List.of(), List.of());
+        }
 
         Component component = maybveComponent.get();
 
@@ -243,18 +255,18 @@ public class SearchEndpoint {
         // Collect all component versions
         List<ComponentVersion> versionList = component.getVersions().stream()
                 .filter(ComponentVersion::getAvailable)
-                .sorted((v0,v1)-> Util.compareSemver(v0.getName(), v1.getName()))
+                .sorted((v0, v1) -> Util.compareSemver(v0.getName(), v1.getName()))
                 .collect(Collectors.toList());
 
         // Collect all available framework versions
         List<ComponentFrameworkVersion> frameworkVersions = new ArrayList<>();
         Lists.reverse(this.vaadinMinorVersions).stream().forEach(fw -> {
-             fw.stream()
-                     .filter(fwv -> !fwv.getVersion().endsWith("+"))
-                     .sorted((v0,v1)-> Util.compareSemver(v0.getVersion(), v1.getVersion(), true))
-                     .forEach(fwv ->{
-                 frameworkVersions.add(fwv);
-             });
+            fw.stream()
+                    .filter(fwv -> !fwv.getVersion().endsWith("+"))
+                    .sorted((v0, v1) -> Util.compareSemver(v0.getVersion(), v1.getVersion(), true))
+                    .forEach(fwv -> {
+                        frameworkVersions.add(fwv);
+                    });
         });
 
         // Each row represents a framework version
@@ -267,7 +279,7 @@ public class SearchEndpoint {
 
         // Each column represents a component version
         versionList.stream().forEach(version -> {
-            cols.add(""+version.getName());
+            cols.add("" + version.getName());
         });
 
 
@@ -280,16 +292,17 @@ public class SearchEndpoint {
                 ComponentVersion version = versionList.get(c);
                 List<String> names = version.getFrameworkVersions().stream().map(ComponentFrameworkVersion::getVersion).collect(Collectors.toList());
                 boolean supported = Util.matchingVersionStrings(fwv.getVersion()).stream().anyMatch(name -> names.contains(name));
-                row.add(supported ? "Y" :"");
+                row.add(supported ? "Y" : "");
                 noSupport &= !supported;
-            };
+            }
+            ;
             if (noSupport) {
-                rows.set(r,"("+rows.get(r)+")");
+                rows.set(r, "(" + rows.get(r) + ")");
             }
 
         }
 
-        Matrix m = new Matrix(rows,cols,data);
+        Matrix m = new Matrix(rows, cols, data);
         return m;
     }
 
@@ -308,7 +321,7 @@ public class SearchEndpoint {
                 vl.forEach(v -> {
                     AtomicInteger count = new AtomicInteger(0);
                     cols.add(v.getVersion());
-                    row.add(""+v.getComponentVersions().size());
+                    row.add("" + v.getComponentVersions().size());
                 });
             } else {
                 AtomicInteger count = new AtomicInteger(0);
@@ -317,12 +330,12 @@ public class SearchEndpoint {
                     v.getComponentVersions().size();
                     count.addAndGet(v.getComponentVersions().size());
                 });
-                row.add(""+count.get());
+                row.add("" + count.get());
             }
 
         });
 
-        Matrix m = new Matrix(rows,cols,data);
+        Matrix m = new Matrix(rows, cols, data);
         return m;
     }
 
@@ -333,4 +346,61 @@ public class SearchEndpoint {
         return r;
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache1h", key = "'addonsBy' + #userId")
+    public @Nonnull List<StatsResults> getAddonsByUser(String userId) {
+
+        ComponentDirectoryUser user = findUser(userId);
+        if (user != null) {
+            return service.getTopRatedPublishedComponentsForAuthor(user)
+                    .stream()
+                    .map(c -> new StatsResults(c))
+                    .toList();
+        } else {
+            return List.of();
+        }
+    }
+
+    private ComponentDirectoryUser findUser(String userId) {
+        // Check if userId is long
+        long id = -1;
+        try {
+            id = Long.parseLong(userId);
+        } catch (NumberFormatException ignored) {
+        }
+
+        if (id > 0) {
+            // By id
+            return userService.findById(id);
+        } else {
+            // Screenname search
+            List<Long> users = userNameService.findByScreenName(userId);
+            if (users != null && !users.isEmpty()) {
+                return userService.findById(users.getFirst());
+            }
+            // Fullname search
+            List<ComponentDirectoryUser> userList = userService.findByNameContains(userId);
+            if (userList != null && !userList.isEmpty()) {
+                return userList.getFirst();
+            }
+            return null;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "cache1h", key = "'user' + #userId")
+    public UserInfo getUserInfo(String userId) {
+
+        ComponentDirectoryUser user = findUser(userId);
+        if (user != null) {
+
+            LiferayUser lrUser = userService.getLiferayUser(user);
+            if (lrUser != null) {
+                return new UserInfo(lrUser.getFirstName() + " " +
+                        lrUser.getLastName(), lrUser.getScreenName(), user.getUrl());
+            }
+
+        }
+        return UserInfo.NOT_FOUND;
+    }
 }
