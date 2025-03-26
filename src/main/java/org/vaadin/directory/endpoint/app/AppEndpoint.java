@@ -18,7 +18,6 @@ public class AppEndpoint {
         this.buildVersions = buildVersions;
     }
 
-    @Cacheable("applicationVersion")
     public @Nonnull VersionInfo getVersionInfo() {
         return new VersionInfo(buildVersions);
     }
