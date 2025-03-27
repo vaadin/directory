@@ -12,7 +12,6 @@ import { guard } from 'lit/directives/guard.js';
 import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { router } from '../../index';
-import { Router } from '@vaadin/router';
 import { View } from '../view';
 
 @customElement('addon-stats-view')
@@ -169,7 +168,8 @@ export class StatsView extends View implements BeforeEnterObserver {
 
   searchByAuthor() {
       if (this.addon) {
-          Router.go('/user-stats/'+this.addon.author);
+          const authorHref = router.urlForPath('user-stats/:user', {user: this.addon.author })
+          window.location.href = authorHref;
       }
   }
 
