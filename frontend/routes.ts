@@ -18,9 +18,9 @@ export const routes: ViewRoute[] = [
     action: (context, commands) => { document.body.className = 'search';}
   },
   {
-    path: 'trends/',
-    component: 'stats-view',
-    title: 'Directory Stats',
+    path: 'trends/:user',
+    component: 'author-stats-view',
+    title: 'Author Stats',
     action: (context, commands) => { document.body.className = 'stats';}
   },
   {
