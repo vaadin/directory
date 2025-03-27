@@ -112,7 +112,6 @@ export class StatsView extends View implements BeforeEnterObserver {
         </section>
 
             <section class="statistics">
-                <h2>Overview</h2>
                 <div class="installs"><h4>Total user installs:</h4> ${this.addonInstallCount}</div>
                 <div class="downloads"><h4>Maven Downloads:</h4> ${this.addonMavenDownloadCount > 0 ? this.addonMavenDownloadCount : 'n/a'}</div>
                 <div class="views"><h3>Page visits last ${this.viewDateRange} days:</h3>
