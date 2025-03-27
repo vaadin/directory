@@ -12,6 +12,7 @@ import { guard } from 'lit/directives/guard.js';
 import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { router } from '../../index';
+import { Router } from '@vaadin/router';
 import { View } from '../view';
 
 @customElement('addon-stats-view')
@@ -169,17 +170,8 @@ export class StatsView extends View implements BeforeEnterObserver {
 
   searchByAuthor() {
       if (this.addon) {
-        this.searchByUser(this.addon.author);
+          Router.go('/user-stats/'+this.addon.author);
       }
-    }
-
-  searchByUser(user: string) {
-    if (user) {
-      window.location.href = router.baseUrl + '?q=author:' + user.replace(/ /g,'_');
-    } else {
-      window.location.href = router.baseUrl;
-    }
-
   }
 
   versionOrder(a: AddonVersion, b: AddonVersion): number {
