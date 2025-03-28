@@ -1,4 +1,5 @@
 import './addon-card.css';
+import './skeleton-loader.css';
 import { Layout } from '../views/view';
 import { FilterAddedEvent } from '../views/search/filter-added-event';
 import SearchResult from 'Frontend/generated/org/vaadin/directory/endpoint/search/SearchResult';
@@ -18,7 +19,17 @@ export class AddonCard extends Layout {
 
   render() {
     if (!this.addon) {
-      return html`skeletor!`;
+      if (!this.addon) {
+        return html`
+            <div class="skeleton-icon"></div>
+            <section class="skeleton-content">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-author"></div>
+              <div class="skeleton-rating"></div>
+              <div class="skeleton-summary"></div>
+            </section>
+        `;
+      }
     }
     this.classList.toggle('featured', this.featured);
     return html`

@@ -1,0 +1,62 @@
+/* Skeleton loader animation */
+
+addon-card .skeleton-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+/* Base skeleton style with shimmer animation */
+addon-card [class^="skeleton-icon"],
+addon-card .skeleton-content [class^="skeleton-"] {
+  background: linear-gradient(90deg,
+    var(--divider-color1) 0%,
+    var(--divider-color1) 20%,
+    var(--surface-color, #f0f0f0) 40%,
+    var(--divider-color1) 60%,
+    var(--divider-color1) 80%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--roundness-sm);
+}
+
+/* Specific skeleton elements */
+addon-card .skeleton-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--roundness-md);
+}
+
+addon-card .skeleton-title {
+  height: 24px;
+  margin-bottom: 4px;
+  width: 80%;
+}
+
+addon-card .skeleton-author {
+  height: 16px;
+  width: 50%;
+  margin-bottom: 4px;
+}
+
+.skeleton-rating {
+  height: 16px;
+  width: 100px;
+  margin-bottom: 8px;
+}
+
+.skeleton-summary {
+  height: 48px;
+  width: 100%;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
