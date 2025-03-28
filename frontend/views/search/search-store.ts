@@ -93,12 +93,12 @@ class SearchStore {
   }
 
   async fetchFeatured() {
-    const fts = await SearchEndpoint.getFeatured();
+    const fts = await SearchEndpoint.getFeatured({mute: true});
     this.setFeatured(fts);
   }
 
   async fetchTotalCount() {
-    this.totalCount = await SearchEndpoint.searchCount(this.query, this.currentUser);
+    this.totalCount = await SearchEndpoint.searchCount(this.query, this.currentUser, {mute: true});
     this.totalPages = Math.round(this.totalCount ? this.totalCount / this.pageSize : 0);
 
     }
