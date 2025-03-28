@@ -141,7 +141,7 @@ export class SearchView extends View {
       </form>
 
       <section class="results" @filter-added="${this.filterAdded}">
-        ${searchStore.addons.map((addon) =>
+        ${ searchStore.addons.map((addon) =>
           addon
             ? html` <addon-card
                 .addon=${addon}
@@ -150,6 +150,8 @@ export class SearchView extends View {
                 )}></addon-card>`
             : html`<i>no addons found</i>`
         )}
+
+        ${searchStore.loading ? this.renderPlaceholders(searchStore.pageSize) : nothing }
       </section>
 
       
@@ -189,6 +191,14 @@ export class SearchView extends View {
     searchStore.init();
     this.setupIntersectionObserver();
     this.restoreScrollIfNeeded();
+  }
+
+  renderPlaceholders(length: number) {
+    return [...Array(length)].map(() => {
+      return html`
+        <addon-card></addon-card>
+      `;
+    });
   }
 
   restoreScrollIfNeeded() {
