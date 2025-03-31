@@ -32,6 +32,7 @@ import { router } from '../../index';
 import { iframeResizer } from 'iframe-resizer';
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
+import './discourse-comments'
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
@@ -177,11 +178,13 @@ export class AddonView extends View implements BeforeEnterObserver {
 
         <section id="discussion" class="discussion">
           <p>
-            <b>Was this helpful? Need more help?</b><br />Leave a comment or a question below. You can also join
-            the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
-            <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">ask questions on StackOverflow</a>.
+            <b>Was this helpful? Need more help?</b><br />You can leave a comment or a question
+            the <a href="https://vaadin.com/forum" rel="noopened">at the forum</a> or
+            <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">on StackOverflow</a>.
           </p>
-          ${unsafeHTML(this.getDisourse())}
+          <discourse-comments
+          discourseUrl="${this.getForumUrl()}"
+          discourseEmbedUrl="${this.getUrlToThisAddon()}"></discourse-comments>
         </section>
 
       </section>
@@ -244,32 +247,20 @@ export class AddonView extends View implements BeforeEnterObserver {
     `;
   }
 
-  getDisourse() {
-
-    return `<div id="discourse-comments"></div>
-    <script type="text/javascript">
-      DiscourseEmbed = {
-        discourseUrl: "${this.getDiscussionLink()}/",
-        discourseEmbedUrl: "${appStore.appUrl.slice(0,-1) + router.urlForPath('component/:addon/:version?', {addon: this.addon!.urlIdentifier})}",
-      };
-
-      (function() {
-        var d = document.createElement("script"); d.type = "text/javascript"; d.async = true;
-        d.src = DiscourseEmbed.discourseUrl + "javascripts/embed.js";
-        (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(d);
-      })();
-    </script>`
-
+  getUrlToThisAddon() {
+    var canonicalUrl = this.addon ? router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier}) :'';
+        canonicalUrl = canonicalUrl.startsWith("/directory/")? canonicalUrl.substring(11) : canonicalUrl;
+        canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
+              appStore.appUrl + canonicalUrl.substring(1) :
+              appStore.appUrl + canonicalUrl;
+    return canonicalUrl;
   }
 
-  getDiscussionLink() {
-
-    let link = window.location.hostname == 'preview.vaadin.com'
-      ? 'https://preview.vaadin.com/forum'
-      : 'https://vaadin.com/forum';
-
+  getForumUrl() {
+    let link = window.location.hostname == 'vaadin.com'
+      ? 'https://vaadin.com/forum/'
+      : 'https://preview.vaadin.com/forum/';
     return link;
-
   }
 
   versionOrder(a: AddonVersion, b: AddonVersion): number {
@@ -424,11 +415,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   updatePageMetadata(): void {
 
     // Construct canonical URL
-    var canonicalUrl = router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier});
-    canonicalUrl = canonicalUrl.startsWith("/directory/")? canonicalUrl.substring(11) : canonicalUrl;
-    canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
-          appStore.appUrl + canonicalUrl.substring(1) :
-          appStore.appUrl + canonicalUrl;
+    var canonicalUrl = this.getUrlToThisAddon();
 
     // Create search metadata
     const addonMetadata = new AddonJsonLd(
