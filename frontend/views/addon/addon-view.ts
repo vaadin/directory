@@ -181,7 +181,7 @@ export class AddonView extends View implements BeforeEnterObserver {
             the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
             <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">ask questions on StackOverflow</a>.
           </p>
-          <iframe id="discussion-iframe" src="${this.getDiscussionLink()}"></iframe>
+          ${unsafeHTML(this.getDisourse())}
         </section>
 
       </section>
@@ -244,16 +244,31 @@ export class AddonView extends View implements BeforeEnterObserver {
     `;
   }
 
+  getDisourse() {
+
+    return `<div id="discourse-comments"></div>
+    <script type="text/javascript">
+      DiscourseEmbed = {
+        discourseUrl: "${this.getDiscussionLink()}/",
+        discourseEmbedUrl: "${appStore.appUrl.slice(0,-1) + router.urlForPath('component/:addon/:version?', {addon: this.addon!.urlIdentifier})}",
+      };
+
+      (function() {
+        var d = document.createElement("script"); d.type = "text/javascript"; d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + "javascripts/embed.js";
+        (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(d);
+      })();
+    </script>`
+
+  }
+
   getDiscussionLink() {
 
-    let iframeSrc = window.location.hostname == 'preview.vaadin.com'
-      ? 'https://preview.vaadin.com'
-      : 'https://vaadin.com';
+    let link = window.location.hostname == 'preview.vaadin.com'
+      ? 'https://preview.vaadin.com/forum'
+      : 'https://vaadin.com/forum';
 
-      iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${this.addon?.discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
-        ''+this.addon?.name)}&description=`;  
-
-    return iframeSrc;
+    return link;
 
   }
 
