@@ -24,7 +24,7 @@ export class DiscourseComments extends LitElement {
     }
 
     const params = new URLSearchParams({
-      embed_url: encodeURIComponent(this.discourseEmbedUrl),
+      embed_url: this.discourseEmbedUrl,
     });
     if (this.discourseUserName) params.set('discourse_username', this.discourseUserName);
     if (this.topicId) params.set('topic_id', this.topicId.toString());
