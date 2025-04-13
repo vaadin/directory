@@ -280,18 +280,86 @@ addon-view section.discussion.hidden {
   display: none;
 }
 
-addon-view section.discussion p b {
-  color: var(--heading-text-color);
+addon-view .discussions-button {
+  display: inline-block;
+  padding: 0.4em 1em;
+  background-color: rgb(26 129 250);
+  color: #fff;
+  border-radius: var(--roundness-md);
+  text-decoration: none;
+  font-weight: 500;
 }
 
-addon-view section.discussion iframe {
-  color-scheme: normal;
-  border: 0;
-  margin: 0 -8px;
-  width: calc(100% + 16px);
-  max-width: none;
+addon-view .discussions-button:hover {
+  color: #fff;
+  text-decoration: none;
+  background-color: rgb(0 88 192);
 }
 
+addon-view .discussions-help {
+  margin-top: 0.3em;
+}
+
+addon-view .message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+addon-view .message-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+}
+
+addon-view .message-header span.date {
+  font-size: 0.85em;
+  color: #666;
+  white-space: nowrap;
+}
+
+addon-view .discussion-messages h3 img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+addon-view .discussion-messages .message {
+    position: relative;
+    margin-bottom: var(--text-margin-lg);
+    padding: var(--text-margin-lg);
+    border: 1px solid transparent;
+    transition: opacity 0.2s ease;
+}
+addon-view .discussion-messages .message.reply {
+    margin-left: var(--text-margin-lg);
+    border-left: 1px solid var(--divider-color1);
+}
+
+addon-view .discussion-messages .reply-btn {
+  position: absolute;
+  bottom: var(--text-margin-lg);
+  right: var(--text-margin-lg);
+  padding: 0.3em 0.6em;
+  font-size: 0.85em;
+  background: #eee;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: none;
+}
+
+addon-view .discussion-messages .message:hover {
+    border-radius: var(--roundness-md);
+    border: 1px solid var(--divider-color1);
+}
+
+addon-view .discussion-messages .message:hover .reply-btn {
+  display: inline-block;
+  text-decoration: none;
+}
 
 addon-view .footer {
   margin: var(--space-lg) 0;
@@ -557,11 +625,6 @@ table.matrix th.rowh {
   position: sticky;
   left: 0;
   z-index: 2;
-}
-
-body.addon article.discussion iframe {
-  width: 100%;
-  border: 0;
 }
 
 body.addon article.discussion {

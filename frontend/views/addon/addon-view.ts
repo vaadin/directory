@@ -177,14 +177,11 @@ export class AddonView extends View implements BeforeEnterObserver {
         </section>
 
         <section id="discussion" class="discussion">
-          <p>
-            <b>Was this helpful? Need more help?</b><br />You can leave a comment or a question
-            the <a href="https://vaadin.com/forum" rel="noopened">at the forum</a> or
-            <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">on StackOverflow</a>.
-          </p>
           <discourse-comments
-          discourseUrl="${this.getForumUrl()}"
-          discourseEmbedUrl="${this.getUrlToThisAddon()}"></discourse-comments>
+             discourseUrl="${this.getForumUrl()}"
+              addon="${this.addon.urlIdentifier}"
+              discourseEmbedUrl="${this.getUrlToThisAddon()}">
+          </discourse-comments>
         </section>
 
       </section>
