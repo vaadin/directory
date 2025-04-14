@@ -238,4 +238,51 @@ public class DiscourseClientTest {
         System.out.println("First post by: " + firstPost.username);
         System.out.println("Post content (excerpt): " + firstPost.cooked.substring(0, Math.min(firstPost.cooked.length(), 100)) + "...");
     }
+
+    @Test
+    void testCreateSubcategoryWithInitialTopic() {
+        // Get current datetime for the topic title
+        String dateTime = java.time.LocalDateTime.now().toString();
+        
+        // Test data
+        String subcategoryName = "Test Subcategory " + System.currentTimeMillis(); // Adding timestamp for uniqueness
+        String subcategoryDescription = "This is a test subcategory created via API";
+        String topicTitle = "Click Test " + dateTime;
+        String topicContent = "Discussion starter";
+        
+        // Create the subcategory and initial post
+        DiscourseClient.TopicPostsResponse response = discourse.createSubcategoryWithInitialPost(
+            subcategoryName, 
+            subcategoryDescription, 
+            this.disCourseCategory, 
+            topicTitle, 
+            topicContent
+        );
+        
+        // Verify the response
+        assertNotNull(response, "Response should not be null");
+        assertNotNull(response.postStream, "Post stream should not be null");
+        assertNotNull(response.postStream.posts, "Posts list should not be null");
+        assertFalse(response.postStream.posts.isEmpty(), "Posts list should not be empty");
+        
+        // Find the first post
+        DiscourseClient.TopicPostsResponse.Post firstPost = response.postStream.posts.stream()
+            .filter(post -> post.postNumber == 1)
+            .findFirst()
+            .orElse(null);
+        
+        // Verify the first post
+        assertNotNull(firstPost, "First post should exist");
+        assertEquals(topicContent, firstPost.cooked, "Post content should match what we sent");
+        
+        // Print information about the created topic
+        System.out.println("Created subcategory: " + subcategoryName);
+        System.out.println("Created initial topic: " + topicTitle);
+        System.out.println("First post by: " + firstPost.username);
+        System.out.println("Post content: " + firstPost.cooked);
+        
+        // Print the public link to the topic
+        String topicLink = "/t/" + firstPost.topicSlug + "/" + firstPost.topicId;
+        System.out.println("Public link to topic: " + topicLink);
+    }
 }
