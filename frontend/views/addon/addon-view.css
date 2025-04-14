@@ -302,29 +302,30 @@ addon-view .discussions-help {
 
 addon-view .message-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-addon-view .message-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
+  gap: 0.6rem;
   margin: 0;
+  align-items: center;
 }
 
-addon-view .message-header span.date {
-  font-size: 0.85em;
-  color: #666;
-  white-space: nowrap;
-}
-
-addon-view .discussion-messages h3 img {
-  width: 32px;
-  height: 32px;
+addon-view .message-header img {
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   object-fit: cover;
 }
+addon-view .message-header  span.message-author {
+    font-size: 1.1rem;
+    line-height: 1rem;
+    font-weight: 500;
+}
+
+
+addon-view .message-header span.date {
+  font-size: 0.7rem;
+  line-height: 1.2rem;
+  white-space: nowrap;
+}
+
 
 addon-view .discussion-messages .message {
     position: relative;

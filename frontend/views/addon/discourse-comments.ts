@@ -1,4 +1,5 @@
 import {LitElement, html} from 'lit';
+import moment from 'moment';
 import {customElement, property, state} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 
@@ -67,8 +68,9 @@ class DiscourseComments extends LitElement {
             ${this.messages.map((message) => html`
               <div class="message ${classMap({reply: message.reply})}">
                 <div class="message-header">
-                  <h3><img src=${message.imageUrl} /> ${message.author}</h3>
-                  <span class="date">${message.date} ${message.time}</span>
+                  <img src=${message.imageUrl} />
+                  <span class="message-author">${message.author}</span>
+                  <span class="date" title="${message.date+' '+message.time}" >${moment(message.date+' '+message.time).fromNow()}</span>
                 </div>
                 <p>${unsafeHTML(DomPurify.sanitize(message.text || ""))}</p>
                 <a href="${this.discourseUrl}t/${message.topicId}" class="reply-btn">Reply</a>
