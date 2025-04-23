@@ -221,7 +221,8 @@
     "@polymer/polymer": "$@polymer/polymer",
     "@vaadin/hilla-lit-form": "$@vaadin/hilla-lit-form",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
-    "date-fns": "$date-fns"
+    "date-fns": "$date-fns",
+    "moment": "$moment"
   },
   "vaadin": {
     "dependencies": {
@@ -335,6 +336,6 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "5f15f8c7256a58a5b5d0481dd36c83bcecfeb39f92c81262176647b1827b6cb5"
+    "hash": "e4ccd6e5d26a71676bf20898bdf80bc9b34183bc290a74fe9c140f15323534d3"
   }
 }
