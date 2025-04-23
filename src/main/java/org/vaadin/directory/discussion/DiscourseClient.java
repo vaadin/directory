@@ -47,8 +47,8 @@ public class DiscourseClient {
         this.apiKey = apiKey;
         this.basicAuthUsername = basicAuthUsername;
         this.basicAuthPassword = basicAuthPassword;
-        this.useBasicAuth = basicAuthUsername != null && !basicAuthUsername.isEmpty() 
-                          && basicAuthPassword != null && !basicAuthPassword.isEmpty();
+        this.useBasicAuth = basicAuthUsername != null && !basicAuthUsername.isEmpty()
+                && basicAuthPassword != null && !basicAuthPassword.isEmpty();
 
         // Configure RestTemplate with headers and timeout
         this.restTemplate = restTemplateBuilder
@@ -56,14 +56,14 @@ public class DiscourseClient {
                     // Add Discourse API headers
                     request.getHeaders().set("Api-Username", this.apiUsername);
                     request.getHeaders().set("Api-Key", this.apiKey);
-                    
+
                     // Add HTTP Basic Auth if configured
                     if (useBasicAuth) {
                         String auth = this.basicAuthUsername + ":" + this.basicAuthPassword;
                         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
                         request.getHeaders().set(HttpHeaders.AUTHORIZATION, "Basic " + encodedAuth);
                     }
-                    
+
                     return execution.execute(request, body);
                 })
                 .build();
@@ -76,7 +76,7 @@ public class DiscourseClient {
      * Fetch topics from a specific category with custom parameters
      *
      * @param categoryId ID of the category
-     * @param maxTopics How many
+     * @param maxTopics  How many
      * @return List of topics in the category
      */
     public List<Topic> listTopicsInCategory(int categoryId, int maxTopics) {
@@ -109,8 +109,8 @@ public class DiscourseClient {
             }
 
             // Sort by Topic.created_at latest first
-            list.sort(Comparator.comparing(t -> ((Topic)t).createdAt).reversed());
-            return maxTopics > 0 && list.size() > maxTopics ? list.subList(0,maxTopics-1) :list;
+            list.sort(Comparator.comparing(t -> ((Topic) t).createdAt).reversed());
+            return maxTopics > 0 && list.size() > maxTopics ? list.subList(0, maxTopics - 1) : list;
 
         } catch (Exception e) {
             throw new RuntimeException("Error fetching topics: " + e.getMessage(), e);
@@ -147,27 +147,27 @@ public class DiscourseClient {
     /**
      * Creates a new subcategory under the specified parent category
      *
-     * @param name The name of the new subcategory
-     * @param description The description of the new subcategory
+     * @param name             The name of the new subcategory
+     * @param description      The description of the new subcategory
      * @param parentCategoryId The ID of the parent category
      * @return The newly created subcategory
      */
     public Category createSubcategory(String name, String description, int parentCategoryId) {
         URI uri = URI.create(baseUrl + "/categories.json");
-        
+
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("name", name);
         formData.add("color", "0088CC"); // Default color
         formData.add("text_color", "FFFFFF"); // Default text color
         formData.add("description", description);
         formData.add("parent_category_id", String.valueOf(parentCategoryId));
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Api-Username", this.apiUsername);
         headers.set("Api-Key", this.apiKey);
-        
+
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
-        
+
         try {
             ResponseEntity<CategoryCreateResponse> response = restTemplate.exchange(
                     uri,
@@ -175,35 +175,35 @@ public class DiscourseClient {
                     requestEntity,
                     CategoryCreateResponse.class
             );
-            
+
             return Objects.requireNonNull(response.getBody()).category;
         } catch (Exception e) {
             throw new RuntimeException("Error creating subcategory: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Posts an initial message in a category to start a discussion
      *
      * @param categoryId The ID of the category to post in
-     * @param title The title of the new topic
-     * @param content The content of the first post
+     * @param title      The title of the new topic
+     * @param content    The content of the first post
      * @return The created topic with its first post
      */
     public TopicPostsResponse createInitialPost(int categoryId, String title, String content) {
         URI uri = URI.create(baseUrl + "/posts.json");
-        
+
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("title", title);
         formData.add("raw", content);
         formData.add("category", String.valueOf(categoryId));
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Api-Username", this.apiUsername);
         headers.set("Api-Key", this.apiKey);
-        
+
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
-        
+
         try {
             // First create the topic with initial post
             ResponseEntity<PostCreateResponse> createResponse = restTemplate.exchange(
@@ -217,7 +217,7 @@ public class DiscourseClient {
             if (body == null || body.topicId <= 0) {
                 throw new RuntimeException("Failed to create topic");
             }
-            
+
             // Then fetch the created topic to return complete information
             String topicSlug = body.topicSlug + "/" + body.topicId;
             return fetchTopic(topicSlug);
@@ -225,31 +225,31 @@ public class DiscourseClient {
             throw new RuntimeException("Error creating initial post: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * A convenience method that creates a subcategory and posts an initial message
      *
-     * @param subcategoryName The name of the new subcategory
+     * @param subcategoryName        The name of the new subcategory
      * @param subcategoryDescription The description of the new subcategory
-     * @param parentCategoryId The ID of the parent category
-     * @param topicTitle The title of the initial topic
-     * @param topicContent The content of the initial post
+     * @param parentCategoryId       The ID of the parent category
+     * @param topicTitle             The title of the initial topic
+     * @param topicContent           The content of the initial post
      * @return The created topic with its first post
      */
     public TopicPostsResponse createSubcategoryWithInitialPost(
-            String subcategoryName, 
-            String subcategoryDescription, 
-            int parentCategoryId, 
-            String topicTitle, 
+            String subcategoryName,
+            String subcategoryDescription,
+            int parentCategoryId,
+            String topicTitle,
             String topicContent) {
-        
+
         // First create the subcategory
         Category newCategory = createSubcategory(subcategoryName, subcategoryDescription, parentCategoryId);
-        
+
         // Then create the initial post in that subcategory
         return createInitialPost(newCategory.id, topicTitle, topicContent);
     }
-    
+
     /**
      * Fetches a complete topic by its slug/id
      *
@@ -258,7 +258,7 @@ public class DiscourseClient {
      */
     public TopicPostsResponse fetchTopic(String topicId) {
         URI uri = URI.create(baseUrl + "/t/" + topicId + ".json");
-        
+
         try {
             ResponseEntity<TopicPostsResponse> response = restTemplate.exchange(
                     uri,
@@ -266,34 +266,34 @@ public class DiscourseClient {
                     null,
                     TopicPostsResponse.class
             );
-            
+
             return response.getBody();
         } catch (Exception e) {
             throw new RuntimeException("Error fetching topic: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Fetches all categories from Discourse
      *
      * @return List of all categories
      */
     public List<Category> listCategories() {
-        URI uri = URI.create(baseUrl + "/categories.json");
+        URI uri = URI.create(baseUrl + "/site.json");
 
         try {
             // Fetch and parse response
-            ResponseEntity<CategoryListResponse> response = restTemplate.exchange(
+            ResponseEntity<SiteResponse> response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
                     null,
-                    CategoryListResponse.class
+                    SiteResponse.class
             );
 
             // Return categories
-            CategoryListResponse body = response.getBody();
-            if (body != null && body.categoryList != null) {
-                return body.categoryList.categories;
+            SiteResponse body = response.getBody();
+            if (body != null && body.categories != null) {
+                return body.categories;
             }
             return Collections.emptyList();
         } catch (Exception e) {
@@ -308,48 +308,36 @@ public class DiscourseClient {
      * @return List of subcategories in the category
      */
     public List<CategoryInfo> listSubCategoriesInCategory(int categoryId) {
-        Category c = listCategories().stream().filter(cat -> cat.id == categoryId).findFirst().orElse(null);
-        if (c != null) {
-            
-            // Fetch details for each subcategory by ID
-            List<CategoryInfo> subcategories = new ArrayList<>();
-            for (Integer subcategoryId : c.subcategoryIds) {
-                URI subcategoryUri = URI.create(baseUrl + "/c/" + subcategoryId + ".json");
-                
-                ResponseEntity<CategoryResponse> subcategoryResponse = restTemplate.exchange(
-                        subcategoryUri,
-                        HttpMethod.GET,
-                        null,
-                        CategoryResponse.class
-                );
-                
-                // Parse subcategory details
-                CategoryResponse subCategory = subcategoryResponse.getBody();                
-                if (subCategory != null) {
-                    subcategories.add(subCategory.getCategoryTopic(categoryId));
-                }
+
+        List<Category> allCategories = listCategories();
+        List<Category> subcategories = allCategories.stream()
+                .filter(cat -> cat.parentCategoryId == categoryId).toList();
+
+        List<CategoryInfo> subcategoryInfos = new ArrayList<>();
+
+        for (Category subcategory : subcategories) {
+            if (subcategory != null) {
+                CategoryInfo categoryInfo = new CategoryInfo();
+                categoryInfo.id = subcategory.id;
+                categoryInfo.name = subcategory.name;
+                categoryInfo.description = subcategory.description;
+                categoryInfo.slug = subcategory.slug;
+                categoryInfo.topicCount = subcategory.topicCount;
+                categoryInfo.postCount = subcategory.postCount;
+                categoryInfo.parentCategoryId = categoryId; // Use the parent category ID
+
+                subcategoryInfos.add(categoryInfo);
             }
-            
-            return subcategories;
         }
-
-        return Collections.emptyList();
+        return subcategoryInfos;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class CategoryListResponse {
-        @JsonProperty("category_list")
-        public CategoryList categoryList;
-    }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class CategoryList {
-        @JsonProperty("can_create_category")
-        public boolean canCreateCategory;
-        @JsonProperty("can_create_topic")
-        public boolean canCreateTopic;
+    public static class SiteResponse {
         public List<Category> categories;
     }
+
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CategoryResponse {
@@ -418,8 +406,9 @@ public class DiscourseClient {
         public int parentCategoryId;
         @JsonProperty("has_children")
         public boolean hasChildren;
-        @JsonProperty("subcategory_ids")
-        public List<Integer> subcategoryIds;
+        @JsonProperty("topic_url")
+        public String topicUrl;
+
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
