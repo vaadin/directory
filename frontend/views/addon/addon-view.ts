@@ -29,7 +29,6 @@ import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { searchStore } from 'Frontend/views/search/search-store';
 import { router } from '../../index';
-import { iframeResizer } from 'iframe-resizer';
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
 import './discourse-comments'
@@ -352,7 +351,6 @@ export class AddonView extends View implements BeforeEnterObserver {
       this.updateUserRating();
       getAddonInstallCount(this.addon.urlIdentifier, {mute: true}).then(v =>  {this.installCount = v;});
     }
-    iframeResizer({ log: false }, '#discussion-iframe');
   }
 
   searchByAuthor() {
