@@ -59,12 +59,7 @@ public class DiscussionEndpoint {
         // Find the subcategory for the addon by searching for the identifier in the description
         Optional<CategoryInfo> addonCategory = allSubcategories.stream()
             .filter(category -> {
-                String description = category.description;
-                if (description == null) {
-                    return false;
-                }
-                // Check if the description contains a URL ending with the addon identifier
-                return description.contains("/" + addon) || description.endsWith(addon);
+                return category.slug.equals(addon);
             })
             .findFirst();
         
