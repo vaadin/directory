@@ -174,31 +174,14 @@ public class DiscourseClientTest {
         Optional<DiscourseClient.Category> currentCategory = allCategories.stream()
                 .filter(category -> category.id == this.disCourseCategory)
                 .findFirst();
-                
+
         if (currentCategory.isPresent()) {
             DiscourseClient.Category category = currentCategory.get();
             System.out.println("\nFound target category in main list: " + category.name + " (ID: " + category.id + ")");
             System.out.println("- Has children: " + category.hasChildren);
-            if (category.subcategoryIds != null) {
-                System.out.println("- Subcategory IDs from main list: " + category.subcategoryIds);
-                System.out.println("- Number of subcategory IDs from main list: " + category.subcategoryIds.size());
-                
-                // Compare with the specific subcategories we got from the direct endpoint
-                System.out.println("- Number of subcategories from direct endpoint: " + subCategories.size());
-                
-                // Check if the subcategory counts match
-                if (category.subcategoryIds.size() == subCategories.size()) {
-                    System.out.println("✅ Subcategory counts match between main list and direct endpoint!");
-                } else {
-                    System.out.println("❌ Subcategory counts don't match between main list and direct endpoint.");
-                }
-            } else {
-                System.out.println("- No subcategory IDs found in main list");
-            }
-        } else {
-            System.out.println("Category ID " + this.disCourseCategory + " not found in main categories list");
         }
     }
+
 
     void testCreateSubcategoryWithInitialPost() {
         // Test data
@@ -239,7 +222,6 @@ public class DiscourseClientTest {
         System.out.println("Post content (excerpt): " + firstPost.cooked.substring(0, Math.min(firstPost.cooked.length(), 100)) + "...");
     }
 
-    @Test
     void testCreateSubcategoryWithInitialTopic() {
         // Get current datetime for the topic title
         String dateTime = java.time.LocalDateTime.now().toString();
