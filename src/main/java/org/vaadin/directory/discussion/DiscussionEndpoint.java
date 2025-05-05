@@ -78,7 +78,7 @@ public class DiscussionEndpoint {
         // If the subcategory does not exist, create it
         var categoryUrl = "%sc/%s/%d";
         if (addonCategory == null) {
-            var addon = addonInfoService.getAddon(addonIdentifier);
+            var addon = addonInfoService.getAddonInfo(addonIdentifier);
             if (addon == null) {
                 return null;
             }

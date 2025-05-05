@@ -137,7 +137,7 @@ public class AddonEndpoint implements AddonInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Addon getAddon(String addonIdentifier) {
+    public Addon getAddonInfo(String addonIdentifier) {
         return getAddon(addonIdentifier, null);
     }
 

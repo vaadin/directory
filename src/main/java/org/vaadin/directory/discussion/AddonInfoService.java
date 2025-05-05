@@ -12,7 +12,7 @@ public interface AddonInfoService {
      * @param addonIdentifier The URL identifier of the addon
      * @return The identifier of the addon
      */
-    Addon getAddon(String addonIdentifier);
+    Addon getAddonInfo(String addonIdentifier);
 
     String getComponentUrl();
 }
