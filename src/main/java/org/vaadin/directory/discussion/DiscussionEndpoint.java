@@ -87,14 +87,21 @@ public class DiscussionEndpoint {
             var bodyHtml = "<p>This is discussion and feedback for " + addon.getName()+"<p>" +
                     "<p>" + addon.getSummary()+"<p>" +
                     "<p><a href=\""+addonInfoService.getComponentUrl()+addonIdentifier+"\">"+addonInfoService.getComponentUrl()+addonIdentifier+"</a></p>";
-            DiscourseClient.Category c = discourseClient.createSubcategoryWithDescription(
-                    this.mainCategoryId,
-                    addonIdentifier,
-                    addon.getName(),
-                    description,
-                    description,
-                    bodyHtml);
-            categoryUrl = categoryUrl.formatted(discourseBaseUrl, c.slug, c.id);
+
+            try {
+                DiscourseClient.Category c = discourseClient.createSubcategoryWithDescription(
+                        this.mainCategoryId,
+                        addonIdentifier,
+                        addon.getName(),
+                        description,
+                        description,
+                        bodyHtml);
+                categoryUrl = categoryUrl.formatted(discourseBaseUrl, c.slug, c.id);
+            } catch (Exception e) {
+                // return just forum URL in case of exceptions
+                e.printStackTrace();
+                return discourseBaseUrl;
+            }
 
             // Evict cache for key "'discussionExists' + #addonIdentifier"
             this.cacheManager.getCache("cache15m").evict("'discussionExists' + " + addonIdentifier);
