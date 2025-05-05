@@ -61,13 +61,22 @@ class DiscourseComments extends LitElement {
     return this; // disable shadow DOM
   }
 
-  initDiscussionThreadIfNeeded() {
+  initDiscussionThreadIfNeeded(ClickEvent: Event) {
     if (this.addon) {
-      // Change the mouse cursor to "waiting"
-      document.body.style.cursor = 'wait';
+      // Disable button to avoid multiple clicks
+      const button = ClickEvent.target as HTMLAnchorElement;
+      button.classList.add('disabled');
+      this.hasDiscussions ?
+        button.innerText = 'Opening discussion...':
+        button.innerText = 'Creating discussion...';
+
 
       DiscussionEndpoint.createDiscussionIfNeeded(this.addon, { mute: true })
-        .then((url: string) => window.open(url));
+        .then((url: string) => {
+
+          button.innerText = 'Give feedback or ask questions';
+          window.location.href = url;
+        });
     }
   }
 
