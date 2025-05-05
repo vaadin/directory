@@ -18,6 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Base64;
 
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DiscourseClient {
+    public static final String AUTO_UPDATE_FOR_CATEGORY_INTRO = "Auto-update for category intro";
     private final RestTemplate restTemplate;
     private final String baseUrl;
     private final String apiUsername;
@@ -123,8 +127,8 @@ public class DiscourseClient {
      * @param topicId ID of the topic
      * @return Topic details with posts
      */
-    public List<TopicPostsResponse.Post> listPostsInTopic(String topicId) {
-        URI uri = URI.create(baseUrl + "/t/" + topicId + ".json");
+    public List<TopicPostsResponse.Post> listPostsInTopic(int topicId) {
+        URI uri = URI.create(String.format("%s/t/%d.json", baseUrl, topicId));
 
         try {
             // Fetch and parse response
@@ -147,26 +151,22 @@ public class DiscourseClient {
     /**
      * Creates a new subcategory under the specified parent category
      *
-     * @param name             The name of the new subcategory
+     * @param slug             The slug of the new subcategory
+     * @param name            The name/title of the new subcategory
      * @param description      The description of the new subcategory
      * @param parentCategoryId The ID of the parent category
      * @return The newly created subcategory
      */
-    public Category createSubcategory(String name, String description, int parentCategoryId) {
+    public Category createSubcategory(String slug, String name, String description, int parentCategoryId) {
         URI uri = URI.create(baseUrl + "/categories.json");
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("slug", slug);
         formData.add("name", name);
-        formData.add("color", "0088CC"); // Default color
-        formData.add("text_color", "FFFFFF"); // Default text color
         formData.add("description", description);
         formData.add("parent_category_id", String.valueOf(parentCategoryId));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Api-Username", this.apiUsername);
-        headers.set("Api-Key", this.apiKey);
-
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData,null);
 
         try {
             ResponseEntity<CategoryCreateResponse> response = restTemplate.exchange(
@@ -185,17 +185,203 @@ public class DiscourseClient {
     /**
      * Posts an initial message in a category to start a discussion
      *
-     * @param categoryId The ID of the category to post in
+     * @param category The ID of the category to post in
      * @param title      The title of the new topic
-     * @param content    The content of the first post
+     * @param contentHtml    The content of the first post
      * @return The created topic with its first post
      */
-    public TopicPostsResponse createInitialPost(int categoryId, String title, String content) {
+    public UpdatePostResponse updateCategoryDescription(Category category, String title, String contentHtml) {
+        return updateTopicContent(extractIdFromUrl(category.topicUrl), title, contentHtml);
+    }
+
+    private static int extractIdFromUrl(String url) {
+        var parts = url.split("/");
+        for (int i = parts.length - 1; i >= 0; i--) {
+            try { return Integer.parseInt(parts[i]); } catch (NumberFormatException ignored) {}
+        }
+        throw new IllegalArgumentException("Topic ID not found in URL: " + url);
+    }
+
+    /**
+     * Updates the content of a first post in topic by its URL
+     *
+     * @param topicId   The URL of the topic to update
+     * @param newContent The new content for the topic
+     * @return The updated topic with its posts
+     */
+    public UpdatePostResponse updateTopicContent(int topicId, String newTitle, String newContent) {
+        // Build the URI to fetch the topic details
+        String topicUri = "%s/t/-/%s.json".formatted(baseUrl, topicId);
+        try {
+
+            // Fetch the topic details
+            ResponseEntity<TopicPostsResponse> fetchResponse = restTemplate.exchange(
+                    topicUri,
+                    HttpMethod.GET,
+                    null,
+                    TopicPostsResponse.class
+            );
+
+            // Check if the response is valid
+            TopicPostsResponse topicResponse = fetchResponse.getBody();
+            if (topicResponse == null || topicResponse.postStream == null || topicResponse.postStream.posts.isEmpty()) {
+                throw new RuntimeException("Unable to find posts in the topic.");
+            }
+            int postId = topicResponse.postStream.posts.getFirst().id;
+            String postUri = "%s/posts/%s.json".formatted(baseUrl, postId);
+
+            // Prepare the request to update the topic and post content
+            var topicPayload =  Map.of("title", newTitle, "status", "pinned");
+            var postPayload = Map.of("post", Map.of("raw", newContent, "edit_reason", AUTO_UPDATE_FOR_CATEGORY_INTRO));
+
+            ResponseEntity<UpdateTopicResponse> updateTopicResponse = restTemplate.exchange(
+                    topicUri,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(topicPayload, null),
+                    UpdateTopicResponse.class
+            );
+            if (updateTopicResponse.getBody() == null) {
+                throw new RuntimeException("Unable to category intro topic.");
+            }
+
+            //Update the post content
+            ResponseEntity<UpdatePostResponse> updatePostResponse = restTemplate.exchange(
+                    postUri,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(postPayload, null),
+                    UpdatePostResponse.class
+            );
+            if (updatePostResponse.getBody() == null) {
+                throw new RuntimeException("Unable to update category intro post.");
+            }
+
+            return updatePostResponse.getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating topic content: " + e.getMessage(), e);
+        }
+    }
+
+    public record UpdateTopicResponse(BasicTopic basic_topic) {
+        public record BasicTopic(
+                int id,
+                String title,
+                String fancy_title,
+                String slug,
+                int posts_count
+        ) {}
+    }
+
+    public record UpdatePostResponse(Post post) {
+
+        public record Post(
+                int id,
+                String username,
+                String avatar_template,
+                String created_at,
+                String cooked,
+                int post_number,
+                int post_type,
+                int posts_count,
+                String updated_at,
+                int reply_count,
+                String reply_to_post_number,
+                int quote_count,
+                int incoming_link_count,
+                int reads,
+                int readers_count,
+                int score,
+                boolean yours,
+                int topic_id,
+                String topic_slug,
+                String primary_group_name,
+                String flair_name,
+                String flair_url,
+                String flair_bg_color,
+                String flair_color,
+                int flair_group_id,
+                List<Object> badges_granted,
+                int version,
+                boolean can_edit,
+                boolean can_delete,
+                boolean can_recover,
+                boolean can_see_hidden_post,
+                boolean can_wiki,
+                String user_title,
+                boolean bookmarked,
+                String raw,
+                List<ActionSummary> actions_summary,
+                boolean moderator,
+                boolean admin,
+                boolean staff,
+                int user_id,
+                int draft_sequence,
+                boolean hidden,
+                int trust_level,
+                String deleted_at,
+                boolean user_deleted,
+                String edit_reason,
+                boolean can_view_edit_history,
+                boolean wiki,
+                int reviewable_id,
+                int reviewable_score_count,
+                int reviewable_score_pending_count,
+                String post_url,
+                List<Object> mentioned_users,
+                String name,
+                String display_username
+        ) {}
+
+        public record ActionSummary(int id, boolean can_act) {}
+    }
+
+    public void makeBanner(int topicId) {
+        var entity = new HttpEntity<>(null);
+        restTemplate.exchange(baseUrl + "/t/{id}/make-banner", HttpMethod.PUT, null, Void.class, topicId);
+    }
+
+    public UpdateStatusResponse updateTopicStatus(int topicId, TopicStatus status, boolean enabled) {
+        var payload = Map.of(
+                "status", status.name(),
+                "enabled", Boolean.toString(enabled),
+                "until", LocalDate.of(3025,05,01)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd+HH:mm+HH:mm")) //Forever
+        );
+        var req = new HttpEntity<>(payload, null);
+        return restTemplate.exchange(baseUrl + "/t/{id}/status.json", HttpMethod.PUT, req, UpdateStatusResponse.class, topicId)
+                .getBody();
+    }
+
+
+    /**
+     * Response class for updating topic status
+     */
+    public record UpdateStatusResponse(String success, String topic_status_update) {}
+
+    /**
+     * Enum representing the status of a topic
+     */
+    public enum TopicStatus {
+        closed,
+        pinned,
+        pinned_globally,
+        archived,
+        visible
+    }
+
+    /**
+     * Posts an initial message in a category to start a discussion
+     *
+     * @param categoryId The ID of the category to post in
+     * @param topicTitle      The title of the new topic
+     * @param topicContentHtml    The content of the first post
+     * @return The created topic with its first post
+     */
+    public TopicPostsResponse createNewTopic(int categoryId, String topicTitle, String topicContentHtml) {
         URI uri = URI.create(baseUrl + "/posts.json");
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("title", title);
-        formData.add("raw", content);
+        formData.add("title", topicTitle);
+        formData.add("raw", topicContentHtml);
         formData.add("category", String.valueOf(categoryId));
 
         HttpHeaders headers = new HttpHeaders();
@@ -229,25 +415,32 @@ public class DiscourseClient {
     /**
      * A convenience method that creates a subcategory and posts an initial message
      *
+     * @param parentCategoryId       The ID of the parent category
      * @param subcategoryName        The name of the new subcategory
      * @param subcategoryDescription The description of the new subcategory
-     * @param parentCategoryId       The ID of the parent category
-     * @param topicTitle             The title of the initial topic
-     * @param topicContent           The content of the initial post
+     * @param categoryDescriptionTitle             The title of the initial topic
+     * @param categoryDescriptionContentHtml           The content of the initial post
      * @return The created topic with its first post
      */
-    public TopicPostsResponse createSubcategoryWithInitialPost(
+    public Category createSubcategoryWithDescription(
+            int parentCategoryId,
+            String subcategorySlug,
             String subcategoryName,
             String subcategoryDescription,
-            int parentCategoryId,
-            String topicTitle,
-            String topicContent) {
+            String categoryDescriptionTitle,
+            String categoryDescriptionContentHtml) {
 
         // First create the subcategory
-        Category newCategory = createSubcategory(subcategoryName, subcategoryDescription, parentCategoryId);
+        Category newCategory = createSubcategory(subcategorySlug, subcategoryName, subcategoryDescription, parentCategoryId);
 
-        // Then create the initial post in that subcategory
-        return createInitialPost(newCategory.id, topicTitle, topicContent);
+        // Then create the initial topic in the new subcategory
+        updateCategoryDescription(newCategory, categoryDescriptionTitle, categoryDescriptionContentHtml);
+
+        // make the new topic as a banner
+        makeBanner(newCategory.topicId());
+
+        // Return the created subcategory
+        return newCategory;
     }
 
     /**
@@ -409,6 +602,9 @@ public class DiscourseClient {
         @JsonProperty("topic_url")
         public String topicUrl;
 
+        int topicId() {
+            return extractIdFromUrl(topicUrl);
+        }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -457,6 +653,10 @@ public class DiscourseClient {
         @JsonProperty("featured_link")
         public String featuredLink;
         public List<Poster> posters;
+
+        public LocalDateTime getLastPostedAt() {
+            return LocalDateTime.parse(lastPostedAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+        }
     }
 
     public static class CategoryInfo {
