@@ -334,6 +334,10 @@ public class DiscourseClient {
         public record ActionSummary(int id, boolean can_act) {}
     }
 
+    public void pinTopic(int topicId) {
+        updateTopicStatus(topicId, TopicStatus.pinned, true);
+    }
+
     public void makeBanner(int topicId) {
         var entity = new HttpEntity<>(null);
         restTemplate.exchange(baseUrl + "/t/{id}/make-banner", HttpMethod.PUT, null, Void.class, topicId);
@@ -343,8 +347,8 @@ public class DiscourseClient {
         var payload = Map.of(
                 "status", status.name(),
                 "enabled", Boolean.toString(enabled),
-                "until", LocalDate.of(3025,05,01)
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd+HH:mm+HH:mm")) //Forever
+                "until", LocalDateTime.of(3025,05,01, 00, 00, 00)
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) //Forever
         );
         var req = new HttpEntity<>(payload, null);
         return restTemplate.exchange(baseUrl + "/t/{id}/status.json", HttpMethod.PUT, req, UpdateStatusResponse.class, topicId)
@@ -436,8 +440,8 @@ public class DiscourseClient {
         // Then create the initial topic in the new subcategory
         updateCategoryDescription(newCategory, categoryDescriptionTitle, categoryDescriptionContentHtml);
 
-        // make the new topic as a banner
-        makeBanner(newCategory.topicId());
+        // pin the new topic
+        pinTopic(newCategory.topicId());
 
         // Return the created subcategory
         return newCategory;
