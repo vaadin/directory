@@ -103,6 +103,10 @@ public class DiscussionEndpoint {
             categoryUrl = categoryUrl.formatted(discourseBaseUrl, addonCategory.slug, addonCategory.id);
         }
 
+        // Evict cache for presenting the new discussions
+        this.cacheManager.getCache("cache15m").evict("'alltopics' + #addon");
+        this.cacheManager.getCache("cache15m").evict("'topics' + #addon");
+
         // Return the full URL of the category
         return categoryUrl;
     }
