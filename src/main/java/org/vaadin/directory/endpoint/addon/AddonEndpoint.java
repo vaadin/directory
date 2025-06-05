@@ -14,7 +14,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
-import org.vaadin.directory.discussion.AddonInfoService;
 import org.vaadin.directory.store.Store;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 @Endpoint
 @AnonymousAllowed
-public class AddonEndpoint implements AddonInfoService {
+public class AddonEndpoint {
 
     private static final String USER_NOT_LOGGED_IN = "(not logged in)";
     private final UserInfoService userNameService;
@@ -135,15 +134,4 @@ public class AddonEndpoint implements AddonInfoService {
         return Map.of();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Addon getAddonInfo(String addonIdentifier) {
-        return getAddon(addonIdentifier, null);
-    }
-
-
-    @Override
-    public String getComponentUrl() {
-        return urlConfig.getComponentUrl();
-    }
 }

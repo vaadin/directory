@@ -1,7 +1,7 @@
 package org.vaadin.directory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.vaadin.directory.endpoint.addon.Addon;
 import org.vaadin.directory.endpoint.addon.AddonEndpoint;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /** Handle the static HTML requests by injecting metadata based on routes.
  *
  */
-@Service
+@Component
 public class HtmlHeaderController implements Filter {
 
     public static final String ROUTE_COMPONENT = "/component/";
