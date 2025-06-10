@@ -178,7 +178,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         <section id="discussion" class="discussion">
           <discourse-comments
              discourseUrl="${this.getForumUrl()}"
-              addon="${this.addon.urlIdentifier}"
+              addon="${this.getForumId(this.addon)}"
               discourseEmbedUrl="${this.getUrlToThisAddon()}">
           </discourse-comments>
         </section>
@@ -241,6 +241,11 @@ export class AddonView extends View implements BeforeEnterObserver {
         </dl>
       </section>
     `;
+  }
+
+  getForumId(addon : Addon) {
+    // Return lowercase name with blanks replaced with -
+    return addon.name.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
   }
 
   getUrlToThisAddon() {
