@@ -29,9 +29,9 @@ import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { searchStore } from 'Frontend/views/search/search-store';
 import { router } from '../../index';
-import { iframeResizer } from 'iframe-resizer';
 
 import { SearchEndpoint } from 'Frontend/generated/endpoints';
+import './discourse-comments'
 
 @customElement('addon-view')
 export class AddonView extends View implements BeforeEnterObserver {
@@ -176,12 +176,11 @@ export class AddonView extends View implements BeforeEnterObserver {
         </section>
 
         <section id="discussion" class="discussion">
-          <p>
-            <b>Was this helpful? Need more help?</b><br />Leave a comment or a question below. You can also join
-            the <a href="https://discord.gg/MYFq5RTbBn" rel="noopened">chat on Discord</a> or
-            <a href="https://stackoverflow.com/questions/tagged/vaadin" rel="noopened">ask questions on StackOverflow</a>.
-          </p>
-          <iframe id="discussion-iframe" src="${this.getDiscussionLink()}"></iframe>
+          <discourse-comments
+             discourseUrl="${this.getForumUrl()}"
+              addon="${this.addon.urlIdentifier}"
+              discourseEmbedUrl="${this.getUrlToThisAddon()}">
+          </discourse-comments>
         </section>
 
       </section>
@@ -244,17 +243,20 @@ export class AddonView extends View implements BeforeEnterObserver {
     `;
   }
 
-  getDiscussionLink() {
+  getUrlToThisAddon() {
+    var canonicalUrl = this.addon ? router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier}) :'';
+        canonicalUrl = canonicalUrl.startsWith("/directory/")? canonicalUrl.substring(11) : canonicalUrl;
+        canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
+              appStore.appUrl + canonicalUrl.substring(1) :
+              appStore.appUrl + canonicalUrl;
+    return canonicalUrl;
+  }
 
-    let iframeSrc = window.location.hostname == 'preview.vaadin.com'
-      ? 'https://preview.vaadin.com'
-      : 'https://vaadin.com';
-
-      iframeSrc += `/vaadincom/discussion-service/embed.html?root=DIRECTORY&id=${this.addon?.discussionId}&url=${encodeURI(document.location.pathname)}&name=${encodeURI(
-        ''+this.addon?.name)}&description=`;  
-
-    return iframeSrc;
-
+  getForumUrl() {
+    let link = window.location.hostname == 'vaadin.com'
+      ? 'https://vaadin.com/forum/'
+      : 'https://preview.vaadin.com/forum/';
+    return link;
   }
 
   versionOrder(a: AddonVersion, b: AddonVersion): number {
@@ -349,7 +351,6 @@ export class AddonView extends View implements BeforeEnterObserver {
       this.updateUserRating();
       getAddonInstallCount(this.addon.urlIdentifier, {mute: true}).then(v =>  {this.installCount = v;});
     }
-    iframeResizer({ log: false }, '#discussion-iframe');
   }
 
   searchByAuthor() {
@@ -409,11 +410,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   updatePageMetadata(): void {
 
     // Construct canonical URL
-    var canonicalUrl = router.urlForPath('component/:addon', {addon: this.addon!.urlIdentifier});
-    canonicalUrl = canonicalUrl.startsWith("/directory/")? canonicalUrl.substring(11) : canonicalUrl;
-    canonicalUrl = (canonicalUrl.startsWith("/") && appStore.appUrl.endsWith("/"))?
-          appStore.appUrl + canonicalUrl.substring(1) :
-          appStore.appUrl + canonicalUrl;
+    var canonicalUrl = this.getUrlToThisAddon();
 
     // Create search metadata
     const addonMetadata = new AddonJsonLd(
