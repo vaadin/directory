@@ -45,9 +45,9 @@ export class FeatureMatrix extends Layout {
           )}
         </tr>
           ${this.matrix.rows?.map((title,row) =>
-            html`<tr class="row row-${row} ${title?.indexOf('-')==0?'collapsed':''} ${title?.indexOf('(')==0?'not-supported-fw':''}"><th class="rowh">${title}</th>${this.matrix?.data ?
+            html`<tr class="row row-${row} ${title?.indexOf('-')==0?'collapsed':''} ${title?.indexOf('(')==0?'not-supported-fw':''}"><th class="rowh" title="Vaadin ${title}">${title}</th>${this.matrix?.data ?
                 (this.matrix.data[row] ? this.matrix.data[row]?.map((content:string|undefined,col:number|undefined) =>
-                    html`<td class="data row-${row} col-${col} ${content ? 'on':'off'}"><a style="color:inherit; text-decoration: inherit;" href="${content? appStore.appUrl +'component/'+ this.addon! +'/'+ this.matrix!.cols[col!] :''}">${content}</a></td>`): html``) :
+                    html`<td class="data row-${row} col-${col} ${content ? 'on':'off'}"><a style="color:inherit; text-decoration: inherit;" href="${content? appStore.appUrl +'component/'+ this.addon! +'/'+ this.matrix!.cols[col!] :''}">${content? '✓': ''}</a></td>`): html``) :
                 html`<td colspan="${this.matrix?.cols.length}"></td>`}</tr>`
           )}
       </table>

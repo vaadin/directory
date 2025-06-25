@@ -618,7 +618,13 @@ table.matrix td.on {
 }
 
 table.matrix th {
-  background-color: var(--surface-color);
+  background-color: var(--secondary-surface-color);
+}
+
+table.matrix th.colh {
+  transform: rotate(270deg);
+  transform-origin: bottom left;
+  padding-bottom: 1rem;
 }
 
 table.matrix th.rowh {

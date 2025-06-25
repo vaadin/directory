@@ -165,9 +165,6 @@ export class AddonView extends View implements BeforeEnterObserver {
           `)}
         </ul>
 
-        <h3 id="compatibility">Compatibility</h3>
-        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
-
         <section class="footer">
           ${this.addon.tags.map((tag) => html`
             <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
@@ -239,6 +236,8 @@ export class AddonView extends View implements BeforeEnterObserver {
             (compat) => html`<dd>${compat}</dd>`
           ) : html`<dd>N/A</dd>` }
         </dl>
+        <h4>Version Matrix</h4>
+        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
       </section>
     `;
   }
