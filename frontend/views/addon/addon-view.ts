@@ -6,6 +6,7 @@ import './highlight-carousel';
 import './feature-matrix';
 import './contributors';
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
+import Link from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Link';
 import AddonVersion from 'Frontend/generated/org/vaadin/directory/endpoint/addon/AddonVersion';
 import { getAddon, getUserRating, setUserRating, getAddonInstallCount } from 'Frontend/generated/AddonEndpoint';
 import '@vaadin/select';
@@ -157,17 +158,7 @@ export class AddonView extends View implements BeforeEnterObserver {
           :
           html``
         }
-
-        <h3  id="links">Links</h3>
-        <ul>
-          ${this.addon.links.map((l) => html`
-            <li><a href="${l.href}" router-ignore>${l.name}</a></li>
-          `)}
-        </ul>
-
-        <h3 id="compatibility">Compatibility</h3>
-        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
-
+        
         <section class="footer">
           ${this.addon.tags.map((tag) => html`
             <button class="tag" @click=${() => this.searchByTag(tag)}>${tag}</button>
@@ -239,6 +230,14 @@ export class AddonView extends View implements BeforeEnterObserver {
             (compat) => html`<dd>${compat}</dd>`
           ) : html`<dd>N/A</dd>` }
         </dl>
+        <h4>Version Matrix</h4>
+        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
+        <h4  id="links">Links</h4>
+        <ul>
+          ${this.addon.links.map((l) => html`
+            <li><a href="${l.href}" router-ignore>${l.name}</a></li>
+          `)}
+        </ul>
       </section>
     `;
   }

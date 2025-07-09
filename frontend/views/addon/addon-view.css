@@ -271,9 +271,13 @@ addon-view .highlights .btn-close {
 }
 
 addon-view section.discussion {
+  position: relative;
+  z-index: 1;
   margin-top: 3rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--heading-text-color);
+  padding-top: 1px;
+  background-color: var(--secondary-surface-color);
+  padding: var(--space-md);
+  border-radius: var(--roundness-lg);
 }
 
 addon-view section.discussion.hidden {
@@ -281,6 +285,7 @@ addon-view section.discussion.hidden {
 }
 
 addon-view .discussions-button {
+  float: right;
   display: inline-block;
   padding: 0.4em 1em;
   background-color: rgb(26 129 250);
@@ -618,7 +623,13 @@ table.matrix td.on {
 }
 
 table.matrix th {
-  background-color: var(--surface-color);
+  background-color: var(--secondary-surface-color);
+}
+
+table.matrix th.colh {
+  transform: rotate(270deg);
+  transform-origin: bottom left;
+  padding-bottom: 1rem;
 }
 
 table.matrix th.rowh {

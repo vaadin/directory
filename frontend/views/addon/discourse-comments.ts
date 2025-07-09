@@ -84,8 +84,10 @@ class DiscourseComments extends LitElement {
     // Show the intro message and the messages
       const intro = html`
             <div class="discussions-intro">
-             <a @click=${this.initDiscussionThreadIfNeeded} class="discussions-button">
-                  Give feedback or ask questions</a>
+              <h3>Discussion</h3>
+              <a @click=${this.initDiscussionThreadIfNeeded} class="discussions-button" title="Give feedback or ask questions" >
+                  Open Vaadin Forum</a>
+              <p>Give feedback, share tips and ask questions.</p>
               <p>Total ${this.totalPosts} posts</p>
             </div>`;
 
