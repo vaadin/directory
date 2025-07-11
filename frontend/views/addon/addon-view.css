@@ -15,6 +15,7 @@ author-stats-view .main,
 addon-stats-view .main,
 addon-stats-view .versions,
 addon-view .main,
+addon-view .sidebar,
 addon-view .versions {
   flex: auto;
   max-width: 100%;
@@ -26,9 +27,14 @@ addon-view .main {
   width: 40rem;
 }
 
-addon-view .versions {
-  width: 20rem;
+addon-view .sidebar {
+  min-width: 20rem;
 }
+
+addon-view .versions {
+  flex: unset;
+}
+
 addon-stats-view .back-to-search,
 addon-view .back-to-search {
   font-weight: var(--text-weight-semibold);
@@ -278,6 +284,7 @@ addon-view section.discussion {
   background-color: var(--secondary-surface-color);
   padding: var(--space-md);
   border-radius: var(--roundness-lg);
+
 }
 
 addon-view section.discussion.hidden {
@@ -319,15 +326,13 @@ addon-view .message-header img {
   object-fit: cover;
 }
 addon-view .message-header  span.message-author {
-    font-size: 1.1rem;
-    line-height: 1rem;
-    font-weight: 500;
+  font-size: var(--text-size-sm);
+  font-weight: var(--text-weight-normal);
 }
 
 
 addon-view .message-header span.date {
-  font-size: 0.7rem;
-  line-height: 1.2rem;
+  font-size: var(--text-size-xs);
   white-space: nowrap;
 }
 
@@ -338,6 +343,7 @@ addon-view .discussion-messages .message {
     padding: var(--text-margin-lg);
     border: 1px solid transparent;
     transition: opacity 0.2s ease;
+    overflow-x: scroll;
 }
 addon-view .discussion-messages .message.reply {
     margin-left: var(--text-margin-lg);
@@ -424,12 +430,18 @@ addon-view .highlights ~ :is(h1, h2, h3, h4, h5, h6) {
   margin-bottom: 1rem;
 }
 
+addon-view .sidebar {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+}
+
 addon-view .versions {
   background-color: var(--secondary-surface-color);
   padding: var(--space-md);
+  margin-bottom: var(--space-md);
   border-radius: var(--roundness-lg);
   font-size: var(--text-size-sm);
-  align-self: flex-start;
 }
 
 addon-view .versions header {
@@ -643,9 +655,6 @@ table.matrix th.rowh {
   z-index: 2;
 }
 
-body.addon article.discussion {
-  display: block;
-}
 
 /* Addon stats view styles */
 addon-stats-view .graph {
