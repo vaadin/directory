@@ -356,8 +356,8 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   firstUpdated() {
     if (this.addon) {
-      this.updateUserRating();
       getAddonInstallCount(this.addon.urlIdentifier, {mute: true}).then(v =>  {this.installCount = v;});
+      this.updateUserRating();
     }
   }
 
@@ -404,15 +404,18 @@ export class AddonView extends View implements BeforeEnterObserver {
     const stars = this.renderRoot.querySelector('#rating-stars') as RatingStars;
     if (!stars) return;
 
+    stars.userrating = 0;
     stars.readonly = !this.isAuthenticated();
     if (stars.readonly) {
       stars.tooltip = "Login to rate this addon";
       return;
     }
 
-    stars.userrating = 0;
     stars.tooltip = "Click to rate this addon";
-    stars.userrating = await getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId(), {mute:true});
+    getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId(), {mute:true})
+      .then((v: number) =>  {
+        stars.userrating = v;
+      });
   }
 
   updatePageMetadata(): void {
