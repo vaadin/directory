@@ -176,68 +176,72 @@ export class AddonView extends View implements BeforeEnterObserver {
 
       </section>
 
-      <section class="versions">
-        <header>
-          <h3>Version</h3>
-          <vaadin-select
-            theme="version-select"
-            value="${this.version?.name}"
-            @value-changed=${this.versionChange}
-            .renderer="${guard(
-              [],
-              () => (elem: HTMLElement) =>
-                render(
-                  html`
-                    <vaadin-list-box>
-                      ${this.addon?.versions.sort(this.versionOrder).map((v) => html`
-                        <vaadin-item value="${v.name}" label="${v.name}">
-                          <span>${v.name}</span>
-                          <span class="maturity ${v.maturity.toLowerCase()}">${v.maturity.toLowerCase()}</span>
-                          <span class="release-date">${v.date}</span>
-                        </vaadin-item>
-                      `)}
-                    </vaadin-list-box>
-                  `,
-                  elem
-                )
-            )}">
-          </vaadin-select>
-          <install-tabsheet .addon="${this.addon}" .version="${this.version}"></install-tabsheet>
-        </header>
-
-        <section class="release-notes">
-          ${unsafeHTML(
-            DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
-          )}
+      <section class="sidebar">
+        <section class="versions">
+          <header>
+            <h3>Version</h3>
+            <vaadin-select
+              theme="version-select"
+              value="${this.version?.name}"
+              @value-changed=${this.versionChange}
+              .renderer="${guard(
+                [],
+                () => (elem: HTMLElement) =>
+                  render(
+                    html`
+                      <vaadin-list-box>
+                        ${this.addon?.versions.sort(this.versionOrder).map((v) => html`
+                          <vaadin-item value="${v.name}" label="${v.name}">
+                            <span>${v.name}</span>
+                            <span class="maturity ${v.maturity.toLowerCase()}">${v.maturity.toLowerCase()}</span>
+                            <span class="release-date">${v.date}</span>
+                          </vaadin-item>
+                        `)}
+                      </vaadin-list-box>
+                    `,
+                    elem
+                  )
+              )}">
+            </vaadin-select>
+            <install-tabsheet .addon="${this.addon}" .version="${this.version}"></install-tabsheet>
+          </header>
+  
+          <section class="release-notes">
+            ${unsafeHTML(
+              DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
+            )}
+          </section>
+  
+          <dl class="details">
+            <dt>Released</dt><dd>${this.version?.date}</dd>
+            <dt>Maturity</dt><dd>${this.version?.maturity}</dd>
+            <dt>License</dt><dd>${this.version?.license}</dd>
+          </dl>
+  
+          <h4>Compatibility</h4>
+          <dl class="compatibility">
+            <dt>Framework</dt>
+            ${this.version?.compatibility.map((compat) => html`
+                <dd>${compat}</dd>
+            `)}
+            ${this.getAlsoSupported(this.addon, this.version)}
+  
+            <dt>Browser</dt>
+            ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
+              (compat) => html`<dd>${compat}</dd>`
+            ) : html`<dd>N/A</dd>` }
+          </dl>
         </section>
-
-        <dl class="details">
-          <dt>Released</dt><dd>${this.version?.date}</dd>
-          <dt>Maturity</dt><dd>${this.version?.maturity}</dd>
-          <dt>License</dt><dd>${this.version?.license}</dd>
-        </dl>
-
-        <h4>Compatibility</h4>
-        <dl class="compatibility">
-          <dt>Framework</dt>
-          ${this.version?.compatibility.map((compat) => html`
-              <dd>${compat}</dd>
-          `)}
-          ${this.getAlsoSupported(this.addon, this.version)}
-
-          <dt>Browser</dt>
-          ${this.version?.browserCompatibility.length > 0 ? this.version?.browserCompatibility.map(
-            (compat) => html`<dd>${compat}</dd>`
-          ) : html`<dd>N/A</dd>` }
-        </dl>
-        <h4>Version Matrix</h4>
-        <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
-        <h4  id="links">Links</h4>
-        <ul>
-          ${this.addon.links.map((l) => html`
-            <li><a href="${l.href}" router-ignore>${l.name}</a></li>
-          `)}
-        </ul>
+        <section class="versions">
+          <h4>Version Matrix</h4>
+          <feature-matrix .addon="${this.addon.urlIdentifier}" class="compatibility-matrix"></feature-matrix>
+          <h4  id="links">Links</h4>
+          <ul>
+            ${this.addon.links.map((l: Link) => html`
+              <li><a href="${l.href}" router-ignore>${l.name}</a></li>
+            `)}
+          </ul>
+        </section>
       </section>
     `;
   }
