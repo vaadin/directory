@@ -24,7 +24,8 @@ addon-view .versions {
 author-stats-view .main,
 addon-stats-view .main,
 addon-view .main {
-  width: 40rem;
+  flex: 1;
+  min-width: 46rem;
 }
 
 addon-view .sidebar {
@@ -431,7 +432,8 @@ addon-view .highlights ~ :is(h1, h2, h3, h4, h5, h6) {
 }
 
 addon-view .sidebar {
-  display: flex;
+  flex: 1;
+  min-width: 28rem;
   flex-direction: column;
   align-self: flex-start;
 }
