@@ -31,7 +31,7 @@ public class HtmlHeaderController implements Filter {
     public static final String TITLE = "Vaadin Add-on Directory";
     public static final String SUMMARY = "Find open-source widgets, add-ons, themes, and integrations for your Vaadin application.";
     public static final String DESCRIPTION = "The channel for finding, promoting, and distributing Vaadin add-ons.";
-    public static final String IMAGE = "https://vaadin.com/images/trademark/PNG/VaadinLogomark_RGB_500x500.png";
+    public static final String IMAGE = "https://website.vaadin.com/hubfs/Logos/vaadin_symbol_RGB_500x500.png";
     public static final String LINKS_SECTION="<section id=\"links\"></section>";
     private final UrlConfig urlConfig;
     private final AddonEndpoint service;
