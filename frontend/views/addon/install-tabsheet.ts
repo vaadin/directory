@@ -67,6 +67,12 @@ export class InstallTabSheet extends Layout {
     };
     copyMaven.innerHTML = '<div>Maven POM</div><span>View and copy Maven dependency XML to clipboard</span>';
 
+    const login = document.createElement('div');
+    login.innerText = 'Log in to install!';
+    login.onclick = () => {
+      window.haas.login();
+    }
+
     const mavenText = document.createElement('pre');
     mavenText.innerText = this.version.installs['Maven'] || '';
 
@@ -131,11 +137,11 @@ export class InstallTabSheet extends Layout {
       }
     ];
 
-    if (!this.getCurrentUserId()) {
+    if (!this.isAuthenticated()) {
       options[0].children = [
         {
           text: 'Log in to install',
-          component: undefined
+          component: login
         }
       ]
     }
