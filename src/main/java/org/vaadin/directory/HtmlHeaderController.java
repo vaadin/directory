@@ -77,6 +77,12 @@ public class HtmlHeaderController implements Filter {
                 urlIdentifier = (slashIndex == -1) ? urlIdentifier : urlIdentifier.substring(0, slashIndex);
             }
 
+            // Do not handle vaadin internal requests here
+            if (uri.startsWith("/VAADIN/")) {
+                chain.doFilter(request, response);
+                return;
+            }
+
             Addon oc = service.getAddon(urlIdentifier, "");
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
