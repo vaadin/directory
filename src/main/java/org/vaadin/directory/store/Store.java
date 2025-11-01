@@ -91,8 +91,7 @@ public class Store {
         }
     }
 
-    private UserInstallInfo readUserInstalls(String userId, boolean createIfMissing) {
-        UserInstallInfo data = null;
+    private UserInstallInfo readUserInstalls(String userId) {
 
         // Try cache
         synchronized (this.ratingCache) {
@@ -102,31 +101,31 @@ public class Store {
         }
 
         // Read remote and cache
+        UserInstallInfo data = null;
         try {
             ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = this.getDb()
                     .collection("userInstalls")
                     .document(userId)
                     .get();
             data = documentSnapshotApiFuture.get().toObject(UserInstallInfo.class);
-            if (data != null) {
-                synchronized (this.installCache) {
-                    this.installCache.put(userId, data);
-                }
-                return data;
+            if (data == null) {
+                // Create if missing
+                data = new UserInstallInfo();
+                data.setUserId(userId);
             }
+            // Cache
+            synchronized (this.installCache) {
+                this.installCache.put(userId, data);
+            }
+
         } catch (Exception e) {
             e.printStackTrace(); //TODO: logging
         }
 
-        if (createIfMissing) {
-            data = new UserInstallInfo();
-            data.setUserId(userId);
-        }
         return data;
     }
 
-    private AddonRatingInfo readAddonRating(String urlIdentifier, boolean createIfMissing) {
-        AddonRatingInfo data = null;
+    private AddonRatingInfo readAddonRating(String urlIdentifier) {
 
         // Try cache
         synchronized (this.ratingCache) {
@@ -136,32 +135,36 @@ public class Store {
         }
 
         // Read remote and cache
+        AddonRatingInfo data = null;
         try {
             ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = this.getDb()
                     .collection("addonRatings")
                     .document(urlIdentifier)
                     .get();
             data = documentSnapshotApiFuture.get().toObject(AddonRatingInfo.class);
-            if (data != null) {
-                synchronized (this.ratingCache) {
-                    ratingCache.put(urlIdentifier, data);
-                }
-                return data;
+            // Create if missing
+            if (data == null) {
+                data = new AddonRatingInfo();
+                data.setAddon(urlIdentifier);
+                data.setRatingCount(0);
+                data.setAvg((double) -1);
+                data.setAvg180((double) -1);
+            }
+
+            // Cache
+            synchronized (this.ratingCache) {
+                ratingCache.put(urlIdentifier, data);
             }
         } catch (Exception e) {
             e.printStackTrace(); //TODO: logging
         }
 
-        if (createIfMissing) {
-            data = new AddonRatingInfo();
-            data.setAddon(urlIdentifier);
-        }
         return data;
     }
 
     public int getUserRating(String urlIdentifier, String user) {
-        AddonRatingInfo a = readAddonRating(urlIdentifier, false);
-        if (a != null) {
+        AddonRatingInfo a = readAddonRating(urlIdentifier);
+        if (a.getRatings() != null) {
             RatingInfo r = a.getRatings().stream().filter(e -> user.equals(e.getUser())).findFirst().orElse(null);
             return r != null ? r.getRating() : 0;
         }
@@ -169,7 +172,7 @@ public class Store {
     }
 
     public void setUserRating(String urlIdentifier, int rating, String user) {
-        AddonRatingInfo a = readAddonRating(urlIdentifier, true);
+        AddonRatingInfo a = readAddonRating(urlIdentifier);
         LocalDateTime now = LocalDateTime.now();
 
         ArrayList<RatingInfo> rl = new ArrayList<>();
@@ -208,13 +211,13 @@ public class Store {
     }
 
     public Double getAverageRating(String urlIdentifier) {
-        AddonRatingInfo a = readAddonRating(urlIdentifier, false);
-        return a != null ? a.getAvg() : 0;
+        AddonRatingInfo a = readAddonRating(urlIdentifier);
+        return a.getAvg();
     }
 
     public int getRatingCount(String urlIdentifier) {
-        AddonRatingInfo a = readAddonRating(urlIdentifier, false);
-        return a != null ? a.getRatingCount() : 0;
+        AddonRatingInfo a = readAddonRating(urlIdentifier);
+        return a.getRatingCount();
     }
 
     public void logInstall(String addon, String version, String type, String userId) {
@@ -229,7 +232,7 @@ public class Store {
             incrementCachedTotalInstallCount(addon);
 
             // User installs
-            UserInstallInfo data = readUserInstalls(userId, true);
+            UserInstallInfo data = readUserInstalls(userId);
             ArrayList<InstallInfo> list = new ArrayList<>();
             if (data.getInstalls() != null) {
                 list.addAll(data.getInstalls());
@@ -268,8 +271,8 @@ public class Store {
     }
 
     public List<String> getAddonInstalls(String addon, String user) {
-        UserInstallInfo data = readUserInstalls(user, false);
-        if (data != null && data.getInstalls() != null) {
+        UserInstallInfo data = readUserInstalls(user);
+        if (data.getInstalls() != null) {
             return data.getInstalls().stream().filter(i -> addon.equals(i.getAddon()))
                     .map(i -> i.getVersion()+"/"+i.getType()+"/"+i.getTimestamp())
                     .collect(Collectors.toList());
