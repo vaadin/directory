@@ -113,6 +113,7 @@ export class SearchView extends View {
             @change="${this.updateVersion}"
             aria-label="Vaadin version">
             <option value="all">for all versions</option>
+            <option value="25">Vaadin 25</option>
             <option value="24">Vaadin 24</option>
             <option value="23">Vaadin 23</option>
             <option value="22">Vaadin 22</option>
