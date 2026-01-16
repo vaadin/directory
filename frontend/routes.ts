@@ -4,6 +4,7 @@ import './views/addon/addon-view';
 import './views/addon/card-view';
 import './views/addon/stats-view';
 import './views/addon/author-stats-view';
+import './views/help/mcp-configuration';
 
 export type ViewRoute = Route & {
   title?: string;
@@ -56,6 +57,12 @@ export const routes: ViewRoute[] = [
       (document.querySelector("#haas-container") as HTMLElement).style.display ='none';
       (document.querySelector(".directory-header") as HTMLElement).style.display ='none';
     }
+  },
+  {
+    path: 'mcp-configuration',
+    component: 'mcp-configuration-view',
+    title: 'MCP Configuration',
+    action: (context, commands) => { document.body.className = 'mcp-configuration';}
   },
 
 ];

@@ -1,0 +1,231 @@
+.mcp-configuration-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-md);
+    max-width: var(--layout-max-width);
+    padding: var(--space-md) var(--layout-padding);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.mcp-header .subtitle {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.mcp-section {
+  flex: 1;
+  min-width: 46rem;
+  margin-bottom: 3rem;
+}
+
+.mcp-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.mcp-section ul {
+  line-height: 1.8;
+  margin-left: 1.5rem;
+}
+
+.mcp-section li {
+  margin-bottom: 0.5rem;
+}
+
+/* Tools Grid */
+.tools-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.tool-card {
+  background: var(--lumo-base-color);
+  border: 1px solid var(--lumo-contrast-10pct);
+  border-radius: var(--lumo-border-radius-l);
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px var(--lumo-contrast-30pct);
+}
+
+.tool-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.tool-card p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+/* Code Blocks */
+pre {
+  background: var(--lumo-contrast-5pct);
+  border: 1px solid var(--lumo-contrast-10pct);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+pre code {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--lumo-body-text-color);
+}
+
+code.inline {
+  background: var(--lumo-contrast-5pct);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--lumo-border-radius-l);
+  font-size: 0.9em;
+}
+
+.config-location {
+  color: var(--lumo-secondary-text-color);
+}
+
+.config-location code {
+  font-size: 0.9em;
+}
+
+/* Tables */
+.endpoints-table,
+.confidence-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--lumo-base-color);
+  border: 1px solid var(--lumo-contrast-10pct);
+  border-radius: var(--lumo-border-radius-l);
+  overflow: hidden;
+}
+
+.endpoints-table thead,
+.confidence-table thead {
+  background: var(--lumo-contrast-5pct);
+}
+
+.endpoints-table th,
+.confidence-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--lumo-contrast-10pct);
+}
+
+.endpoints-table td,
+.confidence-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--lumo-contrast-10pct);
+}
+
+.endpoints-table tbody tr:last-child td,
+.confidence-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.endpoints-table tbody tr:hover,
+.confidence-table tbody tr:hover {
+  background: var(--lumo-contrast-5pct);
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--lumo-border-radius-s);
+  font-size: 0.9em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.high {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge.medium {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.badge.low {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.badge.unknown {
+  background: var(--lumo-contrast-10pct);
+  color: var(--lumo-secondary-text-color);
+}
+
+.status-badge {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+/* Footer */
+.mcp-footer {
+    width: 100%;
+  padding-top: 2rem;
+  border-top: 2px solid var(--lumo-contrast-10pct);
+  text-align: center;
+}
+
+.mcp-footer p {
+  color: var(--lumo-secondary-text-color);
+  margin: 0;
+}
+
+.separator {
+  margin: 0 1rem;
+  color: var(--lumo-contrast-20pct);
+}
+
+/* Links */
+.mcp-section a {
+  color: var(--lumo-primary-color);
+  text-decoration: none;
+}
+
+.mcp-section a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mcp-configuration-container {
+    padding: 1rem;
+  }
+
+  .mcp-header h1 {
+    font-size: 2rem;
+  }
+
+  .mcp-header .subtitle {
+    font-size: 1rem;
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  pre {
+    font-size: 0.85rem;
+  }
+
+  .endpoints-table,
+  .confidence-table {
+    font-size: 0.9rem;
+  }
+
+  .endpoints-table th,
+  .endpoints-table td,
+  .confidence-table th,
+  .confidence-table td {
+    padding: 0.5rem;
+  }
+}
+
