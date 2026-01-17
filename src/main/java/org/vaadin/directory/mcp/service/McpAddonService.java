@@ -24,7 +24,7 @@ public class McpAddonService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "cache1h", key = "'mcp-addon-' + #addonId + '-' + #vaadinVersion")
+    @Cacheable(value = "cache1h", key = "'mcp-addon-' + #addonId + '-' + (#vaadinVersion != null ? #vaadinVersion : 'latest')")
     public McpAddonManifest getAddonManifest(String addonId, String vaadinVersion) {
         Addon addon = addonEndpoint.getAddon(addonId, "(not logged in)");
         if (addon == null) {
@@ -37,10 +37,13 @@ public class McpAddonService {
         manifest.setAddonId(addon.getUrlIdentifier());
         manifest.setName(addon.getName());
         manifest.setDescription(addon.getDescription() != null ? addon.getDescription() : addon.getSummary());
-        manifest.setTags(addon.getTags());
+        manifest.setTags(addon.getTags() != null ? addon.getTags() : List.of());
 
         // Find compatible versions
         List<AddonVersion> versions = addon.getVersions();
+        if (versions == null) {
+            versions = List.of();
+        }
         List<String> allSupportedVersions = extractAllSupportedVersions(versions);
         manifest.setSupportedVaadinVersions(allSupportedVersions);
 
@@ -65,10 +68,10 @@ public class McpAddonService {
         }
 
         // Usage
-        String docsUrl = findDocsUrl(addon.getLinks());
+        String docsUrl = findDocsUrl(addon.getLinks() != null ? addon.getLinks() : List.of());
         manifest.setDocsUrl(docsUrl != null ? docsUrl : "unknown");
 
-        String sourceUrl = findSourceUrl(addon.getLinks());
+        String sourceUrl = findSourceUrl(addon.getLinks() != null ? addon.getLinks() : List.of());
         manifest.setSourceRepoUrl(sourceUrl != null ? sourceUrl : "unknown");
 
         // Create usage snippets from code samples
@@ -103,7 +106,9 @@ public class McpAddonService {
         for (int i = versions.size() - 1; i >= 0; i--) {
             AddonVersion v = versions.get(i);
             for (String compat : v.getCompatibility()) {
-                if (compat.startsWith(normalizedTarget) || normalizedTarget.startsWith(compat)) {
+                // Normalize compatibility version too
+                String normalizedCompat = compat.contains(".") ? compat : compat + ".";
+                if (normalizedCompat.startsWith(normalizedTarget) || normalizedTarget.startsWith(normalizedCompat)) {
                     return v;
                 }
             }
@@ -124,10 +129,11 @@ public class McpAddonService {
             if (compat.equals(vaadinVersion) || compat.startsWith(normalizedTarget)) {
                 return "high";
             }
-            // Check major version match
-            String compatMajor = compat.split("\\.")[0];
-            String targetMajor = vaadinVersion.split("\\.")[0];
-            if (compatMajor.equals(targetMajor)) {
+            // Check major version match with bounds checking
+            String[] compatParts = compat.split("\\.");
+            String[] targetParts = vaadinVersion.split("\\.");
+            if (compatParts.length > 0 && targetParts.length > 0 &&
+                compatParts[0].equals(targetParts[0])) {
                 return "medium";
             }
         }
@@ -140,7 +146,10 @@ public class McpAddonService {
 
         if (version.getInstalls().containsKey("Maven")) {
             String mavenSnippet = version.getInstalls().get("Maven");
-            info.setMavenSnippet(mavenSnippet != null ? mavenSnippet : "");
+            if (mavenSnippet == null) {
+                mavenSnippet = "";
+            }
+            info.setMavenSnippet(mavenSnippet);
 
             // Parse Maven coordinates from snippet
             String[] coords = parseMavenCoordinates(mavenSnippet);
@@ -155,8 +164,11 @@ public class McpAddonService {
                 info.setRepository("maven-central");
             }
 
-            // Generate Gradle snippet
-            String gradleSnippet = String.format("implementation '%s:%s:%s'", coords[0], coords[1], coords[2]);
+            // Generate Gradle snippet with sanitized coordinates
+            String gradleSnippet = String.format("implementation '%s:%s:%s'",
+                sanitizeCoordinate(coords[0]),
+                sanitizeCoordinate(coords[1]),
+                sanitizeCoordinate(coords[2]));
             info.setGradleSnippet(gradleSnippet);
         } else {
             info.setMavenGroupId("unknown");
@@ -168,6 +180,17 @@ public class McpAddonService {
         }
 
         return info;
+    }
+
+    /**
+     * Sanitize Maven coordinates to prevent injection in Gradle snippets
+     */
+    private String sanitizeCoordinate(String coord) {
+        if (coord == null || coord.equals("unknown")) {
+            return coord;
+        }
+        // Allow only alphanumeric, dots, hyphens, and underscores
+        return coord.matches("^[a-zA-Z0-9._-]+$") ? coord : "unknown";
     }
 
     private String[] parseMavenCoordinates(String mavenSnippet) {

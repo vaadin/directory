@@ -25,8 +25,8 @@ export class McpConfigurationView extends View {
     );
     metadata.appendOrReplaceToHead();
 
-    const canonical = document.head.querySelector('link[rel="canonical"]') as HTMLElement;
-    if (canonical) canonical.setAttribute("href", appStore.appUrl + 'mcp-configuration');
+    const canonical = document.head.querySelector('link[rel="canonical"]');
+    canonical?.setAttribute("href", `${appStore.appUrl}mcp-configuration`);
   }
 
   render() {
