@@ -15,7 +15,7 @@
 
 .mcp-section {
   flex: 1;
-  min-width: 46rem;
+  min-width: min(46rem, 100%);
   margin-bottom: 3rem;
 }
 
