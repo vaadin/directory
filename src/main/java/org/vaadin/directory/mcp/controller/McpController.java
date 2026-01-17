@@ -1,14 +1,19 @@
 package org.vaadin.directory.mcp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.vaadin.directory.mcp.dto.McpAddonManifest;
 import org.vaadin.directory.mcp.dto.McpSearchResponse;
+import org.vaadin.directory.mcp.dto.McpServerInfo;
+import org.vaadin.directory.mcp.dto.McpToolInfo;
 import org.vaadin.directory.mcp.service.McpAddonService;
 import org.vaadin.directory.mcp.service.McpSearchService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,19 +39,20 @@ public class McpController {
      * Get MCP server metadata
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> getServerInfo() {
-        return Map.of(
-            "name", "vaadin-directory-mcp",
-            "version", "1.0.0",
-            "description", "Vaadin Directory MCP Server - Search and retrieve addon metadata",
-            "capabilities", Map.of(
-                "tools", true
-            ),
-            "tools", new Object[]{
-                Map.of(
-                    "name", "directory_search",
-                    "description", "Search Vaadin Directory for addons. Returns a list of addon summaries with compatibility and rating information.",
-                    "inputSchema", Map.of(
+    public McpServerInfo getServerInfo() {
+        McpServerInfo info = new McpServerInfo(
+            "vaadin-directory-mcp",
+            "1.0.0",
+            "Vaadin Directory MCP Server - Search and retrieve addon metadata"
+        );
+
+        info.setCapabilities(new McpServerInfo.McpCapabilities(true));
+
+        // Define search tool
+        McpToolInfo searchTool = new McpToolInfo();
+        searchTool.setName("directory_search");
+        searchTool.setDescription("Search Vaadin Directory for addons. Returns a list of addon summaries with compatibility and rating information.");
+        searchTool.setInputSchema(Map.of(
                         "type", "object",
                         "properties", Map.of(
                             "query", Map.of(
@@ -71,12 +77,13 @@ public class McpController {
                             )
                         ),
                         "required", new String[]{"query"}
-                    )
-                ),
-                Map.of(
-                    "name", "directory_getAddon",
-                    "description", "Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples.",
-                    "inputSchema", Map.of(
+        ));
+
+        // Define getAddon tool
+        McpToolInfo addonTool = new McpToolInfo();
+        addonTool.setName("directory_getAddon");
+        addonTool.setDescription("Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples.");
+        addonTool.setInputSchema(Map.of(
                         "type", "object",
                         "properties", Map.of(
                             "addonId", Map.of(
@@ -89,10 +96,11 @@ public class McpController {
                             )
                         ),
                         "required", new String[]{"addonId", "vaadinVersion"}
-                    )
-                )
-            }
-        );
+        ));
+
+        info.setTools(List.of(searchTool, addonTool));
+
+        return info;
     }
 
     /**
@@ -128,24 +136,8 @@ public class McpController {
         McpAddonManifest manifest = addonService.getAddonManifest(addonId, vaadinVersion);
 
         if (manifest == null) {
-            // Return empty manifest with error indication
-            McpAddonManifest errorManifest = new McpAddonManifest();
-            errorManifest.setAddonId(addonId != null ? addonId : "unknown");
-            errorManifest.setName("Not Found");
-            errorManifest.setDescription("Addon not found in Vaadin Directory");
-            errorManifest.setTags(java.util.List.of());
-            errorManifest.setSupportedVaadinVersions(java.util.List.of());
-            errorManifest.setCompatibilityConfidence("unknown");
-            errorManifest.setLatestCompatibleVersion("unknown");
-            errorManifest.setLastReleaseDate(null);
-            errorManifest.setDocsUrl("unknown");
-            errorManifest.setSourceRepoUrl("unknown");
-            errorManifest.setUsageSnippets(java.util.List.of());
-            errorManifest.setLicense("unknown");
-            errorManifest.setRating(0.0);
-            errorManifest.setRatingCount(0);
-            errorManifest.setInstall(new McpAddonManifest.McpInstallInfo());
-            return errorManifest;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Addon not found: " + addonId);
         }
 
         return manifest;
