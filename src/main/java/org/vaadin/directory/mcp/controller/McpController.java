@@ -22,7 +22,18 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/mcp/directory")
-@CrossOrigin(origins = "*") // Allow AI tools to access from any origin
+@CrossOrigin(
+    origins = {
+        "https://api.anthropic.com",
+        "https://api.openai.com",
+        "https://claude.ai",
+        "http://localhost:*",
+        "http://127.0.0.1:*"
+    },
+    allowedHeaders = {"Content-Type", "Authorization"},
+    methods = {RequestMethod.GET, RequestMethod.POST},
+    maxAge = 3600
+)
 public class McpController {
 
     private final McpSearchService searchService;
@@ -53,30 +64,30 @@ public class McpController {
         searchTool.setName("directory_search");
         searchTool.setDescription("Search Vaadin Directory for addons. Returns a list of addon summaries with compatibility and rating information.");
         searchTool.setInputSchema(Map.of(
-                        "type", "object",
-                        "properties", Map.of(
-                            "query", Map.of(
-                                "type", "string",
-                                "description", "Search query (addon name, keywords, or tags)"
-                            ),
-                            "vaadinVersion", Map.of(
-                                "type", "string",
-                                "description", "Vaadin major version (e.g., '24', '23') - optional"
-                            ),
-                            "type", Map.of(
-                                "type", "string",
-                                "description", "Addon type filter: component, integration, theme, or tool - optional"
-                            ),
-                            "maintainedOnly", Map.of(
-                                "type", "boolean",
-                                "description", "Only return maintained addons (default: true)"
-                            ),
-                            "limit", Map.of(
-                                "type", "integer",
-                                "description", "Maximum number of results (default: 10, max: 50)"
-                            )
-                        ),
-                        "required", new String[]{"query"}
+            "type", "object",
+            "properties", Map.of(
+                "query", Map.of(
+                    "type", "string",
+                    "description", "Search query (addon name, keywords, or tags)"
+                ),
+                "vaadinVersion", Map.of(
+                    "type", "string",
+                    "description", "Vaadin major version (e.g., '24', '23') - optional"
+                ),
+                "type", Map.of(
+                    "type", "string",
+                    "description", "Addon type filter: component, integration, theme, or tool - optional"
+                ),
+                "maintainedOnly", Map.of(
+                    "type", "boolean",
+                    "description", "Only return maintained addons (default: true)"
+                ),
+                "limit", Map.of(
+                    "type", "integer",
+                    "description", "Maximum number of results (default: 10, max: 50)"
+                )
+            ),
+            "required", new String[]{"query"}
         ));
 
         // Define getAddon tool
@@ -84,18 +95,18 @@ public class McpController {
         addonTool.setName("directory_getAddon");
         addonTool.setDescription("Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples.");
         addonTool.setInputSchema(Map.of(
-                        "type", "object",
-                        "properties", Map.of(
-                            "addonId", Map.of(
-                                "type", "string",
-                                "description", "The addon URL identifier (e.g., 'vaadin-grid-pro', 'avatar')"
-                            ),
-                            "vaadinVersion", Map.of(
-                                "type", "string",
-                                "description", "Target Vaadin major version (e.g., '24', '23')"
-                            )
-                        ),
-                        "required", new String[]{"addonId", "vaadinVersion"}
+            "type", "object",
+            "properties", Map.of(
+                "addonId", Map.of(
+                    "type", "string",
+                    "description", "The addon URL identifier (e.g., 'vaadin-grid-pro', 'avatar')"
+                ),
+                "vaadinVersion", Map.of(
+                    "type", "string",
+                    "description", "Target Vaadin major version (e.g., '24', '23')"
+                )
+            ),
+            "required", new String[]{"addonId", "vaadinVersion"}
         ));
 
         info.setTools(List.of(searchTool, addonTool));
@@ -109,17 +120,47 @@ public class McpController {
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true)
     public McpSearchResponse search(@RequestBody Map<String, Object> request) {
-        String query = (String) request.get("query");
-        String vaadinVersion = (String) request.get("vaadinVersion");
-        String type = (String) request.get("type");
-        boolean maintainedOnly = request.containsKey("maintainedOnly") ?
-            (Boolean) request.get("maintainedOnly") : true;
-        int limit = request.containsKey("limit") ?
-            ((Number) request.get("limit")).intValue() : 10;
+        // Type-safe extraction with validation
+        String query = request.get("query") != null ?
+            request.get("query").toString().trim() : "";
 
-        // Enforce max limit
-        if (limit > 50) limit = 50;
+        // Limit query length to prevent DoS
+        if (query.length() > 500) {
+            query = query.substring(0, 500);
+        }
+
+        String vaadinVersion = request.get("vaadinVersion") != null ?
+            request.get("vaadinVersion").toString() : null;
+
+        // Validate version format (e.g., "24", "24.1", "24.10")
+        if (vaadinVersion != null && !vaadinVersion.matches("^[0-9]{1,2}(\\.[0-9]{1,2})?$")) {
+            vaadinVersion = null;
+        }
+
+        String type = request.get("type") != null ?
+            request.get("type").toString() : null;
+
+        // Type-safe boolean extraction
+        boolean maintainedOnly = true;
+        if (request.containsKey("maintainedOnly")) {
+            Object value = request.get("maintainedOnly");
+            if (value instanceof Boolean) {
+                maintainedOnly = (Boolean) value;
+            }
+        }
+
+        // Type-safe integer extraction with validation
+        int limit = 10;
+        if (request.containsKey("limit")) {
+            Object value = request.get("limit");
+            if (value instanceof Number) {
+                limit = ((Number) value).intValue();
+            }
+        }
+
+        // Enforce limits
         if (limit < 1) limit = 1;
+        if (limit > 50) limit = 50;
 
         return searchService.search(query, vaadinVersion, type, maintainedOnly, limit);
     }
@@ -130,8 +171,14 @@ public class McpController {
     @PostMapping(value = "/addon", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true)
     public McpAddonManifest getAddon(@RequestBody Map<String, Object> request) {
-        String addonId = (String) request.get("addonId");
-        String vaadinVersion = (String) request.get("vaadinVersion");
+        String addonId = request.get("addonId") != null ?
+            request.get("addonId").toString() : null;
+        String vaadinVersion = request.get("vaadinVersion") != null ?
+            request.get("vaadinVersion").toString() : null;
+
+        if (addonId == null || addonId.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "addonId is required");
+        }
 
         McpAddonManifest manifest = addonService.getAddonManifest(addonId, vaadinVersion);
 
