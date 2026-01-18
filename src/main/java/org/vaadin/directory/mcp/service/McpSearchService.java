@@ -60,20 +60,10 @@ public class McpSearchService {
     }
 
     private McpAddonSummary convertToSummary(SearchResult searchResult, String vaadinVersion) {
-        // Get full addon details to determine latest compatible version
-        String latestVersion = "unknown";
-        String confidence = "unknown";
-
-        // For now, we'll use basic heuristics. A more complete implementation
-        // would fetch the full addon details, but that would be expensive for search results.
-        // The PRD indicates this is acceptable for v1.
-
         return new McpAddonSummary(
             searchResult.getUrlIdentifier(),
             searchResult.getName(),
             searchResult.getSummary(),
-            latestVersion,
-            confidence,
             searchResult.getRating(),
             searchResult.getRatingCount()
         );
