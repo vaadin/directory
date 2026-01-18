@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,58 +94,53 @@ public class McpAddonService {
         return manifest;
     }
 
+    private String calculateCompatibilityConfidence(AddonVersion bestVersion, String vaadinVersion) {
+        if (bestVersion == null || vaadinVersion == null || vaadinVersion.isEmpty()) {
+            return "unknown";
+        }
+
+        if (bestVersion.getCompatibility() != null) {
+            for (String compatVersion : bestVersion.getCompatibility()) {
+                // Remove "Vaadin " prefix if present
+                if (compatVersion.startsWith("Vaadin ")) {
+                    compatVersion = compatVersion.substring(7).trim();
+                }
+                if (compatVersion.startsWith(vaadinVersion)) {
+                    return "high";
+                } else if (compatVersion.startsWith(vaadinVersion.split("\\.")[0] + ".")) {
+                    return "medium";
+                }
+            }
+        }
+
+        return "low";
+    }
+
+    private AddonVersion findBestMatchingVersion(List<AddonVersion> versions, String vaadinVersion) {
+        if (versions == null || versions.isEmpty()) {
+            return null;
+        }
+
+        // If no specific Vaadin version requested, return the latest version
+        if (vaadinVersion == null || vaadinVersion.isEmpty()) {
+            return versions.stream()
+                    .max(Comparator.comparing(AddonVersion::getDate))
+                    .orElse(versions.getLast());
+        }
+
+        // Find the most recent version compatible with the requested Vaadin version
+        return versions.stream()
+                .filter(v -> v.getCompatibility() != null && v.getCompatibility().stream().anyMatch(ver -> ver.startsWith(vaadinVersion)))
+                .max(Comparator.comparing(AddonVersion::getDate))
+                .orElse(versions.getLast());
+    }
+
     private List<String> extractAllSupportedVersions(List<AddonVersion> versions) {
         return versions.stream()
                 .flatMap(v -> v.getCompatibility().stream())
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    private AddonVersion findBestMatchingVersion(List<AddonVersion> versions, String vaadinVersion) {
-        if (vaadinVersion == null || vaadinVersion.isEmpty()) {
-            // Return latest version
-            return versions.isEmpty() ? null : versions.get(versions.size() - 1);
-        }
-
-        // Try exact or dot-bounded prefix match first
-        for (int i = versions.size() - 1; i >= 0; i--) {
-            AddonVersion v = versions.get(i);
-            for (String compat : v.getCompatibility()) {
-                // Match exact version or dot-separated prefix (e.g., "24" with "24.1")
-                if (compat.equals(vaadinVersion)
-                        || compat.startsWith(vaadinVersion + ".")
-                        || vaadinVersion.startsWith(compat + ".")) {
-                    return v;
-                }
-            }
-        }
-
-        // Return latest if no match
-        return versions.isEmpty() ? null : versions.get(versions.size() - 1);
-    }
-
-    private String calculateCompatibilityConfidence(AddonVersion version, String vaadinVersion) {
-        if (version == null || vaadinVersion == null || vaadinVersion.isEmpty()) {
-            return "unknown";
-        }
-
-        String normalizedTarget = vaadinVersion.contains(".") ? vaadinVersion : vaadinVersion + ".";
-
-        for (String compat : version.getCompatibility()) {
-            if (compat.equals(vaadinVersion) || compat.startsWith(normalizedTarget)) {
-                return "high";
-            }
-            // Check major version match with bounds checking
-            String[] compatParts = compat.split("\\.");
-            String[] targetParts = vaadinVersion.split("\\.");
-            if (compatParts.length > 0 && targetParts.length > 0 &&
-                compatParts[0].equals(targetParts[0])) {
-                return "medium";
-            }
-        }
-
-        return "low";
     }
 
     private McpAddonManifest.McpInstallInfo createInstallInfo(AddonVersion version) {
