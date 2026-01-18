@@ -23,8 +23,8 @@ public class McpSearchService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "cache15m", key = "'mcp-search-' + #query + '-' + #vaadinVersion + '-' + #type + '-' + #maintainedOnly + '-' + #limit")
-    public McpSearchResponse search(String query, String vaadinVersion, String type, boolean maintainedOnly, int limit) {
+    @Cacheable(value = "cache15m", key = "'mcp-search-' + #query + '-' + #vaadinVersion + '-' + #type + '-' + #limit")
+    public McpSearchResponse search(String query, String vaadinVersion, String type, int limit) {
         // Build search query
         StringBuilder searchQuery = new StringBuilder(query != null ? query : "");
 
