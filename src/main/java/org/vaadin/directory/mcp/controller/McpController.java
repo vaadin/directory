@@ -1,15 +1,14 @@
 package org.vaadin.directory.mcp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.vaadin.directory.mcp.dto.McpAddonManifest;
-import org.vaadin.directory.mcp.dto.McpSearchResponse;
-import org.vaadin.directory.mcp.dto.McpServerInfo;
-import org.vaadin.directory.mcp.dto.McpToolInfo;
+import org.vaadin.directory.mcp.dto.*;
 import org.vaadin.directory.mcp.service.McpAddonService;
 import org.vaadin.directory.mcp.service.McpSearchService;
 
@@ -32,12 +31,15 @@ public class McpController {
 
     private final McpSearchService searchService;
     private final McpAddonService addonService;
+    private final ObjectMapper objectMapper;
 
     public McpController(
             @Autowired McpSearchService searchService,
-            @Autowired McpAddonService addonService) {
+            @Autowired McpAddonService addonService,
+            @Autowired ObjectMapper objectMapper) {
         this.searchService = searchService;
         this.addonService = addonService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -48,7 +50,8 @@ public class McpController {
         McpServerInfo info = new McpServerInfo(
             "vaadin-directory-mcp",
             "1.0.0",
-            "Vaadin Directory MCP Server - Search and retrieve addon metadata"
+            "Vaadin Directory MCP Server - Search and retrieve addon metadata",
+            "./mcp"
         );
 
         info.setCapabilities(new McpServerInfo.McpCapabilities(true));
@@ -111,7 +114,123 @@ public class McpController {
     }
 
     /**
-     * Search for addons in Vaadin Directory
+     * Unified MCP endpoint with streaming support.
+     * Handles search, details (addon), and health tools.
+     */
+    @PostMapping(
+        value = "/mcp",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<byte[]> mcp(@RequestBody McpRequest req) {
+        Object result = switch (req.tool()) {
+            case "directory_search" -> searchTool(req.params());
+            case "directory_getAddon" -> addonTool(req.params());
+            case "health" -> healthTool(req.params());
+            default -> errorTool("Unknown tool: " + req.tool(), req.tool());
+        };
+
+        try {
+            byte[] json = objectMapper.writeValueAsBytes(result);
+            return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(json);
+        } catch (Exception e) {
+            byte[] errorJson = ("{\"error\":\"Serialization failed: " + e.getMessage() + "\"}").getBytes();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(errorJson);
+        }
+    }
+
+    /**
+     * Search tool implementation
+     */
+    private Object searchTool(Map<String, Object> params) {
+        try {
+            String query = params.get("query") != null ?
+                params.get("query").toString().trim() : "";
+
+            // Limit query length to prevent DoS
+            if (query.length() > 500) {
+                query = query.substring(0, 500);
+            }
+
+            String vaadinVersion = params.get("vaadinVersion") != null ?
+                params.get("vaadinVersion").toString() : null;
+
+            // Validate version format (e.g., "24", "24.1", "24.10")
+            if (vaadinVersion != null && !vaadinVersion.matches("^[0-9]{1,2}(\\.[0-9]{1,2})?$")) {
+                vaadinVersion = null;
+            }
+
+            String type = params.get("type") != null ?
+                params.get("type").toString() : null;
+
+            // Type-safe integer extraction with validation
+            int limit = 10;
+            if (params.containsKey("limit")) {
+                Object value = params.get("limit");
+                if (value instanceof Number) {
+                    limit = ((Number) value).intValue();
+                }
+            }
+
+            // Enforce limits
+            if (limit < 1) limit = 1;
+            if (limit > 50) limit = 50;
+
+            return searchService.search(query, vaadinVersion, type, limit);
+        } catch (Exception e) {
+            return new McpErrorResponse("Search failed: " + e.getMessage(), "directory_search");
+        }
+    }
+
+    /**
+     * Addon details tool implementation
+     */
+    private Object addonTool(Map<String, Object> params) {
+        try {
+            String addonId = params.get("addonId") != null ?
+                params.get("addonId").toString() : null;
+            String vaadinVersion = params.get("vaadinVersion") != null ?
+                params.get("vaadinVersion").toString() : null;
+
+            if (addonId == null || addonId.trim().isEmpty()) {
+                return new McpErrorResponse("addonId is required", "directory_getAddon");
+            }
+
+            McpAddonManifest manifest = addonService.getAddonManifest(addonId, vaadinVersion);
+
+            if (manifest == null) {
+                return new McpErrorResponse("Addon not found: " + addonId, "directory_getAddon");
+            }
+
+            return manifest;
+        } catch (Exception e) {
+            return new McpErrorResponse("Addon retrieval failed: " + e.getMessage(), "directory_getAddon");
+        }
+    }
+
+    /**
+     * Health check tool implementation
+     */
+    private Object healthTool(Map<String, Object> params) {
+        return Map.of(
+            "status", "ok",
+            "service", "vaadin-directory-mcp"
+        );
+    }
+
+    /**
+     * Error tool implementation
+     */
+    private Object errorTool(String message, String tool) {
+        return new McpErrorResponse(message, tool);
+    }
+
+    /**
+     * Legacy search endpoint (kept for backward compatibility)
      */
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true)
@@ -153,7 +272,7 @@ public class McpController {
     }
 
     /**
-     * Get detailed addon information
+     * Legacy addon endpoint (kept for backward compatibility)
      */
     @PostMapping(value = "/addon", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true)
@@ -178,7 +297,7 @@ public class McpController {
     }
 
     /**
-     * Health check endpoint
+     * Legacy health check endpoint (kept for backward compatibility)
      */
     @GetMapping(value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> health() {

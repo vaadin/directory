@@ -6,6 +6,7 @@ public class McpServerInfo {
     private String name;
     private String version;
     private String description;
+    private String toolEndpoint;
     private McpCapabilities capabilities;
     private List<McpToolInfo> tools;
 
@@ -15,6 +16,13 @@ public class McpServerInfo {
         this.name = name;
         this.version = version;
         this.description = description;
+    }
+
+    public McpServerInfo(String name, String version, String description, String toolEndpoint) {
+        this.name = name;
+        this.version = version;
+        this.description = description;
+        this.toolEndpoint = toolEndpoint;
     }
 
     public String getName() {
@@ -39,6 +47,14 @@ public class McpServerInfo {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getToolEndpoint() {
+        return toolEndpoint;
+    }
+
+    public void setToolEndpoint(String toolEndpoint) {
+        this.toolEndpoint = toolEndpoint;
     }
 
     public McpCapabilities getCapabilities() {
