@@ -107,16 +107,14 @@ public class McpAddonService {
             return versions.isEmpty() ? null : versions.get(versions.size() - 1);
         }
 
-        // Normalize version (e.g., "24" -> "24.", "24.5" -> "24.5")
-        String normalizedTarget = vaadinVersion.contains(".") ? vaadinVersion : vaadinVersion + ".";
-
-        // Try exact match first
+        // Try exact or dot-bounded prefix match first
         for (int i = versions.size() - 1; i >= 0; i--) {
             AddonVersion v = versions.get(i);
             for (String compat : v.getCompatibility()) {
-                // Normalize compatibility version too
-                String normalizedCompat = compat.contains(".") ? compat : compat + ".";
-                if (normalizedCompat.startsWith(normalizedTarget) || normalizedTarget.startsWith(normalizedCompat)) {
+                // Match exact version or dot-separated prefix (e.g., "24" with "24.1")
+                if (compat.equals(vaadinVersion)
+                        || compat.startsWith(vaadinVersion + ".")
+                        || vaadinVersion.startsWith(compat + ".")) {
                     return v;
                 }
             }
