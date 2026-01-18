@@ -10,6 +10,7 @@ import org.vaadin.directory.endpoint.addon.AddonVersion;
 import org.vaadin.directory.endpoint.addon.Link;
 import org.vaadin.directory.mcp.dto.McpAddonManifest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class McpAddonService {
             manifest.setInstall(installInfo);
         } else {
             manifest.setLatestCompatibleVersion("unknown");
-            manifest.setLastReleaseDate(null);
+            manifest.setLastReleaseDate(LocalDate.MIN);
             manifest.setLicense("unknown");
             manifest.setInstall(new McpAddonManifest.McpInstallInfo());
         }
