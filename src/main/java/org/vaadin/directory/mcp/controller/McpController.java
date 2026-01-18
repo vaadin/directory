@@ -78,10 +78,6 @@ public class McpController {
                     "type", "string",
                     "description", "Addon type filter: component, integration, theme, or tool - optional"
                 ),
-                "maintainedOnly", Map.of(
-                    "type", "boolean",
-                    "description", "Only return maintained addons (default: true)"
-                ),
                 "limit", Map.of(
                     "type", "integer",
                     "description", "Maximum number of results (default: 10, max: 50)"
@@ -140,15 +136,6 @@ public class McpController {
         String type = request.get("type") != null ?
             request.get("type").toString() : null;
 
-        // Type-safe boolean extraction
-        boolean maintainedOnly = true;
-        if (request.containsKey("maintainedOnly")) {
-            Object value = request.get("maintainedOnly");
-            if (value instanceof Boolean) {
-                maintainedOnly = (Boolean) value;
-            }
-        }
-
         // Type-safe integer extraction with validation
         int limit = 10;
         if (request.containsKey("limit")) {
@@ -162,7 +149,7 @@ public class McpController {
         if (limit < 1) limit = 1;
         if (limit > 50) limit = 50;
 
-        return searchService.search(query, vaadinVersion, type, maintainedOnly, limit);
+        return searchService.search(query, vaadinVersion, type, limit);
     }
 
     /**
