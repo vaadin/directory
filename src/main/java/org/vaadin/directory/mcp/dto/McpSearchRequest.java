@@ -4,7 +4,6 @@ import com.vaadin.hilla.Nonnull;
 
 public class McpSearchRequest {
 
-    @Nonnull
     private String query;
 
     private String vaadinVersion;
