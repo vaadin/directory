@@ -59,7 +59,35 @@ public class McpController {
 
         info.setCapabilities(new McpServerInfo.McpCapabilities(true));
 
-        // Define search tool
+        // Define search & addon tools
+        McpToolInfo searchTool = getSearchToolInfo();
+        McpToolInfo addonTool = getAddonToolInfo();
+        info.setTools(List.of(searchTool, addonTool));
+        return info;
+    }
+
+    private static McpToolInfo getAddonToolInfo() {
+        McpToolInfo addonTool = new McpToolInfo();
+        addonTool.setName("directory_getAddon");
+        addonTool.setDescription("Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples.");
+        addonTool.setInputSchema(Map.of(
+            "type", "object",
+            "properties", Map.of(
+                "addonId", Map.of(
+                    "type", "string",
+                    "description", "The addon URL identifier (e.g., 'vaadin-grid-pro', 'avatar')"
+                ),
+                "vaadinVersion", Map.of(
+                    "type", "string",
+                    "description", "Target Vaadin major version (e.g., '24', '23')"
+                )
+            ),
+            "required", new String[]{"addonId", "vaadinVersion"}
+        ));
+        return addonTool;
+    }
+
+    private static McpToolInfo getSearchToolInfo() {
         McpToolInfo searchTool = new McpToolInfo();
         searchTool.setName("directory_search");
         searchTool.setDescription("Search Vaadin Directory for addons. Returns a list of addon summaries with compatibility and rating information.");
@@ -85,29 +113,7 @@ public class McpController {
             ),
             "required", new String[]{"query"}
         ));
-
-        // Define getAddon tool
-        McpToolInfo addonTool = new McpToolInfo();
-        addonTool.setName("directory_getAddon");
-        addonTool.setDescription("Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples.");
-        addonTool.setInputSchema(Map.of(
-            "type", "object",
-            "properties", Map.of(
-                "addonId", Map.of(
-                    "type", "string",
-                    "description", "The addon URL identifier (e.g., 'vaadin-grid-pro', 'avatar')"
-                ),
-                "vaadinVersion", Map.of(
-                    "type", "string",
-                    "description", "Target Vaadin major version (e.g., '24', '23')"
-                )
-            ),
-            "required", new String[]{"addonId", "vaadinVersion"}
-        ));
-
-        info.setTools(List.of(searchTool, addonTool));
-
-        return info;
+        return searchTool;
     }
 
     /**
