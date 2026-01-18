@@ -23,15 +23,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mcp-service")
 @CrossOrigin(
-    origins = {
-        "https://api.anthropic.com",
-        "https://api.openai.com",
-        "https://claude.ai",
-        "http://localhost:*",
-        "http://127.0.0.1:*"
-    },
-    allowedHeaders = {"Content-Type", "Authorization"},
-    methods = {RequestMethod.GET, RequestMethod.POST},
+    origins = { "*"},
+    allowedHeaders = {"Content-Type", "Authorization", "Accept"},
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
     maxAge = 3600
 )
 public class McpController {
