@@ -27,7 +27,7 @@ export class McpConfigurationView extends View {
 
   render() {
     const baseUrl = window.location.origin;
-    const mcpUrl = `${baseUrl}/mcp/directory`;
+    const mcpUrl = `${baseUrl}/mcp-service`;
 
     return html`
       <div class="mcp-configuration-container">
@@ -118,22 +118,22 @@ export class McpConfigurationView extends View {
             </thead>
             <tbody>
               <tr>
-                <td><code>/mcp/directory</code></td>
+                <td><code>/mcp-service</code></td>
                 <td>GET</td>
                 <td>Server metadata and tool schemas</td>
               </tr>
               <tr>
-                <td><code>/mcp/directory/search</code></td>
+                <td><code>/mcp-service/search</code></td>
                 <td>POST</td>
                 <td>Search for addons</td>
               </tr>
               <tr>
-                <td><code>/mcp/directory/addon</code></td>
+                <td><code>/mcp-service/addon</code></td>
                 <td>POST</td>
                 <td>Get detailed addon information</td>
               </tr>
               <tr>
-                <td><code>/mcp/directory/health</code></td>
+                <td><code>/mcp-service/health</code></td>
                 <td>GET</td>
                 <td>Health check</td>
               </tr>

@@ -21,7 +21,7 @@ import java.util.Map;
  * Exposes search and addon metadata APIs for AI tools and assistants.
  */
 @RestController
-@RequestMapping("/mcp/directory")
+@RequestMapping("/mcp-service")
 @CrossOrigin(
     origins = {
         "https://api.anthropic.com",
