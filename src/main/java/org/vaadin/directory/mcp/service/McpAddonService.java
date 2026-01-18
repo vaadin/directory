@@ -9,7 +9,14 @@ import org.vaadin.directory.endpoint.addon.AddonEndpoint;
 import org.vaadin.directory.endpoint.addon.AddonVersion;
 import org.vaadin.directory.endpoint.addon.Link;
 import org.vaadin.directory.mcp.dto.McpAddonManifest;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,31 +208,47 @@ public class McpAddonService {
         }
 
         try {
+            DocumentBuilder builder = getDocumentBuilder();
+
+            // Parse the XML snippet
+            Document doc = builder.parse(new ByteArrayInputStream(mavenSnippet.getBytes(StandardCharsets.UTF_8)));
+            doc.getDocumentElement().normalize();
+
             // Extract groupId
-            int groupIdStart = mavenSnippet.indexOf("<groupId>");
-            int groupIdEnd = mavenSnippet.indexOf("</groupId>");
-            if (groupIdStart != -1 && groupIdEnd != -1) {
-                result[0] = mavenSnippet.substring(groupIdStart + 9, groupIdEnd).trim();
+            NodeList groupIdList = doc.getElementsByTagName("groupId");
+            if (groupIdList.getLength() > 0) {
+                result[0] = groupIdList.item(0).getTextContent().trim();
             }
 
             // Extract artifactId
-            int artifactIdStart = mavenSnippet.indexOf("<artifactId>");
-            int artifactIdEnd = mavenSnippet.indexOf("</artifactId>");
-            if (artifactIdStart != -1 && artifactIdEnd != -1) {
-                result[1] = mavenSnippet.substring(artifactIdStart + 12, artifactIdEnd).trim();
+            NodeList artifactIdList = doc.getElementsByTagName("artifactId");
+            if (artifactIdList.getLength() > 0) {
+                result[1] = artifactIdList.item(0).getTextContent().trim();
             }
 
             // Extract version
-            int versionStart = mavenSnippet.indexOf("<version>");
-            int versionEnd = mavenSnippet.indexOf("</version>");
-            if (versionStart != -1 && versionEnd != -1) {
-                result[2] = mavenSnippet.substring(versionStart + 9, versionEnd).trim();
+            NodeList versionList = doc.getElementsByTagName("version");
+            if (versionList.getLength() > 0) {
+                result[2] = versionList.item(0).getTextContent().trim();
             }
         } catch (Exception e) {
             // Return defaults on parse error
         }
 
         return result;
+    }
+
+
+    private static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+        // Create a DocumentBuilder with secure settings
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // Disable external entities for security
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setExpandEntityReferences(false);
+
+        return factory.newDocumentBuilder();
     }
 
     private String findDocsUrl(List<Link> links) {
