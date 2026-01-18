@@ -4,6 +4,7 @@ import { customElement } from 'lit/decorators.js';
 import { View, PageJsonLd } from '../view';
 import { appStore } from 'Frontend/stores/app-store';
 import { RouterLocation } from '@vaadin/router';
+import { router } from '../../index';
 
 @customElement('mcp-configuration-view')
 export class McpConfigurationView extends View {
@@ -26,8 +27,8 @@ export class McpConfigurationView extends View {
   }
 
   render() {
-    const baseUrl = window.location.origin;
-    const mcpUrl = `${baseUrl}/mcp-service`;
+    const baseUrl = router.baseUrl;
+    const mcpUrl = `${baseUrl}mcp-service`;
 
     return html`
       <div class="mcp-configuration-container">
