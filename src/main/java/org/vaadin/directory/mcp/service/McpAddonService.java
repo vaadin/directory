@@ -99,18 +99,104 @@ public class McpAddonService {
             return "unknown";
         }
 
-        if (bestVersion.getCompatibility() != null) {
-            for (String compatVersion : bestVersion.getCompatibility()) {
-                // Remove "Vaadin " prefix if present
-                if (compatVersion.startsWith("Vaadin ")) {
-                    compatVersion = compatVersion.substring(7).trim();
-                }
-                if (compatVersion.startsWith(vaadinVersion)) {
-                    return "high";
-                } else if (compatVersion.startsWith(vaadinVersion.split("\\.")[0] + ".")) {
-                    return "medium";
-                }
+        if (bestVersion.getCompatibility() == null || bestVersion.getCompatibility().isEmpty()) {
+            return "low";
+        }
+
+        // Parse requested version into major and minor components
+        String[] requestedParts = vaadinVersion.split("\\.");
+        int requestedMajor;
+        Integer requestedMinor = null;
+
+        try {
+            requestedMajor = Integer.parseInt(requestedParts[0]);
+            if (requestedParts.length > 1 && !requestedParts[1].isEmpty()) {
+                requestedMinor = Integer.parseInt(requestedParts[1]);
             }
+        } catch (NumberFormatException e) {
+            return "low";
+        }
+
+        boolean hasExactMatch = false;
+        boolean hasMajorMatch = false;
+        boolean hasFutureCompatibility = false;
+
+        for (String compatVersion : bestVersion.getCompatibility()) {
+            // Remove "Vaadin " prefix if present
+            String cleanVersion = compatVersion;
+            if (cleanVersion.startsWith("Vaadin ")) {
+                cleanVersion = cleanVersion.substring(7).trim();
+            }
+
+            // Handle future compatibility notation (e.g., "24+")
+            if (cleanVersion.endsWith("+")) {
+                String baseVersion = cleanVersion.substring(0, cleanVersion.length() - 1).trim();
+                try {
+                    String[] baseParts = baseVersion.split("\\.");
+                    int baseMajor = Integer.parseInt(baseParts[0]);
+                    Integer baseMinor = null;
+                    if (baseParts.length > 1 && !baseParts[1].isEmpty()) {
+                        baseMinor = Integer.parseInt(baseParts[1]);
+                    }
+
+                    // Check if requested version is within the "+" range
+                    if (requestedMajor > baseMajor) {
+                        // Future major version - medium confidence
+                        hasFutureCompatibility = true;
+                    } else if (requestedMajor == baseMajor) {
+                        if (baseMinor == null) {
+                            // "24+" covers all 24.x versions - high confidence
+                            hasExactMatch = true;
+                        } else if (requestedMinor == null || requestedMinor >= baseMinor) {
+                            // "24.5+" and requesting 24.6 or 24 - high confidence
+                            hasExactMatch = true;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    // Invalid version format, skip
+                }
+                continue;
+            }
+
+            // Handle exact version matching
+            try {
+                String[] compatParts = cleanVersion.split("\\.");
+                int compatMajor = Integer.parseInt(compatParts[0]);
+                Integer compatMinor = null;
+                if (compatParts.length > 1 && !compatParts[1].isEmpty()) {
+                    compatMinor = Integer.parseInt(compatParts[1]);
+                }
+
+                // Exact match logic
+                if (compatMajor == requestedMajor) {
+                    hasMajorMatch = true;
+
+                    if (requestedMinor == null && compatMinor == null) {
+                        // Both are major-only (e.g., "24" matches "24")
+                        hasExactMatch = true;
+                    } else if (requestedMinor != null && compatMinor != null && requestedMinor.equals(compatMinor)) {
+                        // Exact minor match (e.g., "24.5" matches "24.5")
+                        hasExactMatch = true;
+                    } else if (requestedMinor == null && compatMinor != null) {
+                        // Requesting "24", addon supports "24.5" - close enough for high
+                        hasExactMatch = true;
+                    } else if (requestedMinor != null && compatMinor == null) {
+                        // Requesting "24.5", addon supports "24" (entire major) - high
+                        hasExactMatch = true;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                // Invalid version format, skip
+            }
+        }
+
+        // Determine confidence level
+        if (hasExactMatch) {
+            return "high";
+        } else if (hasMajorMatch) {
+            return "medium";
+        } else if (hasFutureCompatibility) {
+            return "medium";
         }
 
         return "low";
