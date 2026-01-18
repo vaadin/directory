@@ -13,10 +13,6 @@ export class McpConfigurationView extends View {
     appStore.setCurrentViewTitle('MCP Configuration - Vaadin Directory');
   }
 
-  async onBeforeEnter(location: RouterLocation) {
-    // Initialize view
-  }
-
   updatePageMetadata(): void {
     const metadata = new PageJsonLd(
       'MCP Configuration - Vaadin Directory',
