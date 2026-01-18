@@ -196,7 +196,9 @@ public class McpAddonService {
 
     private String[] parseMavenCoordinates(String mavenSnippet) {
         String[] result = {"unknown", "unknown", "unknown"};
-        if (mavenSnippet == null) return result;
+        if (mavenSnippet == null || mavenSnippet.isEmpty()) {
+            return result;
+        }
 
         try {
             // Extract groupId
