@@ -24,13 +24,16 @@ public class McpToolsService {
 
     @McpTool(
         name = "directory_search",
-        description = "Search Vaadin Directory for addon component. Returns a list of addon summaries with compatibility and rating information."
+        description = """
+    Search Vaadin Directory for addon component. Returns a list of Vaadin addon summaries with compatibility, popularity and rating information.
+    Use this tool to find addons by name, keywords, or type. After finding relevant addons, use the 'directory_getAddon' tool to get detailed information about a specific addon.
+    """
     )
     public McpSearchResponse search(
-        @McpToolParam(description = "Search query (addon name, keywords, or tags)")
+        @McpToolParam(description = "Search query (addon name, component name, keywords)", required = true)
         String query,
 
-        @McpToolParam(description = "Vaadin major version (e.g., '24', '23') - optional", required = false)
+        @McpToolParam(description = "Vaadin major version (e.g., '25', '24', '14', '8') - optional", required = false)
         String vaadinVersion,
 
         @McpToolParam(description = "Addon type filter: component, integration, theme, or tool - optional", required = false)
@@ -62,13 +65,17 @@ public class McpToolsService {
 
     @McpTool(
         name = "directory_getAddon",
-        description = "Get detailed information about a specific Vaadin Directory addon including installation instructions, compatibility, and usage examples."
+        description = """
+     Get detailed information about a specific Vaadin Directory addon.
+     including Maven installation instructions, compatibility, and usage examples.
+     Call this tool when you need detailed info about a specific addon after finding it via search.
+     """
     )
     public McpAddonManifest getAddon(
         @McpToolParam(description = "The addon URL identifier (e.g., 'vaadin-grid-pro', 'avatar')")
         String addonId,
 
-        @McpToolParam(description = "Target Vaadin major version (e.g., '24', '23')")
+        @McpToolParam(description = "Target Vaadin major version (e.g., '25', '24', '14', '8') - optional", required = false)
         String vaadinVersion
     ) {
         if (addonId == null || addonId.trim().isEmpty()) {

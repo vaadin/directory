@@ -34,10 +34,8 @@ export class McpConfigurationView extends View {
           <h2>What is MCP?</h2>
           <p>
             The <strong>Model Context Protocol (MCP)</strong> allows AI
-            assistants like Claude Desktop, Cline, and other MCP clients to
-            directly access Vaadin Directory's addon database. This Spring AI
-            MCP Server implementation uses the Streamable HTTP protocol and
-            provides:
+            assistants like Claude, Github Copilot, Cline, and other MCP clients to
+            directly access Vaadin Directory's addon database:
           </p>
           <ul>
             <li>Searching for addons by name, keywords, or tags</li>
