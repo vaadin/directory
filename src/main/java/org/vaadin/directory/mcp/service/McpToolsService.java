@@ -25,8 +25,9 @@ public class McpToolsService {
     @McpTool(
         name = "directory_search",
         description = """
-    Search Vaadin Directory for addon component. Returns a list of Vaadin addon summaries with compatibility, popularity and rating information.
-    Use this tool to find addons by name, keywords, or type. After finding relevant addons, use the 'directory_getAddon' tool to get detailed information about a specific addon.
+    Search Vaadin Directory for addon component. Returns a list of Vaadin addon components summaries with compatibility, popularity and rating information.
+    Use this tool to find addons by name, keywords, or type. After finding relevant addons, use the 'directory_getAddon' tool to get detailed information about a specific addon,
+    including installation instructions and usage examples.
     """
     )
     public McpSearchResponse search(
