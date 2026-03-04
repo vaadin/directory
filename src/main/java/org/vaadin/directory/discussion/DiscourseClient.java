@@ -3,6 +3,7 @@ package org.vaadin.directory.discussion;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -475,7 +476,7 @@ public class DiscourseClient {
      *
      * @return List of all categories
      */
-    public List<Category> listCategories() {
+    private List<Category> listCategories() {
         URI uri = URI.create(baseUrl + "/site.json");
 
         try {
@@ -504,6 +505,7 @@ public class DiscourseClient {
      * @param categoryId ID of the category
      * @return List of subcategories in the category
      */
+    @Cacheable (value = "cache15m", key = "'subcategories-' + #categoryId")
     public List<CategoryInfo> listSubCategoriesInCategory(int categoryId) {
 
         List<Category> allCategories = listCategories();
