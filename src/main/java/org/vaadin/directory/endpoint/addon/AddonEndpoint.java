@@ -48,6 +48,7 @@ public class AddonEndpoint implements AddonInfoService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "cache5m", key = "'addon' + #urlIdentifier + '_' + #currentUser")
     public Addon getAddon(String urlIdentifier, String currentUser) {
         if ("(not logged in)".equals((""+currentUser).trim())) currentUser = "Vaadin.156"; //TODO
         Optional<Component> maybeComponent = service.getComponentByUrl(urlIdentifier);

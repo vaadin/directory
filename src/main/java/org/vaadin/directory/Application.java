@@ -46,6 +46,12 @@ public class Application extends SpringBootServletInitializer
         CachingProvider provider = Caching.getCachingProvider();
         javax.cache.CacheManager jcacheManager = provider.getCacheManager();
 
+        // 5-minute cache
+        jcacheManager.createCache("cache5m", new MutableConfiguration<>()
+                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.FIVE_MINUTES))
+                .setStoreByValue(false));
+
+
         // 15-minute cache
         jcacheManager.createCache("cache15m", new MutableConfiguration<>()
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.TEN_MINUTES))
