@@ -42,6 +42,31 @@
       }
     </style>
 
+    <!-- Force disable the Intercom. The parameters should be enough, but sometimes the script still loads. -->
+    <script>
+      (() => {
+        const noopIntercom = function () {};
+        noopIntercom.removedAlready = true;
+
+        function blockIntercom() {
+          if (typeof window.Intercom === "function" && !window.Intercom.removedAlready) {
+            try { window.Intercom("shutdown"); } catch (e) {}
+          }
+
+          window.Intercom = noopIntercom;
+
+          document
+            .querySelectorAll(".intercom-lightweight-app, .intercom-app, #intercom-container, iframe[name^='intercom'], iframe[src*='intercom']")
+            .forEach((el) => el.remove());
+        }
+
+        blockIntercom();
+        [500, 1500, 5500, 9000].forEach((ms) => setTimeout(blockIntercom, ms));
+      })();
+    </script>
+
+    <script defer src="https://cdn.stand.chat/widget/stand.js" data-stand-id="5fc78a11-d006-48b9-ba0a-fcc0b92779a2"></script>
+
     <script type="module">
       import rss from '@fortawesome/fontawesome-free/svgs/solid/rss.svg?raw';
       import { AppEndpoint } from 'Frontend/generated/endpoints';
@@ -57,8 +82,8 @@
     script.defer = true;
     script.src =
       window.location.hostname == 'preview.vaadin.com'
-        ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js'
-        : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js';
+        ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js?theme=login&enableIntercom=false'
+        : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js?theme=login&enableIntercom=false';
     document.head.appendChild(script);
 
     // Monitor
