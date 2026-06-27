@@ -43,10 +43,10 @@
     </style>
 
     <script type="module">
-      import twitter from '@fortawesome/fontawesome-free/svgs/brands/twitter.svg?raw';
+      import rss from '@fortawesome/fontawesome-free/svgs/solid/rss.svg?raw';
       import { AppEndpoint } from 'Frontend/generated/endpoints';
 
-      document.querySelector(".twitter .icon").innerHTML = twitter;
+      document.querySelector(".feed .icon").innerHTML = rss;
       AppEndpoint.getVersionInfo().then(version => {
           document.querySelector(".build-label").textContent = "Version " +version.buildTime;
       });
