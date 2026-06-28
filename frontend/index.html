@@ -73,7 +73,10 @@
 
       document.querySelector(".feed .icon").innerHTML = rss;
       AppEndpoint.getVersionInfo().then(version => {
-          document.querySelector(".build-label").textContent = "Version " +version.buildTime;
+          document.querySelector(".build-label").textContent =
+              "Version: " + version.buildTime +
+              "/" + version.startTime +
+              ", JDK: " + version.javaVersion + "/" + version.jvmVersion;
       });
 
     // Load HAAS
@@ -82,8 +85,8 @@
     script.defer = true;
     script.src =
       window.location.hostname == 'preview.vaadin.com'
-        ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js?theme=login&enableIntercom=false'
-        : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js?theme=login&enableIntercom=false';
+        ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js'
+        : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js';
     document.head.appendChild(script);
 
     // Monitor

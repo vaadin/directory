@@ -19,11 +19,21 @@ public class VersionInfo {
     @Nonnull
     @NotBlank
     private String version;
-    
+
+    @Nonnull
+    @NotBlank
+    private final String javaVersion;
+
+    @Nonnull
+    @NotBlank
+    private final String jvmVersion;
+
     public VersionInfo(BuildVersions buildVersions) {
         this.version = ""+buildVersions.getVersion();
         this.buildTime = ""+buildVersions.getBuildTime();
         this.startTime  = ""+buildVersions.getStartTime();
+        this.javaVersion = ""+buildVersions.getJavaVersionMajor();
+        this.jvmVersion = ""+buildVersions.getJvmVersion();
     }
 
     public String getBuildTime() {
@@ -35,5 +45,9 @@ public class VersionInfo {
     }
 
     public String getStartTime() { return startTime; }
+
+    public String getJavaVersion() { return javaVersion; }
+
+    public String getJvmVersion() { return jvmVersion; }
 
 }
