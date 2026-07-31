@@ -49,7 +49,7 @@ export class StatsView extends View implements BeforeEnterObserver {
   async onBeforeEnter(location: RouterLocation) {
       const urlIdentifier = location.params.addon as string;
       const urlVersion = location.params.version as string;
-      this.addon = await getAddon(urlIdentifier, this.getCurrentUserId());
+      this.addon = await getAddon(urlIdentifier);
       if (this.addon) {
         if (urlVersion) {
           const found = this.addon?.versions.find(

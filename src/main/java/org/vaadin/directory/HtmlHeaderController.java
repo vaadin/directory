@@ -83,7 +83,7 @@ public class HtmlHeaderController implements Filter {
                 return;
             }
 
-            Addon oc = service.getAddon(urlIdentifier, "");
+            Addon oc = service.getAddon(urlIdentifier);
             if (oc != null) {
                 CapturingResponseWrapper capturingResponseWrapper = new CapturingResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, capturingResponseWrapper);

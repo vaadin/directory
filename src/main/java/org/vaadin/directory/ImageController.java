@@ -78,7 +78,7 @@ public class ImageController {
             }
         }
 
-        Addon addon = service.getAddon(urlIdentifier, "");
+        Addon addon = service.getAddon(urlIdentifier);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (addon != null) {
             String name = addon.getName();

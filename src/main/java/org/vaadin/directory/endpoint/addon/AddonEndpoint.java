@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
 import org.vaadin.directory.Util;
+import org.vaadin.directory.security.CurrentUser;
 import org.vaadin.directory.discussion.AddonInfoService;
 import org.vaadin.directory.store.Store;
 
@@ -31,6 +32,7 @@ public class AddonEndpoint implements AddonInfoService {
     private final AuditLogService logService;
     private final Store store;
     private final GoogleAnalytics analyticsService;
+    private final CurrentUser currentUser;
     private UrlConfig urlConfig;
 
     AddonEndpoint(@Autowired ComponentService service,
@@ -38,22 +40,41 @@ public class AddonEndpoint implements AddonInfoService {
                   @Autowired Store store,
                   @Autowired AuditLogService logService,
                   @Autowired GoogleAnalytics analyticsService,
-                  @Autowired UrlConfig urlConfig) {
+                  @Autowired UrlConfig urlConfig,
+                  @Autowired CurrentUser currentUser) {
         this.service = service;
         this.userNameService = userNameService;
         this.logService = logService;
         this.store = store;
         this.urlConfig = urlConfig;
         this.analyticsService = analyticsService;
+        this.currentUser = currentUser;
+    }
+
+    /**
+     * The current user's screen name resolved server-side from the security context (populated by
+     * {@code HaasAuthFilter}), or empty when the request is anonymous. Endpoints must derive the
+     * user from here rather than trusting a client-supplied parameter.
+     */
+    private Optional<String> currentUser() {
+        return currentUser.screenName();
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "cache5m", key = "'addon' + #urlIdentifier + '_' + #currentUser")
-    public Addon getAddon(String urlIdentifier, String currentUser) {
-        if ("(not logged in)".equals((""+currentUser).trim())) currentUser = "Vaadin.156"; //TODO
+    @Cacheable(value = "cache5m", key = "'addon' + #urlIdentifier + '_' + @currentUser.screenNameOrAnon()")
+    public Addon getAddon(String urlIdentifier) {
+        // Ownership (which gates the "Edit" link) is decided from the server-side session identity,
+        // never from a client-supplied name. Anonymous requests own nothing.
         Optional<Component> maybeComponent = service.getComponentByUrl(urlIdentifier);
-        long id = userNameService.findByScreenName(currentUser).stream().findFirst().orElse(-1L);
-        return maybeComponent.isPresent() ? createAddon(maybeComponent.get(), id == maybeComponent.get().getOwner().getId()) : null;
+        if (maybeComponent.isEmpty()) {
+            return null;
+        }
+        Component component = maybeComponent.get();
+        boolean isOwner = currentUser().flatMap(name ->
+                        userNameService.findByScreenName(name).stream().findFirst())
+                .map(id -> id.longValue() == component.getOwner().getId())
+                .orElse(false);
+        return createAddon(component, isOwner);
     }
 
     private Addon createAddon(Component c, boolean addEditLink) {
@@ -74,30 +95,29 @@ public class AddonEndpoint implements AddonInfoService {
         return store.getAverageRating(addon);
     }
 
-    public int getUserRating(String urlIdentifier, String user) {
-        if (urlIdentifier != null && !urlIdentifier.isEmpty() &&
-        user != null && !user.isEmpty() && !user.contains("not logged")) {
-            return store.getUserRating(urlIdentifier, user);
+    public int getUserRating(String urlIdentifier) {
+        Optional<String> user = currentUser();
+        if (urlIdentifier != null && !urlIdentifier.isEmpty() && user.isPresent()) {
+            return store.getUserRating(urlIdentifier, user.get());
         }
         return -1;
     }
 
-    public void setUserRating(String addon, int rating, String user) {
-        if (!USER_NOT_LOGGED_IN.equals(user)) {
-            store.setUserRating(addon, rating, user);
-        }
+    public void setUserRating(String addon, int rating) {
+        currentUser().ifPresent(user -> store.setUserRating(addon, rating, user));
     }
 
-    public void logAddonInstall(String addon, String version, String type, String user) {
-        store.logInstall(addon, version, type, user);
+    public void logAddonInstall(String addon, String version, String type) {
+        store.logInstall(addon, version, type, currentUser().orElse(USER_NOT_LOGGED_IN));
     }
 
     @Transactional(readOnly = true)
-    public @Nonnull List<@Nonnull String> getAddonInstalls(String addon, String user) {
-        if (addon == null || user == null || user.contains("not logged")) {
+    public @Nonnull List<@Nonnull String> getAddonInstalls(String addon) {
+        Optional<String> user = currentUser();
+        if (addon == null || user.isEmpty()) {
             return List.of();
         }
-        return store.getAddonInstalls(addon, user);
+        return store.getAddonInstalls(addon, user.get());
     }
 
     @Transactional(readOnly = true)
@@ -139,7 +159,7 @@ public class AddonEndpoint implements AddonInfoService {
     @Override
     @Transactional(readOnly = true)
     public Addon getAddonInfo(String addonIdentifier) {
-        return getAddon(addonIdentifier, null);
+        return getAddon(addonIdentifier);
     }
 
 

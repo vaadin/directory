@@ -5,7 +5,7 @@ import { html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Layout } from '../view';
 import '@vaadin/menu-bar';
-import type { MenuBarItem } from '@vaadin/menu-bar';
+import type { MenuBar, MenuBarItem } from '@vaadin/menu-bar';
 import { router } from '../../index';
 
 @customElement('install-tabsheet')
@@ -107,7 +107,7 @@ export class InstallTabSheet extends Layout {
     download.href = this.version!.installs['Zip'];
     download.textContent = 'Download ZIP';
     download.onclick = () => {
-      logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "zip", this.getCurrentUserId());
+      logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "zip");
     };
     return download;
   }
@@ -117,7 +117,7 @@ export class InstallTabSheet extends Layout {
     create.href = `${this.addon!.addonProjectDownloadBaseUrl}?addons=${this.addon!.urlIdentifier}/${this.version?.name}`;
     create.innerHTML = '<div>Create project</div><span>Create and download a new project using this add-on</span>';
     create.onclick = () => {
-      logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "create", this.getCurrentUserId());
+      logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "create");
     };
     return create;
   }
@@ -130,7 +130,7 @@ export class InstallTabSheet extends Layout {
   }
 
   private handleMavenCopy(copyMaven: HTMLParagraphElement): void {
-    logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "maven", this.getCurrentUserId());
+    logAddonInstall(this.addon?.urlIdentifier, this.version?.name, "maven");
 
     const text = this.version?.installs['Maven'] || '';
     const [textDep, textRepo] = text.split('\n<!-- Vaadin Maven repository -->\n') || '';
@@ -242,20 +242,24 @@ export class InstallTabSheet extends Layout {
   connectedCallback() {
     super.connectedCallback();
     // Listen anywhere in the document (or use this.addEventListener for host-only)
-    window.addEventListener('haas-user-info-changed', () => {
-      console.log("Updating install menu...");
-      this.requestUpdate();
-    }, false);
+    window.addEventListener('haas-user-info-changed', this.onLogin, false);
   }
 
   disconnectedCallback() {
-    window.removeEventListener('haas-user-info-changed', this.onLogin as EventListener);
+    window.removeEventListener('haas-user-info-changed', this.onLogin);
     super.disconnectedCallback();
   }
 
   private onLogin = () => {
-    // Force re-render when user info changes
+    // Close any open menu-bar overlay: vaadin-menu-bar keeps an already-open sub-menu (with its
+    // now-stale contents) when .items change as long as the button still has children, so without
+    // this the "Install..." dropdown keeps showing "Log in to install!" until it is reopened.
+    this.renderRoot
+      .querySelectorAll<MenuBar>('vaadin-menu-bar')
+      .forEach((bar) => bar.close());
+    // Re-render for the new auth state and refresh the "previously installed" list.
     this.requestUpdate();
+    this.updateInstallInfo();
   };
 
   firstUpdated() {
@@ -275,7 +279,7 @@ export class InstallTabSheet extends Layout {
         this.installs = [];
         return;
     }
-    getAddonInstalls(this.addon?.urlIdentifier, this.getCurrentUserId())
+    getAddonInstalls(this.addon?.urlIdentifier)
       .then((installs: String[]) => {
         this.installs = installs;
     });

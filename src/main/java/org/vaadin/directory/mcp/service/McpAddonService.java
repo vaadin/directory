@@ -35,7 +35,7 @@ public class McpAddonService {
     @Transactional(readOnly = true)
     @Cacheable(value = "cache1h", key = "'mcp-addon-' + #addonId + '-' + (#vaadinVersion != null ? #vaadinVersion : 'latest')")
     public McpAddonManifest getAddonManifest(String addonId, String vaadinVersion) {
-        Addon addon = addonEndpoint.getAddon(addonId, "(not logged in)");
+        Addon addon = addonEndpoint.getAddon(addonId);
         if (addon == null) {
             return null;
         }

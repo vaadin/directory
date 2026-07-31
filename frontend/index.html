@@ -79,15 +79,20 @@
               ", JDK: " + version.javaVersion + "/" + version.jvmVersion;
       });
 
-    // Load HAAS
-    const script = document.createElement('script');
-    script.onload = () => window.haas.loader.initMenu();
-    script.defer = true;
-    script.src =
-      window.location.hostname == 'preview.vaadin.com'
-        ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js'
-        : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js';
-    document.head.appendChild(script);
+    // Load HAAS. Skipped on localhost, where there is no real SSO: the dev mock in
+    // frontend/dev/dev-haas.ts provides window.haas instead (see frontend/index.ts).
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) {
+      const script = document.createElement('script');
+      script.onload = () => window.haas.loader.initMenu();
+      script.defer = true;
+      script.src =
+        window.location.hostname == 'preview.vaadin.com'
+          ? 'https://preview.vaadin.com/vaadincom/haas-service/v2/haas-loader.js'
+          : 'https://vaadin.com/vaadincom/haas-service/v2/haas-loader.js';
+      document.head.appendChild(script);
+    }
 
     // Monitor
     const haasEl = document.querySelector('#haas-container');

@@ -339,7 +339,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   async onBeforeEnter(location: RouterLocation) {
     const urlIdentifier = location.params.addon as string;
     const urlVersion = location.params.version as string;
-    this.addon = await getAddon(urlIdentifier, this.getCurrentUserId());
+    this.addon = await getAddon(urlIdentifier);
     if (this.addon) {
       if (urlVersion) {
         const found = this.addon?.versions.find(
@@ -384,6 +384,20 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   }
 
+  // Refresh the rating stars when login state changes (e.g. after logging in via the header/menu),
+  // instead of only lazily on mouseover. install-tabsheet listens for the same event.
+  private onHaasUserInfoChanged = () => this.updateUserRating();
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.addEventListener('haas-user-info-changed', this.onHaasUserInfoChanged);
+  }
+
+  disconnectedCallback(): void {
+    window.removeEventListener('haas-user-info-changed', this.onHaasUserInfoChanged);
+    super.disconnectedCallback();
+  }
+
   checkUserStatus() {
     const stars = this.renderRoot.querySelector('#rating-stars') as RatingStars;
     if (!stars) return;
@@ -397,7 +411,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   addRating(e: RatingEvent) {
     (e.target as RatingStars).userrating = e.rating;
     (e.target as RatingStars).tooltip = 'Click to rate again';
-    setUserRating(this.addon?.urlIdentifier, e.rating, this.getCurrentUserId());
+    setUserRating(this.addon?.urlIdentifier, e.rating);
   }
 
   async updateUserRating() {
@@ -412,7 +426,7 @@ export class AddonView extends View implements BeforeEnterObserver {
     }
 
     stars.tooltip = "Click to rate this addon";
-    getUserRating(this.addon?.urlIdentifier, this.getCurrentUserId(), {mute:true})
+    getUserRating(this.addon?.urlIdentifier, {mute:true})
       .then((v: number) =>  {
         stars.userrating = v;
       });

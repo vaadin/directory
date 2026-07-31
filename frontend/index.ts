@@ -6,6 +6,13 @@ import { autorun } from 'mobx';
 import { registerStyles, css } from '@vaadin/vaadin-themable-mixin';
 import './styles/global.css';
 
+// Local-dev HaaS/SSO mock. Gated on hostname (not a build flag): Vaadin serves a
+// pre-built dev bundle where `import.meta.env.DEV` is false, so hostname is the only
+// signal that works in dev. The mock is a lazy chunk, fetched only on localhost.
+if (/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+  import('./dev/dev-haas').then(m => m.installDevHaas());
+}
+
 getAppUrl().then(url => appStore.appUrl = url);
 window.addEventListener('vaadin-router-error', e => {
     // only log navigation error
