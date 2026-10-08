@@ -1,8 +1,8 @@
 # Vaadin Directory project
 
-Visit at [vaadin.com/directory/](https://vaadin.com/directory/)
+Browse add-ons for Vaadin at [vaadin.com/directory/](https://vaadin.com/directory/)
 
-The Vaadin Directory is the place to share Vaadin add-ons: Sophisticated client-server Java and Web Components compatible with [Vaadin]([https://github.com/vaadin/flow](https://vaadin.com/framework)
+The Vaadin Directory is the place to share Vaadin add-ons: Client-server Java and Web Components compatible with [Vaadin]([https://github.com/vaadin/flow](https://vaadin.com/framework)
 
 Read more about how to publish your own Vaadin Add-ons at [vaadin.com/directory-help](https://vaadin.com/directory-help).
 
