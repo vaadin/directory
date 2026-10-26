@@ -605,6 +605,8 @@ addon-view .versions dd + dd + dt + dd {
 
 addon-view .main pre {
   font-size: var(--text-size-sm);
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
 .compatibility-matrix {
