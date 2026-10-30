@@ -101,7 +101,7 @@ export class AddonView extends View implements BeforeEnterObserver {
       <section class="main">
 
         ${this.addon.canEdit
-          ? html`<a class="edit-button" href="${this.getEditUrl()}" target="_blank" router-ignore noopener>Edit</a>`
+          ? html`<a class="edit-button" href="${this.addon.editUrl}" target="_blank" router-ignore noopener>Edit</a>`
           : nothing}
         <addon-icon src="${this.addon.icon}"></addon-icon>
         <h2 class="addon-name">${this.addon.name}</h2>
@@ -329,10 +329,6 @@ export class AddonView extends View implements BeforeEnterObserver {
           </li>`
         : nothing}
     </ul>`;
-  }
-
-  getEditUrl() {
-    return `${appStore.appUrl}component/edit/${this.addon?.urlIdentifier}`;
   }
 
   async onBeforeEnter(location: RouterLocation) {

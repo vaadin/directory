@@ -64,6 +64,8 @@ public class Addon {
 
     private boolean canEdit;
 
+    private @Nonnull String editUrl;
+
     private @Nonnull Double rating;
 
     @Nonnull
@@ -224,6 +226,14 @@ public class Addon {
 
     public void setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
+    }
+
+    public String getEditUrl() {
+        return editUrl;
+    }
+
+    public void setEditUrl(String editUrl) {
+        this.editUrl = editUrl;
     }
 
     public Double getRating() {
