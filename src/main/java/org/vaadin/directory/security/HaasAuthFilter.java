@@ -1,8 +1,6 @@
 package org.vaadin.directory.security;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vaadin.directory.backend.repository.liferay.LiferayUserRepository;
-import com.vaadin.directory.entity.liferay.LiferayUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -34,7 +32,7 @@ import java.util.Optional;
  * <p>The portal sets a marker cookie (e.g. {@code SSO_SESSION_RUNNING}) when a session exists.
  * On the first request of a session that carries the marker, this filter resolves the user by
  * calling a remote user-info endpoint (the {@code RemoteUserInfoService} pattern from
- * {@code auth-howto.md} §5), maps it to a directory screen name, and stores the resulting
+ * {@code auth-howto.md} §5), reads the {@code screenname} field it returns, and stores the resulting
  * {@link org.springframework.security.core.userdetails.UserDetails} principal (username = screen
  * name) in the HTTP session — so subsequent requests
  * reuse it without another remote call. When the marker disappears (SSO logout) the local
@@ -45,22 +43,28 @@ public class HaasAuthFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(HaasAuthFilter.class);
 
     private final SecurityProperties properties;
-    private final LiferayUserRepository liferayUserRepository;
     private final RestClient restClient;
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
+    /** Guards the "not configured" warning so it is logged once, not on every request. */
+    private volatile boolean warnedNotConfigured = false;
 
-    public HaasAuthFilter(SecurityProperties properties, LiferayUserRepository liferayUserRepository) {
+    public HaasAuthFilter(SecurityProperties properties) {
         this.properties = properties;
-        this.liferayUserRepository = liferayUserRepository;
         this.restClient = RestClient.create();
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        // Not configured yet (placeholders) — leave auth untouched.
+        // Not configured yet (placeholders) — leave auth untouched. In production this means NO
+        // request is ever authenticated, so SSO-gated writes (e.g. ratings) silently never happen.
         if (properties.getCookieName().isBlank() || properties.getUserinfoUrl().isBlank()) {
+            if (!warnedNotConfigured) {
+                warnedNotConfigured = true;
+                log.warn("HaaS SSO not configured (cookie-name or userinfo-url is blank): all requests "
+                        + "stay anonymous. Set SSO_COOKIE_NAME and SSO_USERINFO_URL to enable login.");
+            }
             chain.doFilter(request, response);
             return;
         }
@@ -110,11 +114,11 @@ public class HaasAuthFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Calls the user-info endpoint and maps the response ({@code UserSummary}) to a principal.
-     * Forwards the full incoming {@code Cookie} header so whichever session cookie the (trusted,
-     * first-party) user-info service validates is present. {@code UserSummary.id} is the Liferay
-     * user id, which we resolve to the directory screen name the store keys ratings/installs by.
-     * Swallows every error and returns empty so an outage never breaks the request.
+     * Calls the user-info endpoint and maps the response to a principal. Forwards the full incoming
+     * {@code Cookie} header so whichever session cookie the (trusted, first-party) user-info service
+     * validates is present. The response carries the directory {@code screenname} directly (the same
+     * value the Store keys ratings/installs by); we use it as the principal username. Swallows every
+     * error and returns empty so an outage never breaks the request.
      */
     private Optional<UserDetails> resolveUser(String cookieHeader) {
         try {
@@ -125,22 +129,22 @@ public class HaasAuthFilter extends OncePerRequestFilter {
                     .retrieve()
                     .body(JsonNode.class);
 
-            if (body == null || !body.hasNonNull("id")) {
+            if (body == null || !body.hasNonNull("screenname")) {
                 return Optional.empty();
             }
-            long liferayUserId = body.get("id").asLong();
-
-            LiferayUser liferayUser = liferayUserRepository.findByUserId(liferayUserId);
-            if (liferayUser == null || liferayUser.getScreenName() == null
-                    || liferayUser.getScreenName().isBlank()) {
+            String screenName = body.get("screenname").asText();
+            if (screenName.isBlank()) {
                 return Optional.empty();
             }
 
             // Principal username == screen name (what the store keys ratings/installs by).
-            return Optional.of(new User(liferayUser.getScreenName(), "",
+            return Optional.of(new User(screenName, "",
                     AuthorityUtils.createAuthorityList("ROLE_USER")));
         } catch (Exception e) {
-            log.debug("HaaS user-info lookup failed; continuing anonymously", e);
+            log.warn("HaaS user-info lookup failed ({}); continuing anonymously. Check SSO_USERINFO_URL "
+                    + "reachability and SSO_USERINFO_USERNAME/PASSWORD if the endpoint requires basic auth.",
+                    e.getMessage());
+            log.debug("HaaS user-info lookup failure detail", e);
             return Optional.empty();
         }
     }

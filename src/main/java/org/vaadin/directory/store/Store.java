@@ -3,6 +3,8 @@ package org.vaadin.directory.store;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
 @Component
 public class Store {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Store.class);
+
     private final StoreSettings settings;
     private Firestore dbInstance;
     private final WeakHashMap<String, AddonRatingInfo> ratingCache = new WeakHashMap<>();
@@ -42,7 +46,13 @@ public class Store {
             return this.dbInstance;
         }
 
-        InputStream input = new ByteArrayInputStream(settings.getValue("storekey").getBytes(StandardCharsets.UTF_8));
+        String storeKey = settings.getValue("storekey");
+        if (storeKey == null || storeKey.isBlank()) {
+            throw new IllegalStateException("Firestore credentials unavailable: 'storekey' setting is "
+                    + "null/blank. Check that gapi.credentials.file.path (env GAPI_CREDENTIALS_FILE_PATH) "
+                    + "points at a readable service-account file and the settings sheet is reachable.");
+        }
+        InputStream input = new ByteArrayInputStream(storeKey.getBytes(StandardCharsets.UTF_8));
         GoogleCredentials credentials = GoogleCredentials.fromStream(input);
 
         FirestoreOptions options = FirestoreOptions.newBuilder().setCredentials(credentials).build();
@@ -56,7 +66,7 @@ public class Store {
             try {
                 this.dbInstance.close();
             } catch (Exception e) {
-                e.printStackTrace(); // TODO: logging
+                LOG.error("Failed to close Firestore client", e);
             }
         }
     }
@@ -72,7 +82,8 @@ public class Store {
                     .document(addonRatingInfo.getAddon()).set(addonRatingInfo)
                     .get();
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to write addon rating to Firestore for addon '{}'",
+                    addonRatingInfo.getAddon(), e);
         }
     }
 
@@ -87,7 +98,8 @@ public class Store {
                     .document(installInfo.getUserId()).set(installInfo)
                     .get();
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to write user installs to Firestore for user '{}'",
+                    installInfo.getUserId(), e);
         }
     }
 
@@ -119,7 +131,7 @@ public class Store {
             }
 
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to read user installs from Firestore for user '{}'", userId, e);
         }
 
         return data;
@@ -156,7 +168,7 @@ public class Store {
                 ratingCache.put(urlIdentifier, data);
             }
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to read addon rating from Firestore for addon '{}'", urlIdentifier, e);
         }
 
         return data;
@@ -255,7 +267,7 @@ public class Store {
             try {
                 writeUserInstall(data);
             } catch (Exception e) {
-                e.printStackTrace(); //TODO: logging
+                LOG.error("Failed to log install for addon '{}' user '{}'", addon, userId, e);
             }
         }
     }
@@ -266,7 +278,8 @@ public class Store {
         try {
             this.getDb().collection("log").add(l);
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to write log entry to Firestore for addon '{}' event '{}'",
+                    addon, event, e);
         }
     }
 
@@ -305,7 +318,7 @@ public class Store {
             return size;
 
         } catch (Exception e) {
-            e.printStackTrace(); //TODO: logging
+            LOG.error("Failed to count installs in Firestore for addon '{}'", addon, e);
         }
         return 0;
     }

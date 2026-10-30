@@ -1,6 +1,5 @@
 package org.vaadin.directory.security;
 
-import com.vaadin.directory.backend.repository.liferay.LiferayUserRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,11 +30,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final SecurityProperties properties;
-    private final LiferayUserRepository liferayUserRepository;
 
-    public SecurityConfig(SecurityProperties properties, LiferayUserRepository liferayUserRepository) {
+    public SecurityConfig(SecurityProperties properties) {
         this.properties = properties;
-        this.liferayUserRepository = liferayUserRepository;
     }
 
     @Bean
@@ -54,7 +51,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/connect/**", "/mcp", "/mcp/**", "/authfaker"));
 
         // Sync the security context from the HaaS SSO cookie.
-        http.addFilterBefore(new HaasAuthFilter(properties, liferayUserRepository),
+        http.addFilterBefore(new HaasAuthFilter(properties),
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
