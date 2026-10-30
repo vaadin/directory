@@ -136,12 +136,20 @@ addon-view .meta .links a {
   font-weight: inherit;
 }
 
-addon-view .meta .links a.edit {
+addon-view .main > .edit-button {
+    float: inline-end;
     font-weight: var(--text-weight-semibold);
     color: #fff;
     background-color: var(--blue-500);
     border-radius: var(--roundness-md);
     padding: 0.5em 0.75em;
+    text-decoration: none;
+}
+
+addon-view .main > .edit-button:hover {
+    background-color: rgb(0 88 192);
+    color: #fff;
+    text-decoration: none;
 }
 
 addon-stats-view vaadin-avatar,

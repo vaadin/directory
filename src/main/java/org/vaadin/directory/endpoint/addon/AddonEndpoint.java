@@ -77,13 +77,11 @@ public class AddonEndpoint implements AddonInfoService {
         return createAddon(component, isOwner);
     }
 
-    private Addon createAddon(Component c, boolean addEditLink) {
+    private Addon createAddon(Component c, boolean canEdit) {
         Addon a = new Addon(c, this.urlConfig, this.store);
-        if (addEditLink) {
-            a.getLinks().add(new Link("Edit",
-                    urlConfig.getComponentEditBaseUrl() + c.getUrlIdentifier(),
-                    null));
-        }
+        // Ownership is exposed as an explicit flag; the frontend renders the Edit button from it
+        // (rather than smuggling an "Edit" link into the generic links list).
+        a.setCanEdit(canEdit);
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         a.setAuthor(name);
         String image = this.userNameService.getImageforId(c.getOwner().getId());

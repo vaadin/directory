@@ -62,6 +62,8 @@ public class Addon {
 
     private @Nonnull String authorImage;
 
+    private boolean canEdit;
+
     private @Nonnull Double rating;
 
     @Nonnull
@@ -214,6 +216,14 @@ public class Addon {
 
     public void setAuthorImage(String imageUrl) {
         this.authorImage = imageUrl;
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+    }
+
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
     }
 
     public Double getRating() {

@@ -100,6 +100,9 @@ export class AddonView extends View implements BeforeEnterObserver {
       <a href="${router.baseUrl}?${params}" class="back-to-search">← Back</a>
       <section class="main">
 
+        ${this.addon.canEdit
+          ? html`<a class="edit-button" href="${this.getEditUrl()}" target="_blank" router-ignore noopener>Edit</a>`
+          : nothing}
         <addon-icon src="${this.addon.icon}"></addon-icon>
         <h2 class="addon-name">${this.addon.name}</h2>
         <p class="addon-summary">${this.addon.summary}</p>
@@ -308,9 +311,6 @@ export class AddonView extends View implements BeforeEnterObserver {
     const kofiLink = this.addon?.links.find((link) =>
       link.href.match(/http(s)?:\/\/ko-fi.com\/[-_\w\d]+/)
     );
-    const editLink = this.addon?.links.find((link) =>
-      link.href.match(/http(s)?:\/\/vaadin.com\/directory\/component\/edit\/[-_\w\d]+/)
-    );
 
     return html` <ul>
       ${demoLink
@@ -328,12 +328,11 @@ export class AddonView extends View implements BeforeEnterObserver {
             <a href="${kofiLink.href}" target="_blank" router-ignore noopener>Tip me</a>
           </li>`
         : nothing}
-      ${editLink
-          ? html` <li>
-              <a class="edit" href="${editLink.href}" target="_blank" router-ignore noopener>Edit</a>
-            </li>`
-          : nothing}
     </ul>`;
+  }
+
+  getEditUrl() {
+    return `${appStore.appUrl}component/edit/${this.addon?.urlIdentifier}`;
   }
 
   async onBeforeEnter(location: RouterLocation) {
