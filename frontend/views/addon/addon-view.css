@@ -203,9 +203,16 @@ addon-view .highlights.open #slider {
 addon-view .highlights .item {
   padding: var(--space-sm);
   position: relative;
-  height: 10rem;
+  height: 14rem;
   box-sizing: border-box;
   background-color: var(--background-color);
+}
+
+/* With only 1-2 images the tiles stretch wide but stay short, so give them
+   extra height to avoid heavy letterboxing (see #34). The `few` class is set
+   on the <highlight-carousel class="highlights"> host in highlight-carousel.ts. */
+addon-view .highlights.few .item {
+  height: 20rem;
 }
 
 addon-view .highlights .item img {

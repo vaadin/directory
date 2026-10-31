@@ -22,7 +22,11 @@ export class HighlightCarousel extends Layout {
     this.sliderElement = this.querySelector("#slider") as HTMLElement;
     this.alElement = this.querySelector("#arrow-left") as HTMLElement;
     this.arElement = this.querySelector("#arrow-right") as HTMLElement;
-    this.classList.toggle('empty', this.addon?.mediaHighlights.length === 0);
+    const count = this.addon?.mediaHighlights.length ?? 0;
+    this.classList.toggle('empty', count === 0);
+    // With only 1-2 images the grid tiles stretch wide but stay short; give them
+    // more height in that case so the images aren't heavily letterboxed (see #34).
+    this.classList.toggle('few', count > 0 && count <= 2);
     this.addEventListener('keydown', this.keydown);
   }
 
