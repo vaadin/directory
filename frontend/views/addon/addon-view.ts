@@ -127,8 +127,8 @@ export class AddonView extends View implements BeforeEnterObserver {
             <rating-stars
               id="rating-stars"
               @rating=${this.addRating}
-              @mouseover=${this.checkUserStatus}
-              ?readonly="${!this.isAuthenticated()}"
+              @login-request=${this.requestLogin}
+              ?loginrequired="${!this.isAuthenticated()}"
               userrating="0"
               avgrating="${this.addon.rating}"
               ratingcount="${this.addon.ratingCount}">
@@ -393,20 +393,21 @@ export class AddonView extends View implements BeforeEnterObserver {
     super.disconnectedCallback();
   }
 
-  checkUserStatus() {
-    const stars = this.renderRoot.querySelector('#rating-stars') as RatingStars;
-    if (!stars) return;
-    if (this.isAuthenticated() && stars.readonly) {
-      // Login status has been changed since first render. Update user rating.
-      stars.readonly = false;
-      this.updateUserRating();
-    }
+  requestLogin() {
+    window.haas.login();
   }
 
-  addRating(e: RatingEvent) {
-    (e.target as RatingStars).userrating = e.rating;
-    (e.target as RatingStars).tooltip = 'Click to rate again';
-    setUserRating(this.addon?.urlIdentifier, e.rating);
+  async addRating(e: RatingEvent) {
+    const stars = e.target as RatingStars;
+    stars.userrating = e.rating;
+    const urlIdentifier = this.addon?.urlIdentifier;
+    await setUserRating(urlIdentifier, e.rating);
+    // Refresh the average and count so the new rating is reflected right away
+    const updated = await getAddon(urlIdentifier);
+    if (updated) {
+      stars.avgrating = updated.rating;
+      stars.ratingcount = updated.ratingCount;
+    }
   }
 
   async updateUserRating() {
@@ -414,13 +415,9 @@ export class AddonView extends View implements BeforeEnterObserver {
     if (!stars) return;
 
     stars.userrating = 0;
-    stars.readonly = !this.isAuthenticated();
-    if (stars.readonly) {
-      stars.tooltip = "Login to rate this addon";
-      return;
-    }
+    stars.loginrequired = !this.isAuthenticated();
+    if (stars.loginrequired) return;
 
-    stars.tooltip = "Click to rate this addon";
     getUserRating(this.addon?.urlIdentifier, {mute:true})
       .then((v: number) =>  {
         stars.userrating = v;

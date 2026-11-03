@@ -212,9 +212,9 @@ public class Store {
         //  Store averages for all-time / 180 days
         Double avg = rl.stream().collect(Collectors.averagingInt(RatingInfo::getRating));
         Double avg180 = rl.stream().filter(ratingInfo ->
-                    ChronoUnit.DAYS.between(now, ratingInfo.getTimestamp().toInstant()
+                    ChronoUnit.DAYS.between(ratingInfo.getTimestamp().toInstant()
                         .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime()) < 180)
+                        .toLocalDateTime(), now) < 180)
                 .collect(Collectors.averagingInt(RatingInfo::getRating));
         a.setAvg(avg);
         a.setAvg180(avg180);

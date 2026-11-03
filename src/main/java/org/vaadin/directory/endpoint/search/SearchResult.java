@@ -52,7 +52,7 @@ public class SearchResult {
                 store.getAverageRating(this.urlIdentifier),
                 store.getRatingCount(this.urlIdentifier)
         );
-        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
+        this.ratingCount = (component.getRatingCount() == null ? 0 : component.getRatingCount()) + store.getRatingCount(this.urlIdentifier);
         this.tags = List.of(); //Util.tagsToStrings(component.getTagGroups());
     }
 

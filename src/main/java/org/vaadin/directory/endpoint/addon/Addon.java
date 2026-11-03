@@ -101,7 +101,7 @@ public class Addon {
                 store.getAverageRating(this.urlIdentifier),
                 store.getRatingCount(this.urlIdentifier)
                 );
-        this.ratingCount = component.getRatingCount() == null ? 0 : component.getRatingCount() + store.getRatingCount(this.urlIdentifier);
+        this.ratingCount = (component.getRatingCount() == null ? 0 : component.getRatingCount()) + store.getRatingCount(this.urlIdentifier);
         this.tags = Util.tagsToStrings(component.getTagGroups());
         Comparator<AddonVersion> compareAddonDates = (o1, o2) -> {
             if (o1 != null && o2 != null) {
