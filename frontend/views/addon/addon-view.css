@@ -276,6 +276,35 @@ addon-view .highlights .btn-open {
 addon-view .highlights.open .item {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+addon-view .highlights.open .item img {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Description: tooltip only in the grid, caption under the image when open. */
+addon-view .highlights:not(.open) .caption {
+  display: none;
+}
+
+addon-view .highlights.open .caption {
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 60rem;
+  max-height: 25vh;
+  overflow: auto;
+  margin: var(--space-sm) auto 0;
+  padding: 0 var(--space-md);
+  text-align: center;
+}
+
+addon-view .highlights .caption-description {
+  margin: 0;
+  white-space: pre-line;
 }
 addon-view .highlights .btn-close {
   position: fixed;

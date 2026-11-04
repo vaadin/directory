@@ -1,9 +1,16 @@
 package org.vaadin.directory.endpoint.addon;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import com.vaadin.hilla.Nonnull;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +24,11 @@ import org.vaadin.directory.Util;
 import org.vaadin.directory.store.Store;
 
 public class Addon {
+
+    // Image references in the markdown/HTML description, used to drop duplicate highlights
+    private static final Pattern MARKDOWN_IMAGE = Pattern.compile("!\\[[^\\]]*\\]\\(\\s*<?([^)\\s>]+)");
+    private static final Pattern HTML_IMAGE = Pattern.compile("<img[^>]+src\\s*=\\s*(?:\"([^\"]+)\"|'([^']+)'|([^\\s>]+))", Pattern.CASE_INSENSITIVE);
+    private static final Pattern IMAGE_FILE = Pattern.compile("(.{6,})\\.(png|jpe?g|gif|webp|svg|bmp)");
 
     @NotBlank
     @Nonnull
@@ -126,10 +138,14 @@ public class Addon {
                 .map(l -> new Link(l.getTitle(), l.getUrl(), null))
                 .collect(Collectors.toList());
 
+        // Skip screenshots the author already embedded in the description to avoid showing them twice
+        Set<String> descriptionImages = imageReferences(this.description);
         this.mediaHighlights = component.getHighlights().stream()
                 .filter(highlight ->
                         highlight instanceof HighlightScreenShot
                                 || highlight instanceof HighlightVideo)
+                .filter(highlight -> !(highlight instanceof HighlightScreenShot screenshot)
+                        || !isReferenced(screenshot, descriptionImages))
                 .map(highlight -> new MediaHighlight(highlight, urlConfig))
                 .collect(Collectors.toList());
 
@@ -139,6 +155,54 @@ public class Addon {
 
         this.discussionId = Long.toString(component.getId());
 
+    }
+
+    static Set<String> imageReferences(String description) {
+        Set<String> refs = new HashSet<>();
+        if (description == null || description.isBlank()) return refs;
+        for (Pattern p : List.of(MARKDOWN_IMAGE, HTML_IMAGE)) {
+            Matcher m = p.matcher(description);
+            while (m.find()) {
+                for (int g = 1; g <= m.groupCount(); g++) {
+                    if (m.group(g) != null) refs.add(normalizeImageRef(m.group(g)));
+                }
+            }
+        }
+        return refs;
+    }
+
+    static boolean isReferenced(HighlightScreenShot screenshot, Set<String> descriptionImages) {
+        if (descriptionImages.isEmpty()) return false;
+        String file = screenshot.getLocalFileName();
+        if (file == null || file.isBlank()) return false;
+        file = normalizeImageRef(file);
+        String name = baseName(file);
+        // Only match on bare file name when it is distinctive enough (not "1.png", "image.png")
+        boolean distinctiveName = IMAGE_FILE.matcher(name).matches();
+        for (String ref : descriptionImages) {
+            if (ref.endsWith(file) || (distinctiveName && baseName(ref).equals(name))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String normalizeImageRef(String ref) {
+        String s = ref.trim();
+        int cut = s.indexOf('?');
+        if (cut >= 0) s = s.substring(0, cut);
+        cut = s.indexOf('#');
+        if (cut >= 0) s = s.substring(0, cut);
+        try {
+            s = URLDecoder.decode(s.replace("+", "%2B"), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            // Keep the raw value if it is not valid URL encoding
+        }
+        return s.toLowerCase(Locale.ROOT);
+    }
+
+    private static String baseName(String path) {
+        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     public static double weightedAvg(double avg1, long count1, double avg2, long count2) {
