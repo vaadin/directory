@@ -53,7 +53,7 @@ export function installDevHaas(): void {
       ? { authenticated: true, screenname, firstname: screenname, lastname: '', portraitUrl: '' }
       : {}) as Haas['userInfo'];
     renderDevMenu();
-    window.dispatchEvent(new Event('haas-user-info-changed'));
+    window.dispatchEvent(new Event('haas-profile-updated'));
   };
 
   const authfaker = async (screenname: string | null): Promise<boolean> => {

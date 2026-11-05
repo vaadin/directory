@@ -379,17 +379,17 @@ export class AddonView extends View implements BeforeEnterObserver {
 
   }
 
-  // Refresh the rating stars when login state changes (e.g. after logging in via the header/menu),
-  // instead of only lazily on mouseover. install-tabsheet listens for the same event.
+  // Refresh the rating stars when HaaS reports the (async) login state, e.g. on a direct page load
+  // (haas-loader fires haas-profile-updated after user-info loads). install-tabsheet listens too.
   private onHaasUserInfoChanged = () => this.updateUserRating();
 
   connectedCallback(): void {
     super.connectedCallback();
-    window.addEventListener('haas-user-info-changed', this.onHaasUserInfoChanged);
+    window.addEventListener('haas-profile-updated', this.onHaasUserInfoChanged);
   }
 
   disconnectedCallback(): void {
-    window.removeEventListener('haas-user-info-changed', this.onHaasUserInfoChanged);
+    window.removeEventListener('haas-profile-updated', this.onHaasUserInfoChanged);
     super.disconnectedCallback();
   }
 
