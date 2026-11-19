@@ -354,7 +354,7 @@ public class SearchEndpoint {
         if (user != null) {
             return service.getTopRatedPublishedComponentsForAuthor(user)
                     .stream()
-                    .map(c -> new StatsResults(c))
+                    .map(c -> new StatsResults(c, this.store))
                     .toList();
         } else {
             return List.of();

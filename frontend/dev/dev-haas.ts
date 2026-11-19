@@ -9,8 +9,8 @@
 // session, exercising the real server-side identity path.
 //
 // `window.haas`'s global type lives in views/view.ts (interface Haas). It only
-// declares the members the app reads (isAuthenticated/userInfo); this dev stub
-// additionally provides loader/login/logout, so it is built as a local DevHaas
+// declares the members the app uses (isAuthenticated/userInfo/login); this dev stub
+// additionally provides loader/logout, so it is built as a local DevHaas
 // and installed with a cast.
 
 import type { Haas } from '../views/view';
@@ -53,7 +53,7 @@ export function installDevHaas(): void {
       ? { authenticated: true, screenname, firstname: screenname, lastname: '', portraitUrl: '' }
       : {}) as Haas['userInfo'];
     renderDevMenu();
-    window.dispatchEvent(new Event('haas-user-info-changed'));
+    window.dispatchEvent(new Event('haas-profile-updated'));
   };
 
   const authfaker = async (screenname: string | null): Promise<boolean> => {

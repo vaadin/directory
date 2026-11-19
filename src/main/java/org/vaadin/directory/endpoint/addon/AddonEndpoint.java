@@ -10,6 +10,8 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import com.vaadin.hilla.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.directory.UrlConfig;
@@ -33,6 +35,7 @@ public class AddonEndpoint implements AddonInfoService {
     private final Store store;
     private final GoogleAnalytics analyticsService;
     private final CurrentUser currentUser;
+    private final CacheManager cacheManager;
     private UrlConfig urlConfig;
 
     AddonEndpoint(@Autowired ComponentService service,
@@ -41,7 +44,8 @@ public class AddonEndpoint implements AddonInfoService {
                   @Autowired AuditLogService logService,
                   @Autowired GoogleAnalytics analyticsService,
                   @Autowired UrlConfig urlConfig,
-                  @Autowired CurrentUser currentUser) {
+                  @Autowired CurrentUser currentUser,
+                  @Autowired CacheManager cacheManager) {
         this.service = service;
         this.userNameService = userNameService;
         this.logService = logService;
@@ -49,6 +53,7 @@ public class AddonEndpoint implements AddonInfoService {
         this.urlConfig = urlConfig;
         this.analyticsService = analyticsService;
         this.currentUser = currentUser;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -77,13 +82,13 @@ public class AddonEndpoint implements AddonInfoService {
         return createAddon(component, isOwner);
     }
 
-    private Addon createAddon(Component c, boolean addEditLink) {
+    private Addon createAddon(Component c, boolean canEdit) {
         Addon a = new Addon(c, this.urlConfig, this.store);
-        if (addEditLink) {
-            a.getLinks().add(new Link("Edit",
-                    urlConfig.getComponentEditBaseUrl() + c.getUrlIdentifier(),
-                    null));
-        }
+        // Ownership is exposed as an explicit flag; the frontend renders the Edit button from it
+        // (rather than smuggling an "Edit" link into the generic links list). The edit URL is built
+        // server-side from the configured base so it is correct per environment.
+        a.setCanEdit(canEdit);
+        a.setEditUrl(urlConfig.getComponentEditBaseUrl() + c.getUrlIdentifier());
         String name = Util.getNameOrGitHubId(c.getOwner(), this.userNameService);
         a.setAuthor(name);
         String image = this.userNameService.getImageforId(c.getOwner().getId());
@@ -104,7 +109,23 @@ public class AddonEndpoint implements AddonInfoService {
     }
 
     public void setUserRating(String addon, int rating) {
-        currentUser().ifPresent(user -> store.setUserRating(addon, rating, user));
+        currentUser().ifPresent(user -> {
+            store.setUserRating(addon, rating, user);
+            evictCachedAddon(addon, user);
+        });
+    }
+
+    /**
+     * Drops the cached {@link #getAddon} results (key {@code 'addon' + url + '_' + user}) so the new
+     * rating count and average show up immediately for the rater and for anonymous visitors. Other
+     * users' entries expire with the 5 minute cache.
+     */
+    private void evictCachedAddon(String addon, String user) {
+        Cache cache = cacheManager.getCache("cache5m");
+        if (cache != null) {
+            cache.evict("addon" + addon + "_" + user);
+            cache.evict("addon" + addon + "_" + CurrentUser.ANONYMOUS);
+        }
     }
 
     public void logAddonInstall(String addon, String version, String type) {

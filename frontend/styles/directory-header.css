@@ -50,6 +50,12 @@
   padding: 0;
 }
 
+/* Hide the Directory-level "Report issues" link on add-on pages, where it is
+   easily mistaken for reporting an issue about the add-on itself (see #48). */
+body.addon #report-issues {
+  display: none;
+}
+
 .directory-header a {
   font-weight: var(--text-weight-semibold);
 }

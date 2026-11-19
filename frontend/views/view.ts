@@ -13,6 +13,7 @@ export interface HaasUserInfo {
 export interface Haas {
   isAuthenticated: boolean;
   userInfo: HaasUserInfo;
+  login: () => void;
 }
 
 declare global { interface Window { searchScroll : number; } }

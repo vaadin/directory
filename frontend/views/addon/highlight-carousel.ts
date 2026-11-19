@@ -1,5 +1,6 @@
 import Addon from 'Frontend/generated/org/vaadin/directory/endpoint/addon/Addon';
-import { html } from 'lit';
+import MediaHighlight from 'Frontend/generated/org/vaadin/directory/endpoint/addon/MediaHighlight';
+import { html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { Layout } from '../view';
 import 'keen-slider/keen-slider.min.css';
@@ -22,7 +23,11 @@ export class HighlightCarousel extends Layout {
     this.sliderElement = this.querySelector("#slider") as HTMLElement;
     this.alElement = this.querySelector("#arrow-left") as HTMLElement;
     this.arElement = this.querySelector("#arrow-right") as HTMLElement;
-    this.classList.toggle('empty', this.addon?.mediaHighlights.length === 0);
+    const count = this.addon?.mediaHighlights.length ?? 0;
+    this.classList.toggle('empty', count === 0);
+    // With only 1-2 images the grid tiles stretch wide but stay short; give them
+    // more height in that case so the images aren't heavily letterboxed (see #34).
+    this.classList.toggle('few', count > 0 && count <= 2);
     this.addEventListener('keydown', this.keydown);
   }
 
@@ -30,8 +35,12 @@ export class HighlightCarousel extends Layout {
     return html`<div id="slider" tabindex="0">
         ${this.addon?.mediaHighlights.map((m,i) => html`
           <div class="item number-slide${i}">
-            <img src="${m?.url}">
-            <button class="btn-open" @click="${this.open}">View larger</button>
+            <img src="${m?.url}" alt="${this.description(m) ?? ''}" title="${this.description(m) ?? nothing}">
+            <button class="btn-open" title="${this.description(m) ?? nothing}" @click="${this.open}">View larger</button>
+            ${this.description(m) ? html`
+              <div class="caption">
+                <p class="caption-description">${this.description(m)}</p>
+              </div>` : nothing}
           </div>
           <button class="btn-close" @click="${this.close}">Close</button>
         `)}
@@ -39,6 +48,11 @@ export class HighlightCarousel extends Layout {
       <div class="arrow" id="arrow-right" @click="${this.next}"></div>
       </div>
     `;
+  }
+
+  private description(m?: MediaHighlight): string | undefined {
+    const d = m?.description?.trim();
+    return d ? d : undefined;
   }
 
   open(e:MouseEvent) {

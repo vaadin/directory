@@ -242,11 +242,11 @@ export class InstallTabSheet extends Layout {
   connectedCallback() {
     super.connectedCallback();
     // Listen anywhere in the document (or use this.addEventListener for host-only)
-    window.addEventListener('haas-user-info-changed', this.onLogin, false);
+    window.addEventListener('haas-profile-updated', this.onLogin, false);
   }
 
   disconnectedCallback() {
-    window.removeEventListener('haas-user-info-changed', this.onLogin);
+    window.removeEventListener('haas-profile-updated', this.onLogin);
     super.disconnectedCallback();
   }
 
