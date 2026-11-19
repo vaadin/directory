@@ -1,5 +1,6 @@
 @import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/custom-properties.css');
 @import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/typography.css');
+@import url("https://cdn.vaadin.com/website/antlers/v2/assets/dependencies/prism/prism.css");
 
 @import './palette-light.css';
 @import './layout.css';
@@ -47,14 +48,6 @@ hr {
   overflow: hidden;
   margin: var(--space-md) 0;
   background-color: var(--divider-color1);
-}
-
-code[class*="language-"],
-pre[class*="language-"] {
-  filter: contrast(1.4);
-  text-shadow: none;
-  color: var(--gray-200);
-  background: var(--gray-700);
 }
 
 img {
