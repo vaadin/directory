@@ -1,6 +1,6 @@
-@import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/custom-properties.css');
-@import url('https://cdn.vaadin.com/website/antlers/v2/assets/css/1-foundation/typography.css');
-@import url("https://cdn.vaadin.com/website/antlers/v2/assets/dependencies/prism/prism.css");
+@import url('https://cdn.vaadin.com/staging/website/antlers/v2/assets/css/1-foundation/custom-properties.css');
+@import url('https://cdn.vaadin.com/staging/website/antlers/v2/assets/css/1-foundation/typography.css');
+@import url("https://cdn.vaadin.com/staging/website/antlers/v2/assets/dependencies/prism/prism.css");
 
 @import './palette-light.css';
 @import './layout.css';
