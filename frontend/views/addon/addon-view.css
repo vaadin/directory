@@ -647,12 +647,6 @@ addon-view .versions dd + dd + dt + dd {
   margin-top: var(--space-sm);
 }
 
-addon-view .main pre {
-  font-size: var(--text-size-sm);
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
 .compatibility-matrix {
   display: flex;
   max-width: 100%;

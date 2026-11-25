@@ -19,13 +19,20 @@ import { BeforeEnterObserver, RouterLocation } from '@vaadin/router';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { guard } from 'lit/directives/guard.js';
 import DomPurify from 'dompurify';
-import { marked } from 'marked';
-import { highlight, languages } from 'prismjs';
-import 'prismjs/themes/prism.css';
+import { Marked, type RendererObject } from 'marked';
+import { markedHighlight } from 'marked-highlight';
+import { highlight, languages, util } from 'prismjs';
+// Prism theme: antlers' prism.css, loaded from the CDN in global.css.
+// markup (html/xml), css, clike and javascript are already in the prismjs core.
 import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-kotlin';
+import 'prismjs/components/prism-groovy';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-properties';
+import 'prismjs/components/prism-sql';
 import '@vaadin/avatar/src/vaadin-avatar';
 import { appStore } from 'Frontend/stores/app-store';
 import { searchStore } from 'Frontend/views/search/search-store';
@@ -46,45 +53,56 @@ export class AddonView extends View implements BeforeEnterObserver {
   @state()
   private installCount: number = 0;
 
+  // A per-instance Marked. The old `marked.setOptions({ highlight })` did
+  // nothing: the `highlight` option was removed in marked v8, so code blocks
+  // were never highlighted. marked-highlight is the replacement.
+  private md: Marked;
+
   constructor() {
     super();
-    marked.setOptions({
-      useNewRenderer: true,
-      highlight: (code, lang) => {
-        if (languages[lang]) {
-          return highlight(code, languages[lang], lang);
-        } else {
-          return code;
-        }
-      },
-      renderer: this.createRenderer()
-    });
+    this.md = new Marked(
+      markedHighlight({
+        langPrefix: 'language-',
+        highlight: (code, lang) => {
+          const grammar = languages[lang];
+          // Unknown languages must still be HTML-escaped. Otherwise an XML
+          // sample labelled as an unsupported language is parsed as HTML and
+          // stripped by DomPurify.
+          return grammar ? highlight(code, grammar, lang) : (util.encode(code) as string);
+        },
+      }),
+      {
+        renderer: this.createRenderer(),
+      }
+    );
   }
 
-  createRenderer() {
+  private markdown(source?: string): string {
+    return DomPurify.sanitize(this.md.parse(source || '', { async: false }) as string);
+  }
+
+  createRenderer(): RendererObject {
     const thisView = this;
-    const renderer = new marked.Renderer();
-  
-    renderer.link = function({ tokens, href }) {
-      // Ensure href is a string
-      href = href || '';
-  
-      // Check if the href is a relative URL
-      const isRelative = !/^(?:[a-z]+:)?\/\//i.test(href) && !href.startsWith('#') && !href.startsWith('mailto:');
-  
-      if (isRelative) {
-        // Remove trailing slash from BASEURL and leading slash from href to avoid double slashes
-        const base = thisView.getGitHubLink();
-        const path = href.replace(/^\//, '');
-        href = `${base}/${path}`;
-      }
-  
-      // Use the default renderer's link method to maintain consistency
-      const text = this.parser.parseInline(tokens);
-      return `<a href="${href}">${text}</a>`;
+
+    return {
+        link({ tokens, href }) {
+        // Ensure href is a string
+        href = href || '';
+
+        // Check if the href is a relative URL
+        const isRelative = !/^(?:[a-z]+:)?\/\//i.test(href) && !href.startsWith('#') && !href.startsWith('mailto:');
+
+        if (isRelative) {
+            // Remove trailing slash from BASEURL and leading slash from href to avoid double slashes
+            const base = thisView.getGitHubLink();
+            const path = href.replace(/^\//, '');
+            href = `${base}/${path}`;
+        }
+
+        const text = this.parser.parseInline(tokens);
+        return `<a href="${href}">${text}</a>`;
+        },
     };
-  
-    return renderer;
   }
 
   render() {
@@ -150,7 +168,7 @@ export class AddonView extends View implements BeforeEnterObserver {
         <highlight-carousel class="highlights" .addon=${this.addon}></highlight-carousel>
 
         ${unsafeHTML(
-          DomPurify.sanitize(marked.parse(this.addon.description || ""))
+          this.markdown(this.addon.description)
         )}
 
         ${this.addon.codeSamples && this.addon.codeSamples.length > 0 ?
@@ -211,7 +229,7 @@ export class AddonView extends View implements BeforeEnterObserver {
   
           <section class="release-notes">
             ${unsafeHTML(
-              DomPurify.sanitize(marked.parse(this.version.releaseNotes || ""))
+              this.markdown(this.version.releaseNotes)
             )}
           </section>
   
