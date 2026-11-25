@@ -25,7 +25,14 @@ author-stats-view .main,
 addon-stats-view .main,
 addon-view .main {
   flex: 1;
-  min-width: 46rem;
+}
+
+@media (min-width: 768px) {
+  author-stats-view .main,
+  addon-stats-view .main,
+  addon-view .main {
+    min-width: 46rem;
+  }
 }
 
 addon-view .sidebar {
@@ -728,9 +735,6 @@ addon-stats-view .legend {
       padding: 0.2em 1em 0 1em;
       justify-content: space-between;
       font-size: var(--text-size-xs);
-}
-
-addon-stats-view .legend span.total {
 }
 
 addon-stats-view .bar {
